@@ -1,0 +1,12 @@
+# 부트캠프 4인 조 프로젝트다. 조원 전원이 서로의 변경을 본다.
+#
+# 파트 분담 방식을 아직 정하지 않았다 — 기능별로 나눌지, 앱 페이지별로 나눌지
+# 미정이라 경로별로 쪼개지 않고 전체에 조원 4명을 reviewer 로 둔다.
+# (GitHub 은 PR 작성자 본인은 reviewer 에서 자동으로 뺀다)
+
+* @wol20670 @SeungBinYang @softy20 @eunjung01230
+
+# 분담이 정해지면 아래처럼 경로를 좁힌다. 아직 적용하지 않은 예시다.
+# /src/features/running/ @github-id
+# /src/features/ranking/ @github-id
+# /.github/              @wol20670
