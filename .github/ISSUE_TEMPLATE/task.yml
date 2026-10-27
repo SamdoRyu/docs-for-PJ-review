@@ -3,6 +3,15 @@ description: 리팩터링, 설정, 문서, 테스트, 유지보수 작업
 title: "[Task] "
 labels: ["chore"]
 body:
+  - type: input
+    id: requirement
+    attributes:
+      label: 요구사항 ID
+      description: 요구사항 정의서의 ID. 여러 개면 쉼표로 구분합니다. 설정 작업처럼 해당 ID가 없으면 "없음"이라고 씁니다.
+      placeholder: "예: FR-GH-03, NFR-10 / 없음"
+    validations:
+      required: true
+
   - type: textarea
     id: goal
     attributes:
