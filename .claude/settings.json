@@ -5,6 +5,7 @@
       "Read(./.env)",
       "Read(./.env.*)",
       "Read(./secrets/**)",
+      "Read(./**/*.pem)",
       "Read(./config/credentials.json)"
     ],
     "ask": [
