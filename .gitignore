@@ -1,0 +1,5 @@
+# 실제 값 파일과 GitHub App 키 (개발 컨벤션 > 환경 변수 가이드)
+.env
+.env.local
+secrets/
+*.pem
