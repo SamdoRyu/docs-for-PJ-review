@@ -1,18 +1,16 @@
-# Pull Request · develop · main 자동 검증 (#126 · #154).
+# Pull Request · develop · main 자동 검증.
 #
-# docs/PROJECT_COMMANDS.md 의 "PR 전에 반드시" 를 그대로 옮긴 것이다 — lint · test · build.
+# docs/PROJECT_COMMANDS.md 의 "PR 전에 반드시" 를 그대로 옮긴다 — lint · test · build.
 # 각 명령을 별도 step 으로 둬서 실패한 단계가 GitHub UI 에서 바로 보이게 한다.
 #
 # `push` 도 보는 이유 — PR 마다 CI 가 통과해도, 같은 파일의 다른 곳을 고친 두 PR 이 conflict
-# 없이 합쳐지면 **합친 결과만** 깨질 수 있다(#111 「실제로 일어난 일」). merge 된 결과를
-# develop · main 에서 한 번 더 돌려 그 자리에서 잡는다.
+# 없이 합쳐지면 **합친 결과만** 깨질 수 있다. merge 된 결과를 develop · main 에서 한 번 더 돌려
+# 그 자리에서 잡는다.
 #
-# **secret · production DB 를 쓰지 않는다.** env 를 하나도 주입하지 않아도 전부 통과한다:
-#   - 서버 전용 env 6개 검사(`assertStartupEnv`)는 `src/instrumentation.ts` 의 `register()` 에서만
-#     돌고, 이건 빌드가 아니라 서버가 실제로 뜰 때만 실행된다.
-#   - `readAuthEnv()` 는 module top-level 이 아니라 첫 요청에서 평가된다(src/server/auth/config.ts).
-#   - `NEXT_PUBLIC_NAVER_MAP_KEY_ID` 는 없으면 지도 자리에 `credential` 안내가 나올 뿐 빌드는 통과한다.
-#   - `npm test` 대상은 화면 · DB · 네트워크 없이 도는 순수 함수뿐이다(#78 D12 2차).
+# **secret · production DB 를 쓰지 않는다.** env 를 하나도 주입하지 않아도 전부 통과해야 한다
+# (환경 변수 가이드 > 환경별 설정: CI 는 env 없이 통과).
+#   - 서버의 필수 env 검사는 빌드가 아니라 서버가 실제로 뜰 때만 돌아야 한다.
+#   - 테스트는 core 의 순수 규칙과 fake 어댑터로만 돈다. GitHub API 를 부르지 않는다.
 # 이 전제가 깨지면(빌드가 env 를 요구하기 시작하면) placeholder 를 넣지 말고 팀에 보고한다.
 
 name: CI
@@ -40,20 +38,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Setup Node
-        uses: actions/setup-node@v5
-        with:
-          node-version: '24'
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Test
-        run: npm test
-
-      - name: Build
-        run: npm run build
+      # TODO(스택 확인 후): 기존 3D 팀 오피스 서버의 언어·런타임 설정 step 을 넣는다.
+      # TODO(스택 확인 후): 의존성 설치, lint, test, build 를 각각 별도 step 으로 넣는다.
+      - name: Placeholder
+        run: echo "TODO(스택 확인 후) — lint · test · build 명령이 정해지면 이 step 을 교체한다."
