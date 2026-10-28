@@ -62,8 +62,8 @@ npm run dev:all      # 화면 :5173 + API :8787. 서버 데이터는 http://loca
 | 조직·레포 선택 | 없음 | 신규 | 조직 · 레포 목록, 승인 요청 안내 | B1 · B2 |
 | 사무실 열기 (팀장) | 없음 | 신규 | 레포 · 기간 · 명세 문서 경로 입력 | B2 · B6 · B12 |
 | 수집 동의 (팀원) | 없음 | 신규 (2026-10-28 추가 결정으로 채택) | — | B10 |
-| **3D 사무실 (메인)** — 수정 규모 큼 | `src/scene/OfficeScene.tsx` · `TaskBox.tsx` · `TaskBoxes.tsx` · `slots.ts` · `MeetingRoomState.tsx` · `DragLayer.tsx` · `dropTarget.ts` · `Avatar.tsx` · `Overlays.tsx` · `src/office/layout.ts` | 수정 · 확장 | 공간 · 책상 · 아바타 · 카메라 · 이동 애니메이션은 재사용. PR 삼각기둥 등 새 도형, 요구사항 구역 · 진행률, 검토 영역 위치, 드래그 대상 변경(담당 · 상태 → 구역 연결 · 회의실), 사람별 업무량 표현(신호 다이아 · 업무량 원판 · 기울기) 제거 | B2 · B4 · B6 · B7 · B9 |
-| [제안] 2D 팀 보드 | 비슷한 것: `src/ui/KanbanView.tsx` · `ListView.tsx`(작업 목록) | 신규 · 채택 전 착수 안 함 | 안건 아이콘 · 게시판 영역 | [제안] B9 |
+| **3D 사무실 (메인)** — 수정 규모 큼 | `src/scene/OfficeScene.tsx` · `TaskBox.tsx` · `TaskBoxes.tsx` · `slots.ts` · `MeetingRoomState.tsx` · `DragLayer.tsx` · `dropTarget.ts` · `Avatar.tsx` · `Overlays.tsx` · `src/office/layout.ts` | 수정 · 확장 | 공간 · 책상 · 아바타 · 카메라 · 이동 애니메이션은 재사용. PR 삼각기둥 등 새 도형, 요구사항 구역 · 진행률, 검토 영역 위치, 드래그 대상 변경(담당 · 상태 → 구역 연결 · 회의실), 사람별 업무량 표현(신호 다이아 · 업무량 원판 · 기울기) 제거 | B2 · B4 · B6 · B7 · B9 · B13 |
+| [제안] 2D 팀 보드 | 비슷한 것: `src/ui/KanbanView.tsx` · `ListView.tsx`(작업 목록) | 신규 · 채택 전 착수 안 함 | 안건 아이콘 · 게시판 영역 | [제안] B9 · B13 |
 | 상단 바 | `src/ui/TopBar.tsx` | 수정 | KPI · 균형 칩(가장 바쁜 팀원) 대신 요구사항 진행률 · 열린 PR 수 · 평균 리뷰 대기 · 동기화 상태. 레포 드롭다운 · D-day 신규. 오버레이 전환은 정보 뷰 전환으로 | B2 · B6 · B7 · B12 |
 | 상세 패널 | `src/ui/Detail.tsx` · `src/ui/RightPanel.tsx` | 수정 | 편집 입력(상태 · 우선순위 · 포인트 · 담당 · 마감)을 읽기 전용과 GitHub 링크로. 연결 PR · 리뷰 상태 추가. 팀원 상세의 업무량 게이지(`Vitals`) 제거. 투표 버튼 | B2 · B4 · B9 |
 | 요구사항 패널 | 없음 — `RightPanel.tsx`의 탭 구조 재사용 | 신규 | 요구사항 목록 · 진행률 · 빈틈 · 연결 후보 | B6 |
