@@ -12,7 +12,7 @@
 - 기존 public contract를 바꾸면 호출부 전체를 확인한다.
 - 생성 파일을 사람이 수동 편집하지 않는다.
 
-## 팀 오피스 BE 규칙
+## 오피스 BE 규칙
 
 기준: 개발 컨벤션 > 코드 컨벤션 (BE) (`docs/plan/코드 컨벤션 (BE).md`). 기존 3D 데모 코드(TypeScript · Hono · `node:sqlite`)의 패턴을 먼저 따르고, 다르면 기존 코드는 두고 새 코드에만 적용한다.
 
@@ -29,6 +29,6 @@
 
 **저장**: 데모처럼 엔티티별 `(id, data JSON)` 테이블. 쓰기는 `mutate()` 안에서, SSE 알림은 커밋 뒤.
 
-**기준값**: 팀 설정 화면에서 바꾸는 값(프로젝트 기간, 막힘 기준 시간)은 팀 설정에서 읽는다. 나머지 숫자는 `src/data/rules/constants.ts` 같은 상수 한 곳에 모은다.
+**기준값**: 팀 설정 화면에서 바꾸는 값(프로젝트 기간, 막힘 기준 시간, 투표 기준)은 팀 설정에서 읽는다. 나머지 숫자는 `src/data/rules/constants.ts` 같은 상수 한 곳에 모은다.
 
 **이름 (권장)**: 새 타입은 정의서 용어의 영어 이름(`Requirement`, `RequirementLink`, `Submission`, `Vote`, `AgendaItem`, `HelpRequest`, `DecisionCard` 등 — 표는 코드 컨벤션 (BE))을 쓰고, 데모에 이미 있는 이름(`Task`, `Member`, `Meeting`, `DataSource`)은 바꾸지 않는다. 시간 값에는 단위(`reviewWaitHours`), GitHub 번호와 앱 ID는 구분(`githubIssueNumber` ↔ `taskId`).
