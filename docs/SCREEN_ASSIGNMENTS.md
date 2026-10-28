@@ -16,8 +16,8 @@
 
 ```bash
 git fetch origin
-git switch develop
-git pull --ff-only origin develop
+git switch main
+git pull --ff-only origin main
 ```
 
 ```bash
@@ -119,12 +119,12 @@ TODO: 대응 내용 없음 (삭제 여부 확인) — 구현이 기획 문서와
 
 ```bash
 git fetch origin
-git switch develop
-git pull --ff-only origin develop
+git switch main
+git pull --ff-only origin main
 git switch -c feat/<이슈번호>-<slug>
 ```
 
-PR base 는 `develop` 이다. PR 에는 `Refs #<이슈번호>` 와 "관련 요구사항"(이슈에 적은 ID)을 넣고, PR 템플릿 「UI 변경」에 **화면 스크린샷을 첨부한다.**
+PR base 는 `main` 이다. PR 에는 `Closes #<이슈번호>` 와 "관련 요구사항"(이슈에 적은 ID)을 넣고, PR 템플릿 「UI 변경」에 **화면 스크린샷을 첨부한다.**
 
 ## 공통 완료 조건
 

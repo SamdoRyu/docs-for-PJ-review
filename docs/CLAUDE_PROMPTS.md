@@ -23,23 +23,21 @@
 
 ---
 
-## 0-1. develop 기준으로 이어서 시작 — 기존 로컬 저장소
+## 0-1. main 기준으로 이어서 시작 — 기존 로컬 저장소
 
-작업은 `feature → develop → main` 흐름이다(`.claude/rules/git-workflow.md`). 이미 받아 둔 저장소가 `main` 에 있으면 아래를 **한 번** 붙여 넣은 뒤 §1 로 이슈를 시작한다.
+작업은 `작업 브랜치 → main` 흐름이다(`.claude/rules/git-workflow.md`). 이미 받아 둔 저장소가 있으면 아래를 **한 번** 붙여 넣은 뒤 §1 로 이슈를 시작한다.
 
 ```
-내 로컬을 develop 기준 흐름에 맞춰줘.
+내 로컬을 main 기준 흐름에 맞춰줘.
 아래 순서대로 하고 단계마다 결과를 짧게 보여줘. 예상과 다르면 멈추고 알려줘.
 
 1. git status 로 working tree 가 깨끗한지 확인해. 커밋하지 않은 변경이 있으면 아무것도 하지 말고 알려줘.
-2. git switch main 후 git pull --ff-only origin main 으로 main 을 최신화해.
-3. git fetch origin --prune 후 git switch develop 으로 develop 으로 넘어가.
-   이미 로컬 develop 이 있으면 git pull --ff-only origin develop 으로 최신화해.
-4. .claude/rules/git-workflow.md 를 읽고 브랜치 · 커밋 · PR · 머지 규칙을 세 줄로 요약해.
+2. git fetch origin --prune 후 git switch main, git pull --ff-only origin main 으로 main 을 최신화해.
+3. .claude/rules/git-workflow.md 를 읽고 브랜치 · 커밋 · PR · 머지 규칙을 세 줄로 요약해.
 
 지킬 것:
-- main · develop 에서 직접 커밋하지 마. 작업은 develop 에서 새 branch 를 만들어 해.
-- force push · rebase · reset --hard 는 하지 마.
+- main 에서 직접 커밋하지 마. 작업은 main 에서 새 branch 를 만들어 해.
+- main 에 force push 하지 마. reset --hard 는 하지 마.
 - merge 는 하지 마.
 ```
 
@@ -63,11 +61,11 @@ GitHub 이슈 #<이슈번호> 를 구현할 거야.
 4. docs/ARCHITECTURE.md 의 모듈 경계를 확인해.
 
 작업 규칙:
-- develop 을 최신화한 뒤 feat/<이슈번호>-<슬러그> branch 를 새로 만들어.
+- main 을 최신화한 뒤 feat/<이슈번호>-<슬러그> branch 를 새로 만들어.
 - 이슈의 완료 조건과 범위 메모 안에서만 작업하고, 제외한 것은 하지 마.
 - GitHub API 는 adapters/github 밖에서 부르지 말고, GitHub 원본(이슈 · PR · 코멘트 · 라벨)을 바꾸는 호출은 만들지 마. 로그인 · 설치 토큰 발급 같은 인증 요청은 괜찮아.
 - 응답에 사람별 합계 · 순위 필드를 만들지 마. 개인 지표는 본인 요청에만 담아.
-- 기준값(막힘 시간 · 투표 기준 · PR 크기)은 코드에 박지 말고 팩과 레포 설정에서 읽어.
+- 팀 설정 화면에서 바꾸는 값(기간 · 막힘 시간)은 팀 설정에서 읽고, 나머지 숫자는 상수 파일 한 곳에 모아.
 - 화면 확인과 테스트는 GitHub 없이 브라우저 mock(주소에 `?source=` 없이)으로 해.
 - 기획 문서(docs/01~07)는 고치지 마. 문서와 다르게 해야 하면 멈추고 알려줘.
 
@@ -111,8 +109,7 @@ GitHub 이슈 #<이슈번호> 의 버그를 고칠 거야.
 2. 재현해 보고, 재현됐는지 안 됐는지 먼저 알려줘. 재현이 안 되면 멈춰.
 
 작업 규칙:
-- develop 최신화 후 fix/<이슈번호>-<슬러그> branch.
-  시연 직전 main 긴급 수정이면 main 에서 hotfix/<이슈번호>-<슬러그> branch.
+- main 최신화 후 fix/<이슈번호>-<슬러그> branch. 시연 직전 급한 수정도 같다.
 - 원인을 찾기 전에 고치지 마. 원인과 근거(로그 · 재현 결과)를 먼저 보여줘.
 - 가능하면 재현 테스트를 먼저 추가해. core 의 순수 규칙이면 단위 테스트로.
 - 최소 수정만 해. 같이 고치면 좋아 보이는 것은 별도 이슈 후보로 한 줄만 적어.
@@ -141,7 +138,7 @@ docs/PROJECT_COMMANDS.md 의 lint · test · build 를 돌리고, 브라우저 m
 
 - .github/PULL_REQUEST_TEMPLATE.md 양식을 그대로 채워.
 - 제목은 Conventional Commits 형식(50자 이내).
-- base 는 develop 이야(hotfix 만 main). body 에는 `Refs #<이슈번호>` 를 넣어.
+- base 는 main 이야. body 에는 `Closes #<이슈번호>` 를 넣어.
 - 「관련 요구사항」에는 이슈에 적은 요구사항 ID 를 그대로 적어.
 - 「고민한 점」은 내가 쓸 테니 비어 있으면 나한테 물어봐. 지어내서 채우지 마.
 - 「GitHub 권한·API 호출량 변경」을 diff 로 확인해 없음 / 있음을 적어.
@@ -210,5 +207,5 @@ docs/05-policy.md 서비스 정책의 [?] TBD 마다 선택지 · 기획안의 �
 - **기획 문서는 프롬프트로 고치지 않는다.** 구현 중 문서와 다르게 해야 하면 멈추고 알린다. 문서 수정은 팀이 정한 뒤 따로 한다.
 - **"테스트 완료"를 그대로 믿지 마라.** 실제로 돌린 명령과 결과만 믿는다. 테스트하지 못한 부분은 PR 에 명시한다.
 - **GitHub 에 쓰는 코드는 바로 반대한다.** 앱은 GitHub 를 읽기만 한다(CON-02). 리뷰에서 GitHub 원본(이슈 · PR · 코멘트 · 라벨)을 바꾸는 GitHub API 호출을 보면 blocker 다. OAuth 코드 교환 · 설치 토큰 발급 같은 인증 요청과 앱 서버 자체 API의 쓰기는 해당하지 않는다.
-- **merge 는 리뷰 규칙대로만 한다.** 앱 투표 기능 전에는 GitHub 승인 2명, 이후에는 앱에서 찬성 2표 · 반대 0표(`.claude/rules/git-workflow.md` 「리뷰와 머지」). "앱 투표 기능 후" 규칙은 [제안] FR-LRN이 채택되고 구현된 뒤에만 쓴다. CI가 placeholder인 동안 "CI 통과"는 검증이 아니다([PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md) 「PR 전에 반드시」). Claude 에게 merge 를 맡기지 않는다.
+- **merge 는 리뷰 규칙대로만 한다.** GitHub 리뷰 승인 1명 이상을 받은 뒤 사람이 GitHub PR 화면에서 직접 한다. 앱의 찬성 · 반대 투표는 머지 조건이 아니다(`.claude/rules/git-workflow.md`). CI가 placeholder인 동안 "CI 통과"는 검증이 아니다([PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md) 「PR 전에 반드시」). Claude 에게 merge 를 맡기지 않는다.
 - **env 값은 출력하지 않는다.** 확인은 "설정됨 / 미설정" 까지만 한다.

@@ -1,6 +1,6 @@
 # 레포 라벨 정의 (개발 컨벤션 > Git 전략 > 라벨).
-# 이슈에는 종류 라벨 하나와 영역 라벨 하나를 붙인다.
-# 종류 라벨은 브랜치·커밋 type 을 정하고, 영역 라벨은 회고 리포트의 "다룬 기술"(FR-REP-01)로 모인다.
+# 종류 라벨은 템플릿이 붙인다. 영역 라벨은 선택이고, 붙이면 회고 리포트의 "담당 기능 영역"(FR-REP-01)에 모인다.
+# GitHub 기본 라벨은 bug 만 남기고 지운다.
 # 커밋 scope 를 쓸 때는 area: 뒤의 값과 같게 쓴다. 예: feat(sync): …
 #
 # TODO: 이 파일을 레포 라벨에 반영할 방법(수동 생성 또는 라벨 동기화 도구)을 정한다.
@@ -12,7 +12,7 @@
   description: "Feature 템플릿. 브랜치·커밋 type: feat"
 - name: bug
   color: "d73a4a"
-  description: "Bug 템플릿. 브랜치·커밋 type: fix (시연 직전 긴급 수정은 hotfix)"
+  description: "Bug 템플릿. 브랜치·커밋 type: fix"
 - name: chore
   color: "cfd3d7"
   description: "Task 템플릿. 브랜치·커밋 type: chore, refactor, test, docs 중 맞는 것"

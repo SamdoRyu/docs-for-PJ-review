@@ -103,7 +103,7 @@ npm run test:e2e         # 화면 · 3D 를 바꿨을 때. Chrome 필요
 ```
 
 - 실제로 돌린 명령과 결과만 PR 「검증」에 적는다. 못 돌린 것은 못 돌렸다고 적는다.
-- **CI**: 데모 저장소에는 `.github/workflows/`가 없다. 이 문서 저장소의 `.github/workflows/ci.yml`은 명령이 정해지기 전에 만든 placeholder(`echo` 한 줄)라 아무것도 검증하지 않는다. 개발 저장소에 CI를 넣을 때 위 명령(e2e 제외 또는 Chrome 설치 포함)으로 채운다 — Git 전략 「9」 GitHub 설정.
+- **CI**: 데모 저장소에는 `.github/workflows/`가 없다. 이 문서 저장소의 `.github/workflows/ci.yml`은 명령이 정해지기 전에 만든 placeholder(`echo` 한 줄)라 아무것도 검증하지 않는다. 개발 저장소에 CI를 넣을 때 위 명령(e2e 제외 또는 Chrome 설치 포함)으로 채운다 — Git 전략 「8. GitHub 설정」.
 
 > **검증 한계 (CI가 채워지기 전까지)**: CI 초록 표시를 검증으로 세지 않는다. Git 전략 「7. 코드 리뷰 및 머지 규칙」대로 리뷰어가 PR 본문 「검증」에 적힌 실제 명령과 결과를 직접 확인한다.
 
@@ -117,7 +117,7 @@ npm run test:e2e         # 화면 · 3D 를 바꿨을 때. Chrome 필요
 | 클라이언트 | 에러 변환, SSE 재연결 · 백오프, 늦게 온 응답 무시 | `tests/contract/client.test.ts` |
 | E2E | 로딩 · KPI, 작업 CRUD, 칸반 드래그, 패널 · 3D 담당 지정, 3D 상자 드래그, 안건 · 회의, 주간 계획, 추천, 오프라인 배너, 실시간 동기화, 반응형(1024×768), 터치 | `tests/e2e/01`~`12` |
 
-v1의 테스트 대상은 **core 의 순수 규칙**이다 — 막힘 계산, 컨벤션 검사, [제안] 투표 판정, [제안] 기술 결정 카드 조립처럼 외부 서비스 없이 값만으로 판정할 수 있는 것(코드 컨벤션 BE 「모듈 구조」). 새 규칙은 `src/data/rules/`에 두고 `rules.test.ts`처럼 테스트한다. 화면 시연과 테스트는 **fake** 로 하고(권장안은 브라우저 mock — ARCHITECTURE.md 「데이터 소스는 두 층이다」의 결정 필요) GitHub API 를 부르지 않는다. GitHub 어댑터의 변환은 GitHub 응답 예시 데이터로 테스트한다(신규 예정).
+v1의 테스트 대상은 **core 의 순수 규칙**이다 — 막힘 계산, 컨벤션 검사, [제안] 투표 판정, [제안] 기술 결정 카드 조립처럼 외부 서비스 없이 값만으로 판정할 수 있는 것(코드 컨벤션 BE 「모듈」). 새 규칙은 `src/data/rules/`에 두고 `rules.test.ts`처럼 테스트한다. 화면 시연과 테스트는 **fake** 로 하고(권장안은 브라우저 mock — ARCHITECTURE.md 「데이터 소스는 두 층이다」의 결정 필요) GitHub API 를 부르지 않는다. GitHub 어댑터의 변환은 GitHub 응답 예시 데이터로 테스트한다(신규 예정).
 
 PR 에 "테스트 완료"라고만 적지 않는다. 실제로 한 것만 적고, 테스트하지 못한 부분은 PR 에 명시한다(`.claude/rules/testing.md`).
 

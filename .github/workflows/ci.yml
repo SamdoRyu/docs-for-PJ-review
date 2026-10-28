@@ -1,10 +1,10 @@
-# Pull Request · develop · main 자동 검증.
+# Pull Request · main 자동 검증.
 #
 # docs/PROJECT_COMMANDS.md 의 "PR 전에 반드시" 를 그대로 옮긴다 — lint · test · build.
 # 각 명령을 별도 step 으로 둬서 실패한 단계가 GitHub UI 에서 바로 보이게 한다.
 #
 # `push` 도 보는 이유 — PR 마다 CI 가 통과해도, 같은 파일의 다른 곳을 고친 두 PR 이 conflict
-# 없이 합쳐지면 **합친 결과만** 깨질 수 있다. merge 된 결과를 develop · main 에서 한 번 더 돌려
+# 없이 합쳐지면 **합친 결과만** 깨질 수 있다. merge 된 결과를 main 에서 한 번 더 돌려
 # 그 자리에서 잡는다.
 #
 # **secret · production DB 를 쓰지 않는다.** env 를 하나도 주입하지 않아도 전부 통과해야 한다
@@ -18,7 +18,7 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [develop, main]
+    branches: [main]
 
 # 같은 ref 에 연속으로 push 하면 이전 run 을 취소한다 — 마지막 commit 의 결과만 의미가 있다.
 concurrency:

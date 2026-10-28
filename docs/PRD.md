@@ -35,13 +35,13 @@
 | 확정 Must | FR-AUTH-01, 03, 04 · FR-GH-01, 03 · FR-REQ-01, 02, 04~07 · FR-OFF-01, 02, 05 · FR-FLOW-01, 02, 05, 06 · FR-HAB-01, 02, 05, 06 · FR-MTG-01(일부만 확인), 03, 04 · FR-PLAN-01, 02 · FR-REP-01~03, 06 (31건) | 지금 착수할 수 있는 확정 MVP |
 | 확정 Must · 원본 확인 필요 | FR-AUTH-02 · FR-GH-02, 04 · FR-MTG-02 (4건) | MVP지만 정의서 원문이 없어 범위와 수용 기준을 정할 수 없다 |
 | 확정 Should·Could | FR-AUTH-05 · FR-GH-05, 06 · FR-REQ-03 · FR-OFF-03, 04, 06 · FR-FLOW-03, 04 · FR-HAB-03, 04, 07 · FR-MTG-05 · FR-PLAN-03, 04 · FR-REP-04, 05 | 8~10일차에 Must가 끝났을 때만 착수 |
-| 제안 Must (검토 중) | FR-LRN-01~05, 07, 09~12, 14 · FR-HAB-09, 10 · FR-HAB-01 수정안(`Refs #N`) | 기획안이 "2주 안에 꼭 만들 핵심"으로 제안. 팀 채택 전에는 확정 MVP가 아니다 |
+| 제안 Must (검토 중) | FR-LRN-01~05, 07, 09~12, 14 · FR-HAB-09, 10 | 기획안이 "2주 안에 꼭 만들 핵심"으로 제안. 팀 채택 전에는 확정 MVP가 아니다 |
 | 제안 Should · Could (검토 중) | FR-LRN-06, 08, 13 · FR-FLOW-07 · FR-HAB-08, 11 · FR-ACT-01~03(Should), FR-ACT-04(Could) · FR-REP-07 | 채택되어도 여유 시 착수 |
 | 조건부 | FR-REP-10 | FR-REP-07 채택 시 Must |
 | 후순위 (v1 이후) | FR-REP-08, 09 | v1 기간에 착수하지 않음 |
 | 추가 제안 후보 (ID 없음) | requirements-changes.md 「5. 추가 제안 후보」 1~11 — 도움 요청 생애주기, 게시판 배운 점 글, 자동 안건 후보, 투표 없는 PR 막힘, 2D 팀 보드, 게시판의 결정 기록 · 팀 규칙 표시 | 기획안에 동작만 있고 요구사항이 없다 |
 
-> PR 투표와 회의실 학습은 기획안이 내세우는 핵심 차별점이다(발표 포인트 1 · 2). 다만 그 요구사항은 아직 팀 채택 전이고, 7일차 데모의 "PR 찬성·반대 투표"와 Git 전략의 "앱 투표 기능 후 머지 규칙"이 이 채택에 기댄다 — 열린 질문 첫 줄.
+> PR 투표와 회의실 학습은 기획안이 내세우는 핵심 차별점이다(발표 포인트 1 · 2). 다만 그 요구사항은 아직 팀 채택 전이고, 7일차 데모의 "PR 찬성·반대 투표"가 이 채택에 기댄다(앱 투표는 머지 조건이 아니다 — Git 전략 「6」) — 열린 질문 첫 줄.
 
 ### 안 만드는 것
 
@@ -87,14 +87,11 @@
 | 리뷰 편중 · 담당 편중 표시에 사람별 건수를 보이는가 | 05-policy.md P6 | 팀 |
 | 회의 결정 · 배운 점을 회의와 회의 안건 중 어디에 저장하나 | 06-data.md 회의 | 팀 (정의서 6장 확인 후) |
 | 일정판 "마감"을 어느 데이터에서 읽나 | 06-data.md 「일정판 마감」 · 07 일정판 · 04 F10 | 팀 |
-| FR-HAB-08 브랜치 · PR 제목 패턴과 PR 템플릿 경로 대소문자 | requirements-changes.md FR-HAB-08 아래 · 06 컨벤션 규칙 · 00 03 참고 이력 | 팀 |
 | FR-MTG · FR-PLAN 서버 담당(BACKEND B12) | BACKEND_ASSIGNMENTS.md 담당 표 | 팀 |
 | FR-GH-05(동기화 상태 표시)를 Must로 올리나 | requirements-changes.md 6절 · 05 P4 | 팀 |
-| 회고 리포트의 영역 라벨 모음을 "다룬 기술"이 아닌 "담당 기능 영역"으로 부르나 | requirements-changes.md 6절 · 03 FR-REP-01 | 팀 |
 | 기술 결정 카드 칸 목록(데이터 모델 6칸 ↔ 카드 칸 표 9칸) | 06-data.md 기술 결정 카드 | 팀 (FR-REP-07 채택 시) |
 | 거둔 안건 · 확정되지 않은 안건 후보를 지우나, 상태로 남기나 | 05-policy.md P8 · 상태값 · 06 회의 안건 | 팀 (FR-LRN 채택 시) |
 | 사무실을 연 뒤 팀 설정(기간 · 기준값 · [제안] 앱 컨벤션 규칙)을 바꾸는 화면을 두나, 레포 설정 파일로만 하나 | 07-screens.md 화면 목록 아래 · 05 P2 · P7 · 06 팀 설정 | 팀 |
-| `Refs #N` 수정안을 FR-HAB-01 구현 전에 정하나 (안 정하면 develop 대상 PR이 모두 위반) | requirements-changes.md 6절 · 00 IB-34 | 팀 — IB-34 착수 전 |
 | 정의서 v0.1에 투표(`Vote`) · 회의 안건(`AgendaItem`)이 이미 있나 — 있으면 FR-LRN 일부는 추가가 아니라 수정 | requirements-changes.md 6절 · 코드 컨벤션(BE) 용어 표 | 기획 담당(A) — 정의서 원문 확인 시 |
 | 권한 없음 화면 문구 | 05-policy.md P1 · 07 공통 상태 | 팀 |
 | 데이터 없음 상태 화면 | 07 공통 상태 | 팀 |
@@ -104,11 +101,9 @@
 | 로그인 실패 시 보이는 것 · 도착 화면 | 07-screens.md 공통 상태 · 흐름표 · 04 F1 | 팀 |
 | 디자인 원본 5칸(공유 링크 · 채점표 6칸 · 동작 메모 ↔ F · P 대응표 · 받은 댓글 · Claude Code 로 잇는 프롬프트) | 07-screens.md 디자인 | 팀 |
 | 레포 권한을 어느 자격 증명으로 조회하고, GitHub에서 권한이 바뀌면 언제 역할을 다시 확인하나 | ARCHITECTURE.md 「인증과 권한」 | B 연동 백엔드 — B1 착수 전 |
-| 실제 개발 저장소 — 데모 fork(`warehouseDemo_fork`, Issues 꺼짐)를 쓰나, 조직 레포로 옮기나 | ARCHITECTURE.md 「두 저장소」 · Git 전략 「9」 · PROJECT_COMMANDS.md | 팀 — 1일차 (이슈를 만들기 전) |
 | Node 버전 고정(권장 Node 24 LTS, 최소 22.13) | ARCHITECTURE.md 「기술 스택」 · PROJECT_COMMANDS.md | 팀 — 1일차 |
 | 부트캠프 기술 조건(HTML · CSS · JS)에 React · TypeScript · Three.js 사용이 별도 평가 기준과 맞는가 | ARCHITECTURE.md 「기술 스택」 | 기획 담당(A) — 운영진 확인 |
 | 데이터 소스 두 층 — 화면 시연을 브라우저 mock으로 하나, 서버 `DATA_SOURCE=fake`로 하나 · `local` 어댑터의 뜻 | ARCHITECTURE.md 「데이터 소스는 두 층이다」 · 환경 변수 가이드 「3」 | B 연동 백엔드 · D — 2차 단계 착수 전 |
-| 에러 응답 code 표기(기존 소문자 `invalid` 등 ↔ 기획 대문자 `VALIDATION_FAILED` 등). 바깥 모양은 기존 유지 권장 | ARCHITECTURE.md 「에러 응답 형식」 · 코드 컨벤션(BE) | 팀 — 새 API 착수 전 |
 | 기존 작업 필드 중 GitHub에 없는 값(우선순위 · 포인트 · 프로젝트 · 마감)과 담당자 여러 명 · `in_progress` 판단 기준 | 06-data.md 「기존 데모 데이터와의 대응」 | 팀 — 2차 단계 착수 전 |
 | 사람별 업무량 · 포인트 표현(팀원 탭 · 추천 · 업무량 오버레이 · 아바타 신호 등)을 빼는 범위와 남길 기존 화면 | ARCHITECTURE.md 「사람별 비교 표현 — 제거 대상」 · SCREEN_ASSIGNMENTS.md · 07 「기존 데모 화면과의 대응」 | 팀 |
 | DB 경로 변수(`DATABASE_URL` ↔ SQLite 파일 경로) · 저장 방식(JSON blob 유지 ↔ 열 분리) · 마이그레이션 방식 | 환경 변수 가이드 「3」 · ARCHITECTURE.md 「저장소 (SQLite)」 · PROJECT_COMMANDS.md | B · C — 저장 항목 추가 전 |

@@ -17,7 +17,7 @@
 | 저장소 | 역할 | 비고 |
 | --- | --- | --- |
 | `SamdoRyu/docs-for-PJ-review` (이 저장소) | 기획 · 설계 · 개발 규칙 문서, Issue · PR 템플릿 초안 | 앱 코드가 없다 |
-| `SamdoRyu/warehouseDemo_fork` | 기존 3D 데모 코드. 팀 오피스 v1을 이 코드 위에 만든다(CON-05) | **실제 개발 저장소로 쓸지, 조직 레포로 새로 옮길지 결정 필요.** 지금은 Issues가 꺼져 있고 `.github/`가 없다 — Git 전략 「9」 |
+| `SamdoRyu/warehouseDemo_fork` | 기존 3D 데모 코드. 팀 오피스 v1을 이 코드 위에 만든다(CON-05) | 코드를 가져올 원본. **실제 개발은 새로 만들 개발 레포에서 한다**(2026-10-28 결정). 레포 설정은 Git 전략 「8」 |
 
 데모 저장소의 `docs/PLAN.md`는 과거 팀 관리 대시보드(관리자 1명 + 팀원 6~10명) 기획이다. 팀 오피스 v1의 요구사항 기준으로 쓰지 않는다.
 
@@ -99,7 +99,7 @@ warehouseDemo_fork/
 
 ### 모듈 이름과 실제 경로
 
-모듈 이름과 의존 방향은 코드 컨벤션(BE) 「모듈 구조」 · NFR-08 그대로다. 실제 경로는 아래처럼 대응한다.
+모듈 이름과 의존 방향은 코드 컨벤션(BE) 「모듈」 · NFR-08 그대로다. 실제 경로는 아래처럼 대응한다.
 
 | 모듈 | 현재 구현에서 해당하는 곳 | 신규 예정 (권장 경로) |
 | --- | --- | --- |
@@ -235,15 +235,12 @@ CON-02는 **앱이 GitHub의 원본(이슈 · PR · 코멘트 · 라벨 등)을 
 
 GitHub App 권한을 Metadata · Contents · Issues · Pull requests 모두 **읽기 전용**으로 두면, 실수로 쓰기 호출을 만들어도 GitHub가 거부한다.
 
-### 에러 응답 형식 — 결정 필요
+### 에러 응답 형식
 
-| | 현재 구현 (데모 서버 · 클라이언트) | 기획 문서 (코드 컨벤션 BE) |
-| --- | --- | --- |
-| 모양 | `{ "error": { "code": "invalid", "message": "…" } }` | `{ "code": "VALIDATION_FAILED", "message": "…" }` |
-| code | 소문자 4종 `invalid`(400 · 위생 검사 실패는 403) · `not_found`(404) · `conflict`(409) · `unavailable`(503) | 대문자 스네이크 `VALIDATION_FAILED` · `NOT_FOUND` · `FORBIDDEN_ROLE` · `GITHUB_RATE_LIMITED` · `GITHUB_UNAUTHORIZED` |
-| 기대는 곳 | `src/data/api/index.ts`의 `toError`(code로 분기 — `not_found`면 로컬에서 지우고 `unavailable`이면 SSE 재연결), `DataError` 타입, 계약 테스트, 데모 `docs/API.md` | 04 · 05 · 06 · 07 문서(`FORBIDDEN_ROLE`, `GITHUB_RATE_LIMITED` 등 — 05-policy.md P1은 `{ "code": "FORBIDDEN_ROLE", … }` 모양까지 적음), `.claude/rules/code-quality.md` |
+데모 모양 `{ "error": { "code", "message" } }`를 그대로 쓰고, 새 code도 소문자 snake로 더한다(2026-10-28 결정). 클라이언트 `src/data/api/index.ts`의 `toError`(`not_found`면 로컬에서 지우고 `unavailable`이면 SSE 재연결), `DataError` 타입, 계약 테스트가 이 모양에 기댄다.
 
-**권장안**: 바깥 모양은 기존 `{ "error": { "code", "message" } }`를 유지한다 — 클라이언트 · 계약 테스트를 함께 바꾸는 비용에 비해 얻는 것이 없다. code 표기(기존 소문자를 유지하고 새 code도 소문자로 더할지, 전부 대문자로 바꿀지)는 팀이 정한다. 정한 뒤 코드 컨벤션(BE)과 `.claude/rules/code-quality.md`를 함께 고친다.
+- 기존: `invalid`(400 · 위생 검사 실패는 403) · `not_found`(404) · `conflict`(409) · `unavailable`(503)
+- 신규: `unauthorized` · `forbidden_role` · `github_unauthorized` · `github_rate_limited` — 표는 코드 컨벤션(BE) 「에러 응답」
 
 ## 인증과 권한
 
@@ -415,7 +412,7 @@ TODO: 대응 내용 없음 (삭제 여부 확인) — 서버 위치는 TBD-09(2�
 
 ## 아직 없는 것
 
-- **실제 개발 저장소 확정** — 데모 fork를 쓸지, 조직 레포로 옮길지(Git 전략 「9」).
+- **개발 저장소** — 새로 만들기로 했고 아직 만들지 않았다. 만든 뒤 Git 전략 「8」 설정을 한다.
 - **실행 확인** — 데모의 설치 · 실행 · 테스트를 이 문서 작성 중에 돌리지 않았다. 1차 단계에서 확인한다(PROJECT_COMMANDS.md).
 - **정의서 v0.1 원문** — 범위로만 인용된 요구사항과 6장 데이터 요구사항(03 · 06 머리말).
 - **미결 TBD** — 05-policy.md 서비스 정책의 [?] 6건. 그 밖의 결정 필요 항목(레포 수, 재투표, 공지, 이 문서의 결정 필요 항목 등)은 PRD.md 「열린 질문」.
