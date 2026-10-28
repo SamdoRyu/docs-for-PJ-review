@@ -4,7 +4,9 @@
 
 ## 전제
 
-기존 3D 팀 오피스 데모 코드를 그대로 쓰므로 **그 코드의 언어와 패턴을 먼저 따릅니다.** 서버는 TypeScript + Hono(`@hono/node-server`) + SQLite(`node:sqlite`)이고, 화면과 서버가 한 저장소에서 타입과 순수 규칙(`src/data/rules/`)을 함께 씁니다. Node는 24 LTS로 맞춥니다(`.nvmrc`). 스택과 경로는 ARCHITECTURE.md를 봅니다.
+> **구현 스택은 아직 정하지 않았습니다**(ARCHITECTURE.md 「기술 스택」 ① 데모 스택 · ② HTML · CSS · JS 위주). 이 문서의 경로 · 도구 · 코드 흐름은 ①을 가정합니다. ②로 정하면 「꼭 지킬 것」 · 「에러 응답」 · 「이름」만 그대로 두고 나머지는 다시 씁니다.
+
+①로 가면 기존 3D 팀 오피스 데모 코드를 고쳐 가며 구현하므로 **그 코드의 언어와 패턴을 먼저 따릅니다.** 서버는 TypeScript + Hono(`@hono/node-server`) + SQLite(`node:sqlite`)이고, 화면과 서버가 한 저장소에서 타입과 순수 규칙(`src/data/rules/`)을 함께 씁니다. Node는 24 LTS로 맞춥니다(`.nvmrc`). 스택과 경로는 ARCHITECTURE.md를 봅니다.
 
 새 규칙과 기존 코드가 다르면 기존 코드는 그대로 두고 새 코드에만 적용합니다.
 

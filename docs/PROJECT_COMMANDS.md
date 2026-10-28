@@ -1,5 +1,7 @@
 # Project Commands
 
+> **구현 스택은 아직 정하지 않았다.** 아래 데모 경로 · 파일 · 명령은 데모 스택(React · TypeScript · Three.js · Hono)을 이어 쓸 때의 기준이다. HTML · CSS · JavaScript 위주로 새로 구현하게 되면 같은 내용을 "참고할 동작과 구조"로 읽는다 — [ARCHITECTURE.md](./ARCHITECTURE.md) 「기술 스택」.
+
 개발에 쓰는 명령 전부다. `.claude/rules/testing.md` 가 이 문서를 가리킨다.
 
 **두 저장소를 구분한다.** 이 저장소(`docs-for-PJ-review`)는 문서뿐이라 실행할 명령이 없다. 아래 명령은 모두 **기존 3D 데모 저장소(`SamdoRyu/warehouseDemo_fork`) 루트**에서 실행한다(CON-05). 실제 개발은 새로 만들 개발 저장소에서 한다(2026-10-28 결정 — ARCHITECTURE.md 「두 저장소」). 개발 저장소가 생기면 아래 명령의 실행 위치를 그쪽으로 바꾼다.

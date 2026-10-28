@@ -14,7 +14,7 @@
 
 ## 오피스 BE 규칙
 
-기준: 개발 컨벤션 > 코드 컨벤션 (BE) (`docs/plan/코드 컨벤션 (BE).md`). 기존 3D 데모 코드(TypeScript · Hono · `node:sqlite`)의 패턴을 먼저 따르고, 다르면 기존 코드는 두고 새 코드에만 적용한다.
+기준: 개발 컨벤션 > 코드 컨벤션 (BE) (`docs/plan/코드 컨벤션 (BE).md`). 구현 스택은 아직 정하지 않았다(`docs/ARCHITECTURE.md` 「기술 스택」). 데모 스택(TypeScript · Hono · `node:sqlite`)을 이어 쓰면 그 패턴을 먼저 따른다. 아래 「꼭 지킬 것」 · 「에러 응답」은 스택과 상관없이 지킨다.
 
 **꼭 지킬 것**
 
