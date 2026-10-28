@@ -4,7 +4,7 @@
 
 저장소 루트에서 `claude` 를 실행하면 `.claude/rules/` 의 규칙(git-workflow · code-quality · security · testing · scope-control)이 자동으로 적용된다. 그래서 프롬프트에 그 규칙을 다시 적지 않는다.
 
-> 이 프로젝트에서 반복할 작업은 네 가지다 — **§1 요구사항 ID로 기능 구현 · §2 버그 수정 · §3 PR 준비(자주 쓰는 것) · §4 문서 정합성 점검.** 담당 · 상태는 [BACKEND_ASSIGNMENTS.md](./BACKEND_ASSIGNMENTS.md) · [SCREEN_ASSIGNMENTS.md](./SCREEN_ASSIGNMENTS.md), Must 이슈 목록은 [00-backlog.md](./00-backlog.md) 「이슈 백로그 (Must)」.
+> 이 프로젝트에서 반복할 작업은 네 가지다 — **§1 요구사항 ID로 기능 구현 · §2 버그 수정 · §3 PR 준비(자주 쓰는 것) · §4 문서 정합성 점검.** 담당 · 상태는 [BACKEND_ASSIGNMENTS.md](./BACKEND_ASSIGNMENTS.md)(백엔드 기호 B0~B12) · [SCREEN_ASSIGNMENTS.md](./SCREEN_ASSIGNMENTS.md), Must 이슈 목록은 [00-backlog.md](./00-backlog.md) 「이슈 백로그 (Must)」(이슈 후보 IB-01~IB-50 · 착수 조건 열).
 
 ---
 
@@ -56,6 +56,8 @@ GitHub 이슈 #<이슈번호> 를 구현할 거야.
 1. gh issue view <이슈번호> 로 이슈 전문을 읽어. "요구사항 ID" 칸이 이 작업의 기준이야.
 2. 그 요구사항 ID 를 docs/03-requirements.md 에서 찾아 요구 · 중요도를 확인해.
    [제안] 이 붙은 ID 면 docs/requirements-changes.md 에서 상태를 보고, "검토 중" 이면 멈추고 알려줘.
+   "원본 확인 필요"로 표시된 ID 면 수용 기준이 없으니 멈추고 알려줘.
+   기능 구현 기준은 docs/04-features.md 「인수 조건」 열이야. "초안"이면 그 사실도 함께 알려줘.
 3. 그 ID 가 속한 기능을 docs/04-features.md 에서, 기능의 정책(P)을 docs/05-policy.md 에서,
    저장 항목을 docs/06-data.md 에서, 화면을 docs/07-screens.md 에서 확인해.
 4. docs/ARCHITECTURE.md 의 모듈 경계를 확인해.
@@ -208,5 +210,5 @@ docs/05-policy.md 서비스 정책의 [?] TBD 마다 선택지 · 기획안의 �
 - **기획 문서는 프롬프트로 고치지 않는다.** 구현 중 문서와 다르게 해야 하면 멈추고 알린다. 문서 수정은 팀이 정한 뒤 따로 한다.
 - **"테스트 완료"를 그대로 믿지 마라.** 실제로 돌린 명령과 결과만 믿는다. 테스트하지 못한 부분은 PR 에 명시한다.
 - **GitHub 에 쓰는 코드는 바로 반대한다.** 앱은 GitHub 를 읽기만 한다(CON-02). 리뷰에서 POST · PATCH · PUT · DELETE 호출을 보면 blocker 다.
-- **merge 는 리뷰 규칙대로만 한다.** 앱 투표 기능 전에는 GitHub 승인 2명, 이후에는 앱에서 찬성 2표 · 반대 0표(`.claude/rules/git-workflow.md` 「리뷰와 머지」). Claude 에게 merge 를 맡기지 않는다.
+- **merge 는 리뷰 규칙대로만 한다.** 앱 투표 기능 전에는 GitHub 승인 2명, 이후에는 앱에서 찬성 2표 · 반대 0표(`.claude/rules/git-workflow.md` 「리뷰와 머지」). "앱 투표 기능 후" 규칙은 [제안] FR-LRN이 채택되고 구현된 뒤에만 쓴다. CI가 placeholder인 동안 "CI 통과"는 검증이 아니다([PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md) 「PR 전에 반드시」). Claude 에게 merge 를 맡기지 않는다.
 - **env 값은 출력하지 않는다.** 확인은 "설정됨 / 미설정" 까지만 한다.
