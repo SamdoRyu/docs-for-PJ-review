@@ -16,6 +16,7 @@ body:
     id: goal
     attributes:
       label: 목표
+      description: 무엇을 하면 끝나는지 한두 줄로 적습니다.
     validations:
       required: true
 
@@ -23,17 +24,8 @@ body:
     id: todo
     attributes:
       label: 작업 항목
-      placeholder: |
-        - [ ] ...
-        - [ ] ...
-    validations:
-      required: true
-
-  - type: textarea
-    id: done
-    attributes:
-      label: 완료 조건
+      description: 단계가 여러 개일 때만 적습니다.
       placeholder: |
         - [ ] ...
     validations:
-      required: true
+      required: false
