@@ -65,10 +65,10 @@ GitHub 이슈 #<이슈번호> 를 구현할 거야.
 작업 규칙:
 - develop 을 최신화한 뒤 feat/<이슈번호>-<슬러그> branch 를 새로 만들어.
 - 이슈의 완료 조건과 범위 메모 안에서만 작업하고, 제외한 것은 하지 마.
-- GitHub API 는 adapters/github 밖에서 부르지 말고, POST · PATCH · PUT · DELETE 는 보내지 마.
+- GitHub API 는 adapters/github 밖에서 부르지 말고, GitHub 원본(이슈 · PR · 코멘트 · 라벨)을 바꾸는 호출은 만들지 마. 로그인 · 설치 토큰 발급 같은 인증 요청은 괜찮아.
 - 응답에 사람별 합계 · 순위 필드를 만들지 마. 개인 지표는 본인 요청에만 담아.
 - 기준값(막힘 시간 · 투표 기준 · PR 크기)은 코드에 박지 말고 팩과 레포 설정에서 읽어.
-- 화면 확인과 테스트는 DATA_SOURCE=fake 로 해.
+- 화면 확인과 테스트는 GitHub 없이 브라우저 mock(주소에 `?source=` 없이)으로 해.
 - 기획 문서(docs/01~07)는 고치지 마. 문서와 다르게 해야 하면 멈추고 알려줘.
 
 다 만들면:
@@ -130,7 +130,7 @@ GitHub 이슈 #<이슈번호> 의 버그를 고칠 거야.
 ### 검증
 
 ```
-docs/PROJECT_COMMANDS.md 의 lint · test · build 를 돌리고, DATA_SOURCE=fake 로 띄워서
+docs/PROJECT_COMMANDS.md 의 lint · test · build 를 돌리고, 브라우저 mock(`?source=` 없이)으로 띄워서
 <화면 이름> 이 docs/07-screens.md 「화면 목록」의 보이는 것대로 나오는지 확인해줘. 결과를 그대로 보여줘.
 ```
 
@@ -209,6 +209,6 @@ docs/05-policy.md 서비스 정책의 [?] TBD 마다 선택지 · 기획안의 �
 
 - **기획 문서는 프롬프트로 고치지 않는다.** 구현 중 문서와 다르게 해야 하면 멈추고 알린다. 문서 수정은 팀이 정한 뒤 따로 한다.
 - **"테스트 완료"를 그대로 믿지 마라.** 실제로 돌린 명령과 결과만 믿는다. 테스트하지 못한 부분은 PR 에 명시한다.
-- **GitHub 에 쓰는 코드는 바로 반대한다.** 앱은 GitHub 를 읽기만 한다(CON-02). 리뷰에서 POST · PATCH · PUT · DELETE 호출을 보면 blocker 다.
+- **GitHub 에 쓰는 코드는 바로 반대한다.** 앱은 GitHub 를 읽기만 한다(CON-02). 리뷰에서 GitHub 원본(이슈 · PR · 코멘트 · 라벨)을 바꾸는 GitHub API 호출을 보면 blocker 다. OAuth 코드 교환 · 설치 토큰 발급 같은 인증 요청과 앱 서버 자체 API의 쓰기는 해당하지 않는다.
 - **merge 는 리뷰 규칙대로만 한다.** 앱 투표 기능 전에는 GitHub 승인 2명, 이후에는 앱에서 찬성 2표 · 반대 0표(`.claude/rules/git-workflow.md` 「리뷰와 머지」). "앱 투표 기능 후" 규칙은 [제안] FR-LRN이 채택되고 구현된 뒤에만 쓴다. CI가 placeholder인 동안 "CI 통과"는 검증이 아니다([PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md) 「PR 전에 반드시」). Claude 에게 merge 를 맡기지 않는다.
 - **env 값은 출력하지 않는다.** 확인은 "설정됨 / 미설정" 까지만 한다.

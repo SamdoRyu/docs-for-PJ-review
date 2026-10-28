@@ -19,7 +19,7 @@ description: PR diff를 요구사항, 회귀, 타입, 에러 처리, 보안, 테
 9. 유지보수성
 
 팀 오피스 원칙 점검 (위반이면 blocker):
-- GitHub 쓰기 호출 없음 — GitHub API에 POST, PATCH, PUT, DELETE를 보내는 코드가 없다 (CON-02). GitHub API 호출은 `adapters/github` 안에만 있다.
+- GitHub 쓰기 호출 없음 — GitHub 원본(이슈 · PR · 코멘트 · 라벨 등)을 바꾸는 GitHub API 호출이 없다 (CON-02). OAuth 코드 교환 · 설치 토큰 발급 같은 인증 요청과 앱 서버 자체 API의 쓰기는 위반이 아니다. GitHub API 호출은 `adapters/github` 안에만 있다.
 - 사람별 합계·순위 필드 없음 — 응답 DTO와 화면에 사람별 투표 합계, 활동량 합계, 순위, 사람 간 비교가 없다 (FR-FLOW-06, FR-LRN-09). 개인 지표는 본인 요청에만 나간다 (NFR-06).
 
 각 finding은:

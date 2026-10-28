@@ -20,7 +20,12 @@ git switch develop
 git pull --ff-only origin develop
 ```
 
-TODO(스택 확인 후): 의존성 설치와 개발 서버 실행 명령 — [PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md). 화면 작업은 `DATA_SOURCE=fake` 로 GitHub 없이 한다(환경 변수 가이드 「환경별 설정」).
+```bash
+npm install
+npm run dev:all      # 화면 :5173 + API :8787. 서버 데이터는 http://localhost:5173/?source=api
+```
+
+명령의 뜻과 선행 조건은 [PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md). 화면 작업은 GitHub 없이 한다 — 브라우저 mock(`?source=` 없음) 또는 서버 데이터(환경 변수 가이드 「환경별 설정」). 명령은 기존 데모 저장소 기준이고, 이 문서를 쓰면서 실행해 보지는 않았다.
 
 ## 담당 표
 
@@ -28,27 +33,53 @@ TODO(스택 확인 후): 의존성 설치와 개발 서버 실행 명령 — [PR
 
 | 화면 | 디자인 줄 | route | 묶음 | 이슈 | 담당 | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
-| 로그인 — FR-AUTH-01 | TODO | TODO(스택 확인 후) | TODO | TODO | D · TODO: 이름 | 시작 전 |
-| 조직·레포 선택 — FR-GH-01 | TODO | TODO(스택 확인 후) | TODO | TODO | D · TODO: 이름 | 시작 전 |
-| 사무실 열기 (팀장) — FR-REQ-01, FR-PLAN-01 | TODO | TODO(스택 확인 후) | TODO | TODO | D · TODO: 이름 | 시작 전 |
-| 수집 동의 (팀원) — [제안] FR-ACT | TODO | TODO(스택 확인 후) | TODO | TODO | D · TODO: 이름 | 시작 전 |
-| 3D 사무실 (메인) — FR-OFF-01~06, FR-FLOW-02, [제안] FR-LRN-03 · 04 | TODO | TODO(스택 확인 후) | TODO | TODO | D · TODO: 이름 | 시작 전 |
-| [제안] 2D 팀 보드 — 대응 요구사항 ID 없음 (기획안 "(제안)" · requirements-changes.md 추가 제안 후보 10) | TODO | TODO(스택 확인 후) | TODO | TODO | D · TODO: 이름 | 시작 전 |
-| 상단 바 — FR-PLAN-01, FR-FLOW-05, FR-GH-05, FR-REQ-05(진행률), [제안] FR-ACT 안내 | TODO | TODO(스택 확인 후) | TODO | TODO | D · TODO: 이름 | 시작 전 |
-| 상세 패널 — FR-OFF-05, [제안] FR-LRN-01 | TODO | TODO(스택 확인 후) | TODO | TODO | D · TODO: 이름 | 시작 전 |
-| 요구사항 패널 — FR-REQ-03~06 | TODO | TODO(스택 확인 후) | TODO | TODO | D · TODO: 이름 | 시작 전 |
-| 활동 기록 — [제안] FR-ACT-01~04 | TODO | TODO(스택 확인 후) | TODO | TODO | D · TODO: 이름 | 시작 전 |
-| 스탠드업·회의 — FR-MTG-01~05, [제안] FR-LRN-05 · 12 | TODO | TODO(스택 확인 후) | TODO | TODO | D · TODO: 이름 | 시작 전 |
-| 일정판 — FR-PLAN-02~04 | TODO | TODO(스택 확인 후) | TODO | TODO | D · TODO: 이름 | 시작 전 |
-| 내 습관 체크 — FR-HAB | TODO | TODO(스택 확인 후) | TODO | TODO | D · TODO: 이름 | 시작 전 |
-| 내 학습 타임라인 — [제안] FR-LRN-08 | TODO | TODO(스택 확인 후) | TODO | TODO | D · TODO: 이름 | 시작 전 |
-| 회고 리포트 — FR-REP-01~06, [제안] FR-REP-07, [제안] FR-ACT-03 | TODO | TODO(스택 확인 후) | TODO | TODO | D · TODO: 이름 | 시작 전 |
+| 로그인 — FR-AUTH-01 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
+| 조직·레포 선택 — FR-GH-01 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
+| 사무실 열기 (팀장) — FR-REQ-01, FR-PLAN-01 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
+| 수집 동의 (팀원) — [제안] FR-ACT | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
+| 3D 사무실 (메인) — FR-OFF-01~06, FR-FLOW-02, [제안] FR-LRN-03 · 04 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
+| [제안] 2D 팀 보드 — 대응 요구사항 ID 없음 (기획안 "(제안)" · requirements-changes.md 추가 제안 후보 10) | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
+| 상단 바 — FR-PLAN-01, FR-FLOW-05, FR-GH-05, FR-REQ-05(진행률), [제안] FR-ACT 안내 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
+| 상세 패널 — FR-OFF-05, [제안] FR-LRN-01 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
+| 요구사항 패널 — FR-REQ-03~06 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
+| 활동 기록 — [제안] FR-ACT-01~04 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
+| 스탠드업·회의 — FR-MTG-01~05, [제안] FR-LRN-05 · 12 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
+| 일정판 — FR-PLAN-02~04 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
+| 내 습관 체크 — FR-HAB | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
+| 내 학습 타임라인 — [제안] FR-LRN-08 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
+| 회고 리포트 — FR-REP-01~06, [제안] FR-REP-07, [제안] FR-ACT-03 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
 
 **묶음**: TODO — 팀 회의에서 정한다.
 
+**route**: 기존 데모에는 URL 라우터가 없다. 한 페이지 위에 3D 장면과 HUD(상단 바 · 오른쪽 패널 탭 · 대화상자)를 겹쳐 쓰고, 주소에는 `?source=api`만 있다. 로그인 · 조직·레포 선택처럼 사무실 밖 화면을 라우터로 나눌지, 대화상자 · 패널로 만들지는 결정 필요다(07-screens.md는 URL을 정하지 않는다).
+
+### 기존 데모 코드와의 대응
+
+기존 3D 데모(`SamdoRyu/warehouseDemo_fork`)의 화면 코드를 읽어 정리했다(2026-10-28, 실행은 안 함). 경로는 데모 저장소 기준이다. 화면 쪽 상세는 07-screens.md 「기존 데모 화면과의 대응」, 3D 부품별 판정은 ARCHITECTURE.md 「기존 데모 재사용 범위」.
+
+| 화면 | 기존 컴포넌트 · 경로 | 판정 | 수정 핵심 | 선행 데이터 (backend) |
+| --- | --- | --- | --- | --- |
+| 로그인 | 없음 | 신규 | GitHub 로그인 버튼 · 실패 상태. 대화상자 틀은 `src/ui/Dialogs.tsx` `Modal` 재사용 가능 | B1 |
+| 조직·레포 선택 | 없음 | 신규 | 조직 · 레포 목록, 승인 요청 안내 | B1 · B2 |
+| 사무실 열기 (팀장) | 없음 | 신규 | 레포 · 기간 · 명세 문서 경로 입력 | B2 · B6 · B12 |
+| [제안] 수집 동의 (팀원) | 없음 | 신규 · 채택 전 착수 안 함 | — | [제안] B10 |
+| **3D 사무실 (메인)** — 수정 규모 큼 | `src/scene/OfficeScene.tsx` · `TaskBox.tsx` · `TaskBoxes.tsx` · `slots.ts` · `MeetingRoomState.tsx` · `DragLayer.tsx` · `dropTarget.ts` · `Avatar.tsx` · `Overlays.tsx` · `src/office/layout.ts` | 수정 · 확장 | 공간 · 책상 · 아바타 · 카메라 · 이동 애니메이션은 재사용. PR 삼각기둥 등 새 도형, 요구사항 구역 · 진행률, 검토 영역 위치, 드래그 대상 변경(담당 · 상태 → 구역 연결 · 회의실), 사람별 업무량 표현(신호 다이아 · 업무량 원판 · 기울기) 제거 | B2 · B4 · B6 · B7 · [제안] B9 |
+| [제안] 2D 팀 보드 | 비슷한 것: `src/ui/KanbanView.tsx` · `ListView.tsx`(작업 목록) | 신규 · 채택 전 착수 안 함 | 안건 아이콘 · 게시판 영역 | [제안] B9 |
+| 상단 바 | `src/ui/TopBar.tsx` | 수정 | KPI · 균형 칩(가장 바쁜 팀원) 대신 요구사항 진행률 · 열린 PR 수 · 평균 리뷰 대기 · 동기화 상태. 레포 드롭다운 · D-day 신규. 오버레이 전환은 정보 뷰 전환으로 | B2 · B6 · B7 · B12 |
+| 상세 패널 | `src/ui/Detail.tsx` · `src/ui/RightPanel.tsx` | 수정 | 편집 입력(상태 · 우선순위 · 포인트 · 담당 · 마감)을 읽기 전용과 GitHub 링크로. 연결 PR · 리뷰 상태 추가. 팀원 상세의 업무량 게이지(`Vitals`) 제거. [제안] 투표 버튼 | B2 · B4 · [제안] B9 |
+| 요구사항 패널 | 없음 — `RightPanel.tsx`의 탭 구조 재사용 | 신규 | 요구사항 목록 · 진행률 · 빈틈 · 연결 후보 | B6 |
+| [제안] 활동 기록 | 없음 — `src/ui/ActivityFeed.tsx`는 데이터 변경 로그라 다른 기능 | 신규 · 채택 전 착수 안 함 | — | [제안] B10 |
+| 스탠드업·회의 | `src/ui/MeetingDialogs.tsx`(회의 시작 · 종료 · 회의록) · `src/scene/MeetingRoomState.tsx` | 수정 · 확장 | 회의 종료 결과(담당 지정 · 상태 변경 · 백로그)를 결정 · 배운 점 기록으로. 스탠드업 화면은 신규 | B12 · [제안] B9 |
+| 일정판 | `src/ui/WeekView.tsx`(팀원 × 날짜 그리드) | 수정 | 칸 · 행의 포인트 합계와 팀원별 업무량 막대 제거, 드래그로 마감일 바꾸기 제거(GitHub 원본). 마감 데이터 출처는 [?] | B12 |
+| 내 습관 체크 | 없음 | 신규 | — | B8 |
+| [제안] 내 학습 타임라인 | 없음 | 신규 · 채택 전 착수 안 함 | — | [제안] B9 |
+| 회고 리포트 | 없음 — 회의록(`MeetingHistoryDialog`)이 가장 가깝다 | 신규 | 리포트 · 마크다운 내보내기 | B11 |
+
+v1 화면 목록에 없는 기존 화면 — `src/ui/TeamView.tsx`(팀원별 업무량 카드), `src/ui/Suggestions.tsx`(업무 재배정 추천), `src/ui/KanbanView.tsx` · `ListView.tsx` · `FilterBar.tsx`(작업 편집 · 목록), 작업 · 팀원 만들기 대화상자(`src/ui/Dialogs.tsx`) — 는 사람별 비교이거나 GitHub 원본을 바꾸는 기능이라 빼거나 다른 용도로 바꾼다. 무엇을 남길지는 결정 필요.
+
 화면에 붙은 요구사항 ID는 기획안 「화면 구성」 표의 "관련 요구사항" 열을 바탕으로 07-screens.md 「화면 목록」과 맞췄다. [제안]이 붙은 화면 · 요소는 requirements-changes.md에서 "검토 중"인 요구사항에 기대므로 채택 전에는 착수하지 않는다. 사무실 열기의 수집 동의와 3D 사무실의 투표 · 회의실 · 게시판 도움 요청도 같은 [제안] 부분이다(07-screens.md).
 
-**담당 쏠림**: 기획안 「역할 분담」대로면 화면 15개를 모두 D 한 명이 맡는다. 역할 조정은 팀이 정한다.
+**담당 쏠림**: 기획안 「역할 분담」대로면 화면 15개를 모두 D 한 명이 맡는다. 기존 코드를 재사용해도 쏠림은 크게 줄지 않는다 — 15개 중 기존 코드를 고쳐 쓰는 화면은 5개(3D 사무실 · 상단 바 · 상세 패널 · 스탠드업·회의 · 일정판)이고 나머지 10개는 신규다(그중 4개는 [제안]이라 채택 전 착수 안 함 → 확정 신규 6개). 게다가 가장 큰 3D 사무실은 재사용 화면이지만 수정 범위가 넓다. 로그인 · 조직·레포 선택처럼 B1 · B2와 붙어 있는 화면, 스탠드업 · 일정판처럼 B12와 붙어 있는 화면을 어떻게 나눌지 포함해 역할 조정은 팀이 정한다.
 
 ### 시작 순서
 
@@ -62,16 +93,17 @@ TODO(스택 확인 후): 의존성 설치와 개발 서버 실행 명령 — [PR
 
 ### 마음껏 건드려도 되는 곳
 
-TODO(스택 확인 후): 자기 화면 폴더 경로. 그 화면에서만 쓰는 조각은 같은 폴더에 둔다.
+기존 데모는 화면별 폴더가 없고 `src/ui/`(HUD) · `src/scene/`(3D)에 파일을 나란히 둔다. 새 화면은 자기 파일(예: `src/ui/<화면이름>.tsx`)과 그 화면 전용 CSS에서 작업한다. 화면별 폴더를 만들지는 결정 필요 — 폴더 구조 전면 변경은 하지 않는다.
 
 ### 건드리기 전에 말해야 하는 곳
 
 | 파일 | 왜 |
 | --- | --- |
-| 공용 컴포넌트(상단 바 · 상세 패널 · 도형 5종 · 정보 뷰) | 여러 화면이 쓴다. 수정은 **별도 PR** 로 분리하고 먼저 공유한다. 경로는 TODO(스택 확인 후) |
-| 기존 3D 팀 오피스의 3D 표현 코드 | 재사용 대상이다. 새 모델링은 하지 않는다(기획안 「기능 동결 규칙」) |
-| 의존성 목록 파일 | 라이브러리 추가는 사전 합의(`.claude/rules/security.md`) |
-| TODO(스택 확인 후) | 레이아웃 · 설정 파일처럼 전원이 공유하는 파일 |
+| 공용 컴포넌트(상단 바 · 상세 패널 · 도형 5종 · 정보 뷰) | 여러 화면이 쓴다. 수정은 **별도 PR** 로 분리하고 먼저 공유한다. 경로는 `src/ui/TopBar.tsx` · `src/ui/Detail.tsx` · `src/scene/TaskBox.tsx`(도형) · `src/scene/shared.tsx`(공용 도형 · 재질) · `src/scene/Overlays.tsx`(정보 뷰 틀) |
+| 계약 파일 — `src/data/types.ts` · `src/data/DataSource.ts` · `src/store.ts` · `src/office/layout.ts` · `src/data/selectors.ts` · `src/data/insights.ts` | 화면 · 서버 · mock이 함께 기댄다. 데모의 `CLAUDE.md`도 이 파일들을 계약 파일로 묶어 둔다. 바꾸려면 B · C와 먼저 합의한다 |
+| 기존 3D 팀 오피스의 3D 표현 코드(`src/scene/`) | 재사용 대상이다. 새 모델링은 하지 않는다(기획안 「기능 동결 규칙」) |
+| 의존성 목록 파일(`package.json` · `package-lock.json`) | 라이브러리 추가는 사전 합의(`.claude/rules/security.md`) |
+| `src/App.tsx` · `src/ui/Hud.tsx` · `src/ui/RightPanel.tsx` · `src/ui/uiState.ts` · `src/index.css` · `vite.config.ts` · `tsconfig*.json` | 전원이 공유하는 레이아웃 · 설정 |
 
 ### 인증은 화면 작업이 아니다
 
@@ -101,7 +133,7 @@ PR base 는 `develop` 이다. PR 에는 `Refs #<이슈번호>` 와 "관련 요�
 - [ ] 07-screens.md 「모든 화면 공통 인수 조건」 1 · 2와 「공통 상태」 표 (지금은 초안 — 팀이 확인하면 이 줄의 "초안"을 지운다)
 - [ ] 팀원 간 순위 · 비교 화면이 없고, 개인 지표(습관 체크 · 학습 타임라인 · 회고 리포트)는 본인 화면에만 보인다 (FR-FLOW-06 · NFR-06)
 - [ ] 막힘 표시에는 이유 문구가 붙는다 (FR-FLOW-02)
-- [ ] TODO(스택 확인 후): lint · build 통과 명령
+- [ ] `npm run lint` · `npm run build`(타입 검사 · 3D lazy 번들 검사 포함) · `npm run test:contract`를 돌린 결과를 PR 「검증」에 적는다. 3D를 바꿨으면 `npm run test:e2e`도 돌린다(Chrome 필요)
 
 ## 알려진 문서 ↔ 디자인 차이
 

@@ -103,7 +103,18 @@
 | 마지막 사무실 저장 위치 | 07-screens.md 화면 목록 · 로그인 | 팀 |
 | 로그인 실패 시 보이는 것 · 도착 화면 | 07-screens.md 공통 상태 · 흐름표 · 04 F1 | 팀 |
 | 디자인 원본 5칸(공유 링크 · 채점표 6칸 · 동작 메모 ↔ F · P 대응표 · 받은 댓글 · Claude Code 로 잇는 프롬프트) | 07-screens.md 디자인 | 팀 |
-| 레포 권한을 어느 자격 증명으로 조회하고, GitHub에서 권한이 바뀌면 언제 역할을 다시 확인하나 | ARCHITECTURE.md 「인증」 | B 연동 백엔드 — 스택 확인 후 |
+| 레포 권한을 어느 자격 증명으로 조회하고, GitHub에서 권한이 바뀌면 언제 역할을 다시 확인하나 | ARCHITECTURE.md 「인증과 권한」 | B 연동 백엔드 — B1 착수 전 |
+| 실제 개발 저장소 — 데모 fork(`warehouseDemo_fork`, Issues 꺼짐)를 쓰나, 조직 레포로 옮기나 | ARCHITECTURE.md 「두 저장소」 · Git 전략 「9」 · PROJECT_COMMANDS.md | 팀 — 1일차 (이슈를 만들기 전) |
+| Node 버전 고정(권장 Node 24 LTS, 최소 22.13) | ARCHITECTURE.md 「기술 스택」 · PROJECT_COMMANDS.md | 팀 — 1일차 |
+| 부트캠프 기술 조건(HTML · CSS · JS)에 React · TypeScript · Three.js 사용이 별도 평가 기준과 맞는가 | ARCHITECTURE.md 「기술 스택」 | 기획 담당(A) — 운영진 확인 |
+| 데이터 소스 두 층 — 화면 시연을 브라우저 mock으로 하나, 서버 `DATA_SOURCE=fake`로 하나 · `local` 어댑터의 뜻 | ARCHITECTURE.md 「데이터 소스는 두 층이다」 · 환경 변수 가이드 「3」 | B 연동 백엔드 · D — 2차 단계 착수 전 |
+| 에러 응답 code 표기(기존 소문자 `invalid` 등 ↔ 기획 대문자 `VALIDATION_FAILED` 등). 바깥 모양은 기존 유지 권장 | ARCHITECTURE.md 「에러 응답 형식」 · 코드 컨벤션(BE) | 팀 — 새 API 착수 전 |
+| 기존 작업 필드 중 GitHub에 없는 값(우선순위 · 포인트 · 프로젝트 · 마감)과 담당자 여러 명 · `in_progress` 판단 기준 | 06-data.md 「기존 데모 데이터와의 대응」 | 팀 — 2차 단계 착수 전 |
+| 사람별 업무량 · 포인트 표현(팀원 탭 · 추천 · 업무량 오버레이 · 아바타 신호 등)을 빼는 범위와 남길 기존 화면 | ARCHITECTURE.md 「사람별 비교 표현 — 제거 대상」 · SCREEN_ASSIGNMENTS.md · 07 「기존 데모 화면과의 대응」 | 팀 |
+| DB 경로 변수(`DATABASE_URL` ↔ SQLite 파일 경로) · 저장 방식(JSON blob 유지 ↔ 열 분리) · 마이그레이션 방식 | 환경 변수 가이드 「3」 · ARCHITECTURE.md 「저장소 (SQLite)」 · PROJECT_COMMANDS.md | B · C — 저장 항목 추가 전 |
+| 시범 서버의 바인딩 주소 · 허용 출처 · 정적 파일 서빙(지금은 127.0.0.1 · localhost 전용, 서버는 `/api`만) | ARCHITECTURE.md 「인증과 권한」 · 「렌더링 방식」 · 환경 변수 가이드 「3」 | 팀 — TBD-09와 함께 |
+| 사무실 밖 화면(로그인 · 조직·레포 선택 등)을 라우터로 나누나, 대화상자 · 패널로 만드나 | SCREEN_ASSIGNMENTS.md 「담당 표」 route | D — 화면 착수 전 |
+| 회의 결과로 담당 · 상태를 바꾸던 기존 회의 종료 흐름과 데모 봇을 v1에서 어떻게 바꾸나 | ARCHITECTURE.md 「DataSource 인터페이스에서 바꿀 것」 · 06 「그 밖의 기존 모델」 | 팀 |
 | 스탠드업 "어제 한 일"의 "어제" 기준 시각 | 03 「원본 확인 필요 요구사항」 FR-MTG-01 · 04 F9 | 팀 (정의서 원문 확인 후) |
 
 > 각 문서 본문의 [?] 는 그 자리에 그대로 두고, 여기에는 질문마다 한 줄로 모은다. 같은 질문이 여러 문서에 나오면 한 줄로 합친다. 문서별 개수는 세지 않는다.

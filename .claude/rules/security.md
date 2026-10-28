@@ -13,5 +13,5 @@
 ## GitHub 연동
 
 - GitHub 토큰은 읽기 전용 최소 권한으로 발급하고, 서버에만 둔다. 브라우저로 내보내지 않는다 (NFR-04).
-- GitHub API에 POST, PATCH, PUT, DELETE를 보내지 않는다. 앱은 GitHub를 읽기만 한다 (CON-02).
+- GitHub 원본(이슈 · PR · 코멘트 · 라벨 등)을 바꾸는 GitHub API 호출을 보내지 않는다. 앱은 GitHub를 읽기만 한다 (CON-02). OAuth 코드 교환 · GitHub App 설치 토큰 발급 같은 인증 요청과 앱 서버 자체 API의 쓰기는 별개다 (docs/ARCHITECTURE.md 「GitHub 읽기 전용 원칙」).
 - GitHub App 키 파일(`*.pem`)은 `secrets/`에만 둔다. 다른 경로에 두거나 커밋하지 않는다.

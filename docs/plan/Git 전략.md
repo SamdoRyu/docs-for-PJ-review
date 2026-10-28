@@ -201,7 +201,7 @@ feat(sync): 레포 변경분 5분 폴링 추가 (#24)    ← squash merge 후 de
 | GitHub 리뷰 승인 2명, 그리고 리뷰어가 PR 「검증」에 적힌 실제 명령과 결과를 확인 | 이슈 PR은 squash merge | 다음 날 스탠드업에서 안건으로 다룸 |
 
 - **CI는 아직 검증이 아닙니다.** 지금 `.github/workflows/ci.yml`은 lint·test·build 대신 `echo` 한 줄만 돌려서 항상 통과합니다. CI 초록 표시를 검증으로 세지 않고, 리뷰어가 「검증」 칸을 직접 확인합니다.
-- 스택이 정해져 CI에 실제 lint·test·build 단계가 들어가면 "CI 통과"를 머지 조건에 더합니다.
+- 개발 레포 CI에 실제 lint·test·build 단계(`docs/PROJECT_COMMANDS.md`)가 들어가면 "CI 통과"를 머지 조건에 더합니다.
 - 브랜치 보호 규칙이 켜지기 전까지 "승인 2명"은 GitHub이 막아 주지 않는 팀 약속입니다. 머지하는 사람이 승인 수를 직접 확인합니다. → 「9」 GitHub 설정
 
 ### 예정: 앱의 투표 기능을 쓰게 된 뒤
@@ -273,18 +273,22 @@ feat(sync): 레포 변경분 5분 폴링 추가 (#24)    ← squash merge 후 de
 | 11 | 이슈에 요구사항 ID를 적는 위치 | 템플릿의 「요구사항 ID」 칸 | 기획안 「개발 원칙」은 "이슈 제목이나 라벨" |
 | 12 | 회고 리포트에서 영역 라벨을 부르는 이름 | 기능 영역 | FR-REP-01, `docs/requirements-changes.md` 6절 |
 | 13 | GitHub 기본 라벨(`enhancement`, `documentation` 등)을 지울지 | 정하지 않음 | 종류 라벨과 헷갈릴 수 있음 |
+| 14 | 실제 개발 레포 — 3D 데모 fork(`SamdoRyu/warehouseDemo_fork`)를 그대로 쓸지, 조직 레포로 옮길지 | 정하지 않음 | fork는 Issues가 기본으로 꺼져 있다. 앱이 "우리 조 조직 안의 레포"를 읽는다는 조건(ASM-02)과 함께 정한다 |
 
 ### GitHub에서 설정할 것
 
-아래 "현재 상태"는 2026-10-28에 템플릿을 둔 레포(`SamdoRyu/docs-for-PJ-review`)에서 읽기 전용으로 확인한 내용입니다. 팀 개발 레포가 따로 있으면 그 레포에서 다시 확인하고, `.github/` 템플릿과 워크플로도 그 레포에 같이 옮깁니다.
+**두 저장소를 구분합니다.** 문서 레포(`SamdoRyu/docs-for-PJ-review`)에는 기획 문서와 Issue·PR 템플릿 초안이 있고, 실제 개발은 3D 데모 기반 레포에서 합니다. 문서 레포에 적용한 설정이 개발 레포에 적용되어 있다고 가정하지 않습니다. 아래 "현재 상태"는 2026-10-28에 두 레포를 읽기 전용으로 확인한 내용이고, 개발 레포가 확정되면(위 표 14번) 그 레포에서 다시 확인합니다.
 
-| 설정 | 현재 상태 | 할 일 |
-| --- | --- | --- |
-| `develop` 브랜치 | 없음 (`main`만 있음) | `main`에서 만든다 |
-| `main` 보호 규칙 | 없음 (ruleset도 없음) | PR 필수, 직접 push·force push·삭제 금지 |
-| `develop` 보호 규칙 | 브랜치 없음 | PR 필수, 직접 push·force push·삭제 금지, 필수 승인 2명 (투표 전환 전 규칙 기준) |
-| 머지 방식 | squash, merge commit, rebase 모두 허용 | rebase merge를 끈다. squash(이슈 PR)와 merge commit(승격·동기화)은 둘 다 필요하므로 머지할 때 방식을 확인한다 |
-| 머지 후 브랜치 자동 삭제 | 꺼짐 | Automatically delete head branches를 켠다 |
-| 라벨 | GitHub 기본 라벨만 있음 (`bug`만 일치) | `.github/labels.yml`대로 `feature`, `chore`, `area:*` 10개를 만든다 |
-| CI | placeholder (`echo` 한 줄, 항상 통과) | 스택이 정해지면 lint·test·build 단계를 채우고, 그 뒤 보호 규칙의 필수 status check로 등록한다 |
-| 빈 이슈 차단 | 적용됨 (`config.yml`) | 개발 레포에도 같은 파일을 둔다 |
+| 설정 | 문서 레포 현재 상태 | 개발 레포 후보(`warehouseDemo_fork`) 현재 상태 | 할 일 (개발 레포) |
+| --- | --- | --- | --- |
+| Issues 기능 | 켜짐 | **꺼짐** (fork 기본값) | 켠다. 꺼져 있으면 이슈를 만들 수 없다 |
+| `develop` 브랜치 | 없음 (`main`만 있음) | 없음 (`main`만 있음) | `main`에서 만든다 |
+| `main` 보호 규칙 | 없음 (ruleset도 없음) | 없음 (ruleset도 없음) | PR 필수, 직접 push·force push·삭제 금지 |
+| `develop` 보호 규칙 | 브랜치 없음 | 브랜치 없음 | PR 필수, 직접 push·force push·삭제 금지, 필수 승인 2명 (투표 전환 전 규칙 기준) |
+| 머지 방식 | squash, merge commit, rebase 모두 허용 | 같음 | rebase merge를 끈다. squash(이슈 PR)와 merge commit(승격·동기화)은 둘 다 필요하므로 머지할 때 방식을 확인한다 |
+| 머지 후 브랜치 자동 삭제 | 꺼짐 | 꺼짐 | Automatically delete head branches를 켠다 |
+| Issue·PR 템플릿 (`.github/`) | 있음 | **없음** (`.github/` 폴더 자체가 없음) | 문서 레포의 `.github/ISSUE_TEMPLATE/`, `PULL_REQUEST_TEMPLATE.md`, `labels.yml`을 옮긴다 |
+| 빈 이슈 차단 | 적용됨 (`config.yml`) | 없음 | 위 템플릿과 함께 `config.yml`을 옮긴다 |
+| 라벨 | GitHub 기본 라벨만 있음 (`bug`만 일치) | 같음 | `.github/labels.yml`대로 `feature`, `chore`, `area:*` 10개를 만든다 |
+| CI | placeholder (`echo` 한 줄, 항상 통과) | **없음** (`.github/workflows/` 없음) | `npm run lint`, `npm run build`, `npm run test:contract`로 채운다(`docs/PROJECT_COMMANDS.md`). 그 뒤 보호 규칙의 필수 status check로 등록한다 |
+| `.gitignore`의 비밀 파일 | 해당 없음 | `.env`, `*.pem`, `secrets/`가 없음 (`*.local`만) | GitHub App 값을 받기 전에 추가한다(환경 변수 가이드) |

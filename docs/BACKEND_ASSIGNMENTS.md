@@ -45,10 +45,47 @@ MVP backend 구현 Issue 의 담당·상태 표다. 화면 구현은 [SCREEN_ASS
 - **도움 요청 생애주기**(게시판 작성 · 코멘트 · 닫기 · 안건 전환)는 요구사항 ID가 없어 담당 기호도 없다(requirements-changes.md 「5. 추가 제안 후보」). 채택되면 B9에 넣을지 따로 둘지 정한다.
 - **담당 쏠림**: C 도메인 백엔드가 B6~B11 여섯 묶음을 맡는다. 00-backlog.md 「일정 · 의존성 점검」 기준 이슈 후보 50개 중 32개다. 역할 조정은 팀이 정한다.
 
+## 기존 코드에서 손댈 곳
+
+기존 3D 데모(`SamdoRyu/warehouseDemo_fork`)의 서버 코드를 읽어 정리했다(2026-10-28, 실행은 안 함). 경로는 데모 저장소 기준이고, "(신규)" 경로는 ARCHITECTURE.md 「모듈 이름과 실제 경로」의 권장안이라 아직 없다. 구조 설명은 ARCHITECTURE.md를 본다.
+
+**지금 서버에 있는 것**: Hono 라우트(`server/src/routes.ts` — 작업 · 팀원 CRUD, 회의 시작 · 종료, 데모, 초기화, SSE), 저장(`repo.ts` · `db.ts` — SQLite JSON blob, 트랜잭션), SSE 허브(`events.ts`), 데모 봇(`bot/index.ts`), 요청 위생 미들웨어. **없는 것**: 로그인 · 세션 · 권한 검사, GitHub 연동, PR · 요구사항 · 투표 · 스탠드업 · 회고 리포트.
+
+### B와 C의 경계
+
+| 영역 | B 연동 백엔드 | C 도메인 백엔드 |
+| --- | --- | --- |
+| GitHub App 인증 · 권한 검증 | 로그인 · 세션 · 역할 판정 · 요청별 검사 미들웨어 | 역할 검사를 자기 라우트에 붙인다 |
+| GitHub 폴링 · 변환 | GitHub 원본을 읽어 앱 모델(`Task` · `Submission`)로 바꿔 저장, 동기화 상태 | 변환된 앱 모델만 쓴다 — GitHub 원본 모양을 보지 않는다 |
+| DataSource 연동 | 브라우저 `DataSource`(`src/data/DataSource.ts`)의 읽기 경로와 서버 원천 선택 | 앱 자체 기록의 쓰기 메서드(요구사항 연결 · 회의 · 안건 …)를 인터페이스에 더한다 |
+| Hono API 확장 | 인증 · 동기화 · 레포 등록 라우트 | 요구사항 · 막힘 · 습관 · 회의 · 리포트 라우트 |
+| SQLite 저장 항목 | 팀 설정 · 동기화 상태 · GitHub에서 온 앱 모델 | 요구사항 연결 · 회의 안건 · 스탠드업 · 회고 리포트 · [제안] 투표 |
+| 업무 흐름 · 막힘 계산 | — | `core`(`src/data/rules/`)의 순수 규칙 |
+
+인터페이스(`src/data/types.ts` · `DataSource.ts`)와 저장 방식(`repo.ts`의 테이블 구성)은 B와 C가 함께 쓰는 계약이다. 바꿀 때는 둘이 먼저 합의하고 별도 PR로 낸다.
+
+### 기호별 수정 지점
+
+| 기호 | 기존 코드에서 고칠 곳 | 새로 만들 곳 (신규) | 메모 |
+| --- | --- | --- | --- |
+| B1 계정·권한 | `server/src/routes.ts` 미들웨어(인증 · 역할 검사 추가), `server/src/app.ts`(조립) | `server/src/auth/` — GitHub 로그인 · 콜백 · 세션 · 현재 사용자 · 역할 판정. GitHub 호출(코드 교환 · 권한 조회)은 B2의 `adapters/github` 함수를 거친다 | 지금 인증이 전혀 없다. `X-Actor` 헤더는 데모 봇 표시용이라 인증으로 쓰지 않는다. 역할 재확인 시점은 여기서 정한다(ARCHITECTURE.md 「인증과 권한」) |
+| B2 GitHub 연동 · 동기화 | `server/src/app.ts`(폴링 시작 · 종료), `server/src/events.ts`(동기화 결과를 SSE로 알림) | `server/src/adapters/github/` — 설치 토큰, 이슈 · PR · 리뷰 · 커밋 · 라벨 · 참여자 읽기, 앱 모델 변환, 변경분 조회, 실패 기록 | 폴링(GitHub → 서버)과 SSE(서버 → 브라우저)는 다른 일이다. GitHub 원본을 바꾸는 호출은 만들지 않는다(CON-02) |
+| B3 데이터 어댑터 | `src/data/DataSource.ts` · `src/App.tsx`(`?source=` 선택) · `src/data/mock/` · `src/data/api/` | 서버 쪽 원천 선택(`DATA_SOURCE` 도입 시) | 데이터 소스가 브라우저 · 서버 두 층이다 — 결정 필요(ARCHITECTURE.md 「데이터 소스는 두 층이다」). Task · Member CRUD 메서드는 변경 대상 |
+| B4 PR 상태 동기화 | `src/data/types.ts`(PR 모델 추가 — C · D와 합의), `src/scene/slots.ts` 위치 규칙은 D와 함께 | `adapters/github`의 PR 변환 | 지금 PR 모델이 없다. 검토 영역 위치도 없다 |
+| B5 보안 · 동기화 비기능 | `server/src/routes.ts` 요청 위생(Host · Origin 검사를 `APP_ORIGIN` 기준으로), `server/src/app.ts` 바인딩 주소(지금 `127.0.0.1` 고정) | 로그 마스킹, API 호출량 관리(NFR-10) | 데모 `.gitignore`에 `.env` · `*.pem` · `secrets/`가 없다 — 가장 먼저 추가 |
+| B6 요구사항 추적 | `src/data/types.ts` · `server/src/repo.ts` · `db.ts`(새 저장 항목) | 명세 문서 읽기 · 요구사항 · 요구사항–이슈 연결 저장 · 진행률 계산(`src/data/rules/`) | 형식은 TBD-01 |
+| B7 진행 · 막힘 | `src/data/selectors.ts` · `src/data/insights.ts` — 업무량 · 포인트 기반 계산(`workload`, `computeKpis`의 쏠림 · 가장 바쁜 팀원, `suggestActions`)은 사람별 비교라 제거 대상 | 막힘 계산(이유 문구 포함) · 팀 지표를 `src/data/rules/`에 | 기준값은 팩 · 레포 설정에서 읽는다 |
+| B8 협업 기본기 | — | 컨벤션 검사 규칙(`src/data/rules/`), 규칙 위반 계산 · 본인 응답 | 데모에 대응 코드가 없다 |
+| B9 [제안] PR 투표 · 안건 | `src/data/rules/meetings.ts` · `server/src/repo.ts`의 회의 · 안건(`Task.onAgenda` → `AgendaItem`) | 투표 저장 · 판정 | **채택 전 착수 안 함.** 안건 기본 구조(FR-MTG-03 · 04)는 B12와 경계를 정한다 |
+| B10 [제안] 활동 기록 | — | 활동 기록 · 동료 피드백 저장 | 데모의 `Activity`(변경 로그)와 이름이 겹친다 — 다른 이름을 쓴다 |
+| B11 회고 리포트 | — | 리포트 생성 · 마크다운 내보내기 · [제안] 카드 조립 | 데모에 대응 코드가 없다. 회의록 화면(`MeetingHistoryDialog`)이 가장 가깝다 |
+| B12 회의 · 스탠드업 · 일정판 | `server/src/routes.ts` `/api/meetings` · `src/data/rules/meetings.ts` — 회의 결과(담당 지정 · 상태 변경 · 백로그)는 GitHub 원본을 바꾸므로 결정 · 배운 점 기록으로 바뀐다 | 스탠드업 저장, 일정판 데이터 | **담당 미정** 그대로다. 마감 데이터 출처는 [?](06-data.md 「일정판 마감」) |
+
 ## 지금 상태 (2026-10-28 snapshot)
 
 - **GitHub Issue 가 아직 없다.** Must 이슈 후보는 [00-backlog.md](./00-backlog.md) 「이슈 백로그 (Must)」에 있다.
-- 기존 3D 팀 오피스 코드와 DataSource 구조는 1~2일차에 4명이 함께 파악한다(기획안 「역할 분담」). 그 전에는 가짜 어댑터로 먼저 화면을 띄운다(기획안 「리스크 및 대응 방안」).
+- 기존 3D 팀 오피스 코드와 DataSource 구조는 1~2일차에 4명이 함께 파악한다(기획안 「역할 분담」). 2026-10-28에 소스를 읽어 위 「기존 코드에서 손댈 곳」과 ARCHITECTURE.md를 채웠지만 **실행 확인은 아직이다** — 1~2일차에 실제로 띄워 보고 재사용 범위를 확정한다. 그 전에는 가짜 어댑터(브라우저 mock)로 먼저 화면을 띄운다(기획안 「리스크 및 대응 방안」).
+- 실제 개발 저장소가 아직 정해지지 않았다. 데모 fork는 Issues가 꺼져 있어 그대로는 이슈를 만들 수 없다(Git 전략 「9」).
 - 5일차까지 우리 조 레포의 이슈가 기존 사무실에 상자로 뜨는 것이 첫 목표다(B1 · B2 · B3 · B4). 7일차 1차 데모에서는 요구사항 구역, 진행률(B6), PR 찬성·반대 투표(B9)까지 보여야 한다(기획안 「2주 개발 일정」). **B9는 [제안] FR-LRN에 기대므로, 7일차 데모 범위를 지키려면 FR-LRN-01~03 채택 여부가 1~2일차(B0)에 함께 정해져야 한다.** 10일차에 기능을 동결한다.
 - 이 절은 snapshot 이라 금방 낡는다. **현재 값은 각 Issue 본문에서 확인한다.**
 
