@@ -187,4 +187,4 @@
 | --- | --- |
 | Git 협업 규칙 8개 · 개발 레포 · Node · 에러 응답 · SQLite 저장 · 역할 재확인 · 영역 라벨 이름 | 반영함 — Git 전략, 코드 컨벤션 (BE), `.claude/rules/git-workflow.md` · `code-quality.md`, `.github/` 템플릿 |
 | 회의 뒤 추가 변경 (2026-10-28) | 브랜치 전략을 더 느슨하게 — `develop` · 승격 · hotfix 브랜치를 없애고 `main` + 작업 브랜치(squash)만 둠. 위 "승격 시점 · hotfix 키워드 · merge commit 검사" 결정은 해당 없어짐. PR은 `Closes #N`만 쓰고 FR-HAB-01의 `Refs #N` 수정안은 철회. 브랜치 이름은 `<type>/<이슈번호>-<slug>` 유지 |
-| 그 밖의 기획 결정 (FR-LRN · FR-HAB 채택, TBD-01 · 04 · 05 · 06 · 09, 투표 · 안건 · 도움 요청 · 팀 설정 등) | 아직 반영 안 함 — 고칠 문서 칸대로 반영 예정 |
+| 그 밖의 기획 결정 (FR-LRN · FR-HAB 채택, TBD-01 · 04 · 05 · 06 · 09, 투표 · 안건 · 도움 요청 · 팀 설정 등) | 반영함 — docs 전체(doc-editor, 점검표 `alignment-2026-10-28.md`)와 기획안 본문 · 「변경 이력」 |
