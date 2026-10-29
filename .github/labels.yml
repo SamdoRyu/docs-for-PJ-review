@@ -35,7 +35,7 @@
   description: "진행·막힘 (FR-FLOW)"
 - name: "area:vote"
   color: "c5def5"
-  description: "PR 투표와 회의실 학습 (FR-LRN, 제안)"
+  description: "PR 평가와 회의실 학습 (FR-LRN)"
 - name: "area:habit"
   color: "c5def5"
   description: "협업 기본기·컨벤션 피드백 (FR-HAB)"

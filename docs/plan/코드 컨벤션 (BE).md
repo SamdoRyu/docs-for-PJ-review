@@ -32,7 +32,7 @@
 
 | code | HTTP | 언제 |
 | --- | --- | --- |
-| `invalid` | 400 (요청 위생 검사 실패는 403) | 입력 검증 실패. 이유 없는 반대 투표 등 — 기존 code |
+| `invalid` | 400 (요청 위생 검사 실패는 403) | 입력 검증 실패. 이유 없는 추천 · 비추천 평가 등 — 기존 code |
 | `not_found` | 404 | 대상 없음 — 기존 code |
 | `conflict` | 409 | 상태 충돌 — 기존 code |
 | `unavailable` | 503 | 서버 사용 불가 · 알 수 없는 오류 — 기존 code |
@@ -74,7 +74,7 @@
   | 명세 문서 · 요구사항 | `SpecDocument` · `Requirement` |
   | 제출(PR) | `Submission` (GitHub 원본 타입은 `GithubPullRequest`, 이슈는 `GithubIssue`) |
   | 요구사항–이슈 연결 | `RequirementLink` |
-  | 막힘 · 투표 · 회의 안건 · 스탠드업 | `Blocker` · `Vote`(`approve`, `reject`) · `AgendaItem` · `Standup` |
+  | 막힘 · PR 평가(추천 · 비추천) · 회의 안건 · 스탠드업 | `Blocker` · `Evaluation`(`recommend`, `not_recommend`) · `AgendaItem` · `Standup` |
   | 도움 요청 | `HelpRequest` |
   | 컨벤션 규칙 · 위반 | `ConventionRule` · `ConventionViolation` |
   | 회고 리포트 · 기술 결정 카드 | `RetroReport` · `DecisionCard` |
@@ -90,7 +90,7 @@
 
 ## 기준값
 
-- **팀 설정 화면에서 바꾸는 값**(프로젝트 기간, 막힘 기준 시간 — 기본 리뷰 대기 48시간 · 커밋 없음 48시간, 투표 기준 — 기본 3명 중 2표, 레포 관리자가 정함 · FR-LRN-03)은 `TeamSettings`에서 읽습니다.
+- **팀 설정 화면에서 바꾸는 값**(프로젝트 기간, 막힘 기준 시간 — 기본 리뷰 대기 48시간 · 커밋 없음 48시간)은 `TeamSettings`에서 읽습니다.
 - 그 밖의 숫자(PR 400줄, 폴링 5분, 도움 요청이 안건 후보가 되는 48시간 등)는 `src/data/rules/constants.ts`처럼 **상수 한 곳에 모아 두면 됩니다.** 코드 여기저기에 숫자를 직접 쓰지만 않으면 됩니다.
 
 ## 모듈 (권장)

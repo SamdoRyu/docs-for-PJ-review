@@ -29,6 +29,6 @@
 
 **저장**: 데모처럼 엔티티별 `(id, data JSON)` 테이블. 쓰기는 `mutate()` 안에서, SSE 알림은 커밋 뒤.
 
-**기준값**: 팀 설정 화면에서 바꾸는 값(프로젝트 기간, 막힘 기준 시간, 투표 기준)은 팀 설정에서 읽는다. 나머지 숫자는 `src/data/rules/constants.ts` 같은 상수 한 곳에 모은다.
+**기준값**: 팀 설정 화면에서 바꾸는 값(프로젝트 기간, 막힘 기준 시간)은 팀 설정에서 읽는다. 나머지 숫자는 `src/data/rules/constants.ts` 같은 상수 한 곳에 모은다.
 
-**이름 (권장)**: 새 타입은 정의서 용어의 영어 이름(`Requirement`, `RequirementLink`, `Submission`, `Vote`, `AgendaItem`, `HelpRequest`, `DecisionCard` 등 — 표는 코드 컨벤션 (BE))을 쓰고, 데모에 이미 있는 이름(`Task`, `Member`, `Meeting`, `DataSource`)은 바꾸지 않는다. 시간 값에는 단위(`reviewWaitHours`), GitHub 번호와 앱 ID는 구분(`githubIssueNumber` ↔ `taskId`).
+**이름 (권장)**: 새 타입은 정의서 용어의 영어 이름(`Requirement`, `RequirementLink`, `Submission`, `Evaluation`, `AgendaItem`, `HelpRequest`, `DecisionCard` 등 — 표는 코드 컨벤션 (BE))을 쓰고, 데모에 이미 있는 이름(`Task`, `Member`, `Meeting`, `DataSource`)은 바꾸지 않는다. 시간 값에는 단위(`reviewWaitHours`), GitHub 번호와 앱 ID는 구분(`githubIssueNumber` ↔ `taskId`).
