@@ -6,7 +6,7 @@ MVP backend 구현 Issue 의 담당·상태 표다. 화면 구현은 [SCREEN_ASS
 - git 흐름(브랜치·커밋·PR·머지): `.claude/rules/git-workflow.md`
 - 모듈 경계: [ARCHITECTURE.md](./ARCHITECTURE.md) · 실행·검증 명령: [PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md) · Must 이슈 목록: [00-backlog.md](./00-backlog.md) 「이슈 백로그 (Must)」
 - **기호 구분**: 이 표의 `B0`~`B12`는 백엔드 담당 기호다. 00-backlog.md의 이슈 후보 번호는 `IB-01`~`IB-50`으로 따로 매긴다 — "B2"는 GitHub 연동 담당 묶음이고, IB-02(GitHub 로그인 이슈)와 다르다.
-- [제안]이 붙은 줄은 requirements-changes.md에서 "검토 중"인 요구사항이고, [보류]가 붙은 줄은 2026-10-28에 보류된 요구사항이다. 채택되기 전에는 GitHub 이슈를 만들지 않는다(00-backlog.md 「착수 조건」).
+- [제안]이 붙은 줄은 requirements-changes.md에서 "검토 중"인 요구사항이다(보류된 요구사항은 지금 없다 — FR-FLOW-07은 2026-10-29 결정으로 채택). 채택되기 전에는 GitHub 이슈를 만들지 않는다(00-backlog.md 「착수 조건」).
 
 ## 이 표를 믿는 범위
 
@@ -32,7 +32,7 @@ MVP backend 구현 Issue 의 담당·상태 표다. 화면 구현은 [SCREEN_ASS
 | B4 | TODO | PR 상태 동기화 — GitHub 원본 상태(열림 · 머지 · 닫힘)를 사무실 위치로 (FR-OFF-02, FR-LRN-07) | TODO | B2 | B 연동 백엔드 · TODO: 이름 | TODO | TODO |
 | B5 | TODO | 보안 · 동기화 비기능 — NFR-04, NFR-05, NFR-09, NFR-10 | TODO | B1, B2 | B 연동 백엔드 · TODO: 이름 | TODO | TODO |
 | B6 | TODO | 요구사항 추적 — FR-REQ-01~07 | TODO | B2 | C 도메인 백엔드 · TODO: 이름 | TODO | TODO |
-| B7 | TODO | 진행·막힘 — FR-FLOW-01~06, [보류] FR-FLOW-07 | TODO | B2 | C 도메인 백엔드 · TODO: 이름 | TODO | TODO |
+| B7 | TODO | 진행·막힘 — FR-FLOW-01~08 (FR-FLOW-07 · 08은 2026-10-29 결정으로 채택) | TODO | B2 | C 도메인 백엔드 · TODO: 이름 | TODO | TODO |
 | B8 | TODO | 협업 기본기 · 컨벤션 피드백 — FR-HAB-01~07, FR-HAB-08~11 (FR-HAB-01 수정안은 철회) | TODO | B2 | C 도메인 백엔드 · TODO: 이름 | TODO | TODO |
 | B9 | TODO | PR 투표 · 판정 · 회의실 안건 로직 — FR-LRN-01~14 (2026-10-28 채택) | TODO | B2, B4 | C 도메인 백엔드 · TODO: 이름 | TODO | TODO |
 | B10 | TODO | 활동 기록 — FR-ACT-01~04 (2026-10-28 추가 결정으로 채택) | TODO | B1 | C 도메인 백엔드 · TODO: 이름 | TODO | TODO |
@@ -74,7 +74,7 @@ MVP backend 구현 Issue 의 담당·상태 표다. 화면 구현은 [SCREEN_ASS
 | B4 PR 상태 동기화 | `src/data/types.ts`(PR 모델 추가 — C · D와 합의), `src/scene/slots.ts` 위치 규칙은 D와 함께 | `adapters/github`의 PR 변환 | 지금 PR 모델이 없다. 검토 영역 위치도 없다 |
 | B5 보안 · 동기화 비기능 | `server/src/routes.ts` 요청 위생(Host · Origin 검사를 `APP_ORIGIN` 기준으로), `server/src/app.ts` 바인딩 주소(지금 `127.0.0.1` 고정) | 로그 마스킹, API 호출량 관리(NFR-10) | 데모 `.gitignore`에 `.env` · `*.pem` · `secrets/`가 없다 — 가장 먼저 추가 |
 | B6 요구사항 추적 | `src/data/types.ts` · `server/src/repo.ts` · `db.ts`(새 저장 항목) | 명세 문서 읽기 · 요구사항 · 요구사항–이슈 연결 저장 · 진행률 계산(`src/data/rules/`) | 형식은 ## 제목만(TBD-01, 2026-10-28 결정). 요구사항은 저장하고 수동 동기화 때 갱신한다 |
-| B7 진행 · 막힘 | `src/data/selectors.ts` · `src/data/insights.ts` — 업무량 · 포인트 기반 계산(`workload`, `computeKpis`의 쏠림 · 가장 바쁜 팀원, `suggestActions`)은 사람별 비교라 제거 대상 | 막힘 계산(이유 문구 포함) · 팀 지표를 `src/data/rules/`에 | 기준값(막힘 48시간 · 48시간)은 팀 설정(`TeamSettings`)에서 읽는다 — 코드 컨벤션 (BE) 「기준값」 |
+| B7 진행 · 막힘 | `src/data/selectors.ts` · `src/data/insights.ts` — 업무량 · 포인트 기반 계산(`workload`, `computeKpis`의 쏠림 · 가장 바쁜 팀원, `suggestActions`)은 사람별 비교라 제거 대상 | 막힘 계산(막혔다는 표시만, 이유 문구 없음 — 2026-10-29 결정) · 담당 편중 계산(FR-FLOW-03 · 07) · 팀 지표를 `src/data/rules/`에 | 기준값(막힘 48시간 · 48시간)은 팀 설정(`TeamSettings`)에서 읽는다 — 코드 컨벤션 (BE) 「기준값」 |
 | B8 협업 기본기 | — | 컨벤션 검사 규칙(`src/data/rules/`), 규칙 위반 계산 · 본인 응답 | 데모에 대응 코드가 없다 |
 | B9 PR 투표 · 안건 | `src/data/rules/meetings.ts` · `server/src/repo.ts`의 회의 · 안건(`Task.onAgenda` → `AgendaItem`) | 투표 저장 · 판정 | 2026-10-28 채택. 안건 기본 구조(FR-MTG-03 · 04)는 B12와 경계를 정한다 |
 | B13 도움 요청 게시판 | — | 도움 요청 · 코멘트 저장(`HelpRequest`), 닫기 · 도움 된 코멘트 · 배운 점, 48시간 미해결 판정(`src/data/rules/`), 안건 전환 · 종료 | 데모에 대응 코드가 없다. 안건 전환은 B9의 `AgendaItem`을 쓰므로 B9와 경계를 정한다 |

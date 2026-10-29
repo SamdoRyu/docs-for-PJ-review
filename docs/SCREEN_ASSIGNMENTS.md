@@ -7,7 +7,7 @@
 - git 흐름(브랜치·커밋·PR·머지): `.claude/rules/git-workflow.md`
 - **backend 구현 담당·상태: [BACKEND_ASSIGNMENTS.md](./BACKEND_ASSIGNMENTS.md)** ← 로그인 · GitHub 동기화 · 투표 판정 · 막힘 계산 · 저장은 이 문서가 아니라 저기다
 
-이 문서는 **화면 구현 담당 문서**다. 화면은 기획안 「역할 분담」에 따라 **D(3D·프론트엔드)** 가 맡는다 — FR-OFF, 정보 뷰, 투표 표시와 회의실 드래그(FR-LRN-03 · 04), 상단 바와 패널, FR-MTG · FR-PLAN · FR-ACT 화면.
+이 문서는 **화면 구현 담당 문서**다. 화면은 기획안 「역할 분담」에 따라 **D(3D·프론트엔드)** 가 맡는다 — FR-OFF, 정보 뷰(최근 변화 · 담당 · 막힘 — 2026-10-29 결정), 투표 표시와 회의실 드래그(FR-LRN-03 · 04), 상단 바와 패널, FR-MTG · FR-PLAN · FR-ACT 화면.
 
 화면 목록과 각 화면에 보이는 것은 [07-screens.md](./07-screens.md) 「화면 목록」이 기준이다. TODO: 디자인 원본(파일 · 링크)이 아직 없다 — 07-screens.md 「디자인」의 [?].
 
@@ -66,7 +66,7 @@ npm run dev:all      # 화면 :5173 + API :8787. 서버 데이터는 http://loca
 | 수집 동의 (팀원) | 없음 | 신규 (2026-10-28 추가 결정으로 채택) | — | B10 |
 | **3D 사무실 (메인)** — 수정 규모 큼 | `src/scene/OfficeScene.tsx` · `TaskBox.tsx` · `TaskBoxes.tsx` · `slots.ts` · `MeetingRoomState.tsx` · `DragLayer.tsx` · `dropTarget.ts` · `Avatar.tsx` · `Overlays.tsx` · `src/office/layout.ts` | 수정 · 확장 | 공간 · 책상 · 아바타 · 카메라 · 이동 애니메이션은 데모와 같게 구현. PR 삼각기둥 등 새 도형, 요구사항 구역 · 진행률, 검토 영역 위치, 드래그 대상 변경(담당 · 상태 → 구역 연결 · 회의실), 사람별 업무량 표현(신호 다이아 · 업무량 원판 · 기울기) 제거 | B2 · B4 · B6 · B7 · B9 · B13 |
 | [제안] 2D 팀 보드 | 비슷한 것: `src/ui/KanbanView.tsx` · `ListView.tsx`(작업 목록) | 신규 · 채택 전 착수 안 함 | 안건 아이콘 · 게시판 영역 | [제안] B9 · B13 |
-| 상단 바 | `src/ui/TopBar.tsx` | 수정 | KPI · 균형 칩(가장 바쁜 팀원) 대신 요구사항 진행률 · 열린 PR 수 · 평균 리뷰 대기 · 동기화 상태. 레포 드롭다운 · D-day 신규. 오버레이 전환은 정보 뷰 전환으로 | B2 · B6 · B7 · B12 |
+| 상단 바 | `src/ui/TopBar.tsx` | 수정 | KPI · 균형 칩(가장 바쁜 팀원) 대신 요구사항 진행률 · 열린 PR 수 · 평균 리뷰 대기 · 동기화 상태. 레포 드롭다운 · D-day 신규. 오버레이 전환은 정보 뷰(최근 변화 · 담당 · 막힘) 전환으로 | B2 · B6 · B7 · B12 |
 | 상세 패널 | `src/ui/Detail.tsx` · `src/ui/RightPanel.tsx` | 수정 | 편집 입력(상태 · 우선순위 · 포인트 · 담당 · 마감)을 읽기 전용과 GitHub 링크로. 연결 PR · 리뷰 상태 추가. 팀원 상세의 업무량 게이지(`Vitals`) 제거. 투표 버튼 | B2 · B4 · B9 |
 | 요구사항 패널 | 없음 — `RightPanel.tsx`의 탭 구조를 참고 | 신규 | 요구사항 목록 · 진행률 · 빈틈 · 연결 후보 | B6 |
 | 활동 기록 | 없음 — `src/ui/ActivityFeed.tsx`는 데이터 변경 로그라 다른 기능 | 신규 (2026-10-28 추가 결정으로 채택) | — | B10 |
@@ -100,7 +100,7 @@ v1 화면 목록에 없는 기존 화면 — `src/ui/TeamView.tsx`(팀원별 업
 
 | 파일 | 왜 |
 | --- | --- |
-| 공용 컴포넌트(상단 바 · 상세 패널 · 도형 5종 · 정보 뷰) | 여러 화면이 쓴다. 수정은 **별도 PR** 로 분리하고 먼저 공유한다. 경로는 `src/ui/TopBar.tsx` · `src/ui/Detail.tsx` · `src/scene/TaskBox.tsx`(도형) · `src/scene/shared.tsx`(공용 도형 · 재질) · `src/scene/Overlays.tsx`(정보 뷰 틀) |
+| 공용 컴포넌트(상단 바 · 상세 패널 · 도형 5종 · 정보 뷰(최근 변화 · 담당 · 막힘)) | 여러 화면이 쓴다. 수정은 **별도 PR** 로 분리하고 먼저 공유한다. 경로는 `src/ui/TopBar.tsx` · `src/ui/Detail.tsx` · `src/scene/TaskBox.tsx`(도형) · `src/scene/shared.tsx`(공용 도형 · 재질) · `src/scene/Overlays.tsx`(정보 뷰 틀) |
 | 계약 파일 — `src/data/types.ts` · `src/data/DataSource.ts` · `src/store.ts` · `src/office/layout.ts` · `src/data/selectors.ts` · `src/data/insights.ts` | 화면 · 서버 · mock이 함께 기댄다. 데모의 `CLAUDE.md`도 이 파일들을 계약 파일로 묶어 둔다. 바꾸려면 B · C와 먼저 합의한다 |
 | 기존 3D 팀 오피스의 3D 표현 코드(`src/scene/`) | 표현을 참고해 구현한다. 새 모델링은 하지 않는다(기획안 「기능 동결 규칙」) |
 | 의존성 목록 파일(`package.json` · `package-lock.json`) | 라이브러리 추가는 사전 합의(`.claude/rules/security.md`) |
@@ -133,7 +133,7 @@ PR base 는 `main` 이다. PR 에는 `Closes #<이슈번호>` 와 "관련 요구
 
 - [ ] 07-screens.md 「모든 화면 공통 인수 조건」 1 · 2와 「공통 상태」 표 (지금은 초안 — 팀이 확인하면 이 줄의 "초안"을 지운다)
 - [ ] 팀원 간 순위 · 비교 화면이 없고, 개인 지표(습관 체크 · 학습 타임라인 · 회고 리포트)는 본인 화면에만 보인다 (FR-FLOW-06 · NFR-06)
-- [ ] 막힘 표시에는 이유 문구가 붙는다 (FR-FLOW-02)
+- [ ] 막힘 표시는 막혔다는 사실만 보이고 이유 문구가 없다 (FR-FLOW-02 · 2026-10-29 결정)
 - [ ] `npm run lint` · `npm run build`(타입 검사 · 3D lazy 번들 검사 포함) · `npm run test:contract`를 돌린 결과를 PR 「검증」에 적는다. 3D를 바꿨으면 `npm run test:e2e`도 돌린다(Chrome 필요)
 
 ## 알려진 문서 ↔ 디자인 차이
