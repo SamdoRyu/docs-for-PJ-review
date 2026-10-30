@@ -1,6 +1,6 @@
 # Git 전략
 
-> 문서 상태: 2026-10-28 결정 회의 반영. `main` 하나에 작업 브랜치만 두는 가벼운 흐름  
+> 문서 상태: 2026-10-28 결정 회의 · 2026-10-30 강사 역할 결정 반영. `main` 하나에 작업 브랜치만 두는 가벼운 흐름  
 > 적용 대상: 프로젝트 전체 팀원  
 > 적용 시점: 개발 레포를 만들고 「8. GitHub 설정」을 마친 뒤
 
@@ -14,7 +14,7 @@
 4. 머지는 **GitHub 리뷰 승인 1명** 이상을 받은 뒤 GitHub PR 화면에서 직접 합니다.
 5. 비밀 값(토큰 · 키 · `.env`)과 개인정보를 커밋하지 않습니다.
 
-나머지는 모두 **권장**입니다. 어겨도 PR을 막지 않고, 앱의 컨벤션 피드백(FR-HAB)이 본인에게만 알려 줍니다.
+나머지는 모두 **권장**입니다. 어겨도 PR을 막지 않습니다.
 
 ## 2. 브랜치
 
@@ -36,7 +36,7 @@ main ──┬── feat/12-github-login ──(PR · squash)──▶ main
 - 설명은 영문 소문자, 숫자, `-`만 씁니다.
 - 예: `feat/12-github-login`, `fix/18-login-error`, `docs/21-readme`
 
-앱의 브랜치 이름 검사(FR-HAB-08)에 등록할 패턴:
+브랜치 이름 패턴:
 
 ```text
 ^(feat|fix|refactor|test|docs|chore)/[0-9]+-[a-z0-9]+(-[a-z0-9]+)*$
@@ -62,7 +62,7 @@ feat(sync): 레포 변경분 5분 폴링 추가 (#24)    ← squash 후 main에 
 | `docs` · `test` · `style` · `perf` · `build` · `ci` · `chore` | 문서 · 테스트 · 포맷 · 성능 · 빌드 · CI · 그 밖의 잡일 |
 
 - 설명은 50자 이내, 한국어 OK.
-- 앱의 커밋 규칙 검사(FR-HAB-04)에 등록할 패턴입니다. 첫 줄에만 적용합니다.
+- 패턴은 아래와 같습니다. squash 후 `main` 커밋의 첫 줄(PR 제목)에 적용합니다.
 
 ```text
 ^(feat|fix|refactor|perf|test|docs|style|build|ci|chore)(\([a-z0-9-]+\))?: .{1,50}$
@@ -95,7 +95,7 @@ New issue를 누르면 템플릿 세 개 중 하나를 고릅니다(`.github/ISS
 | 검증 | 실제로 해 본 것. 못 한 것은 못 했다고 |
 | UI 변경 · 영향 범위 | 해당할 때만 |
 
-권장: 변경이 400줄을 넘으면 나눕니다(앱의 PR 크기 안내 FR-HAB-07도 400줄).
+권장: 변경이 400줄을 넘으면 나눕니다.
 
 ## 6. 리뷰와 머지
 
@@ -113,7 +113,7 @@ New issue를 누르면 템플릿 세 개 중 하나를 고릅니다(`.github/ISS
 | 라벨 | 붙는 곳 | 쓰임 |
 | --- | --- | --- |
 | `feature` · `bug` · `chore` | 템플릿이 자동으로 | 이슈 종류 |
-| `area:auth` · `sync` · `req` · `office` · `flow` · `vote` · `habit` · `meeting` · `plan` · `report` | 직접 (선택) | 기능 영역. 회고 리포트의 "담당 기능 영역"(FR-REP-01)에 모임. 커밋 scope와 같은 값 |
+| `area:auth` · `sync` · `req` · `office` · `flow` · `vote` · `instructor` · `meeting` · `plan` · `report` | 직접 (선택) | 기능 영역. 회고 리포트의 "담당 기능 영역"(FR-REP-01)에 모임. 커밋 scope와 같은 값 |
 
 - GitHub 기본 라벨은 `bug`만 남기고 지웁니다(`enhancement`, `documentation` 등은 종류 라벨과 헷갈림).
 - 정의 파일은 `.github/labels.yml`입니다. GitHub에 자동 반영되지 않으니 라벨 화면에서 같은 이름으로 만듭니다.

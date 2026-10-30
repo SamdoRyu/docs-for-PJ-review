@@ -5,7 +5,7 @@ MVP backend 구현 Issue 의 담당·상태 표다. 화면 구현은 [SCREEN_ASS
 - **배정 기준: 기획안 「역할 분담」** — A 기획, B 연동 백엔드, C 도메인 백엔드, D 3D·프론트엔드
 - git 흐름(브랜치·커밋·PR·머지): `.claude/rules/git-workflow.md`
 - 모듈 경계: [ARCHITECTURE.md](./ARCHITECTURE.md) · 실행·검증 명령: [PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md) · Must 이슈 목록: [00-backlog.md](./00-backlog.md) 「이슈 백로그 (Must)」
-- **기호 구분**: 이 표의 `B0`\~`B12`는 백엔드 담당 기호다. 00-backlog.md의 이슈 후보 번호는 `IB-01`\~`IB-50`으로 따로 매긴다 — "B2"는 GitHub 연동 담당 묶음이고, IB-02(GitHub 로그인 이슈)와 다르다.
+- **기호 구분**: 이 표의 `B0`\~`B14`는 백엔드 담당 기호다(B8은 비어 있다 — 2026-10-30 결정). 00-backlog.md의 이슈 후보 번호는 `IB-01`\~`IB-68`로 따로 매긴다(IB-34\~39는 비어 있다 — 2026-10-30 결정) — "B2"는 GitHub 연동 담당 묶음이고, IB-02(GitHub 로그인 이슈)와 다르다.
 - [제안]이 붙은 줄은 requirements-changes.md에서 "검토 중"인 요구사항이다(보류된 요구사항은 지금 없다 — FR-FLOW-07은 2026-10-29 결정으로 채택). 채택되기 전에는 GitHub 이슈를 만들지 않는다(00-backlog.md 「착수 조건」).
 
 ## 이 표를 믿는 범위
@@ -33,17 +33,19 @@ MVP backend 구현 Issue 의 담당·상태 표다. 화면 구현은 [SCREEN_ASS
 | B5 | TODO | 보안 · 동기화 비기능 — NFR-04, NFR-05, NFR-09, NFR-10 | TODO | B1, B2 | B 연동 백엔드 · TODO: 이름 | TODO | TODO |
 | B6 | TODO | 요구사항 추적 — FR-REQ-01~07 | TODO | B2 | C 도메인 백엔드 · TODO: 이름 | TODO | TODO |
 | B7 | TODO | 진행·막힘 — FR-FLOW-01~08 (FR-FLOW-07 · 08은 2026-10-29 결정으로 채택) | TODO | B2 | C 도메인 백엔드 · TODO: 이름 | TODO | TODO |
-| B8 | TODO | 협업 기본기 · 컨벤션 피드백 — FR-HAB-01\~07, FR-HAB-08\~11 (FR-HAB-01 수정안은 철회) | TODO | B2 | C 도메인 백엔드 · TODO: 이름 | TODO | TODO |
 | B9 | TODO | PR 평가 · 회의실 안건 로직 — FR-LRN-01~14 (2026-10-28 채택) | TODO | B2, B4 | C 도메인 백엔드 · TODO: 이름 | TODO | TODO |
 | B10 | TODO | 활동 기록 — FR-ACT-01~04 (2026-10-28 추가 결정으로 채택) | TODO | B1 | C 도메인 백엔드 · TODO: 이름 | TODO | TODO |
 | B11 | TODO | 회고 리포트 · 기술 결정 카드 — FR-REP-01~06 (FR-REP-04 원본 확인 필요), FR-REP-07 · 10 | TODO | B2 (카드는 B9) | C 도메인 백엔드 · TODO: 이름 | TODO | TODO |
 | B12 | TODO | 회의·스탠드업 · 일정판 서버 — FR-MTG-01\~05, FR-PLAN-01\~04 (FR-MTG-02 · FR-PLAN-04 원본 확인 필요) | **담당 미정** | B2 | **미정** — 기획안 「역할 분담」에 서버 담당이 없다(화면은 D). 팀이 정한다 | TODO | TODO |
 | B13 | TODO | 도움 요청 게시판 — FR-LRN-15~20 (2026-10-28 추가 결정) | TODO | B1, B9(안건 전환) | **미정** — 기획안 「역할 분담」에 없다. 팀원들이 나중에 정한다 | TODO | TODO |
+| B14 | TODO | 강사 대응 — FR-AUTH-06~08의 서버 쪽 · FR-LRN-21~23 · FR-REP-11 · FR-LIB-01 · 02 (2026-10-30 결정) | TODO | B1, B9 · B11 · B13(요청이 붙는 안건 · 카드 · 도움 요청) | **미정** — 기획안 「역할 분담」에 없다. 팀이 정한다 | TODO | TODO |
 
 **담당 칸의 이름은 비어 있다. 이슈가 만들어지면 담당자를 배정한다.** 역할(A\~D)은 기획안 「역할 분담」 표 그대로다. 선행 칸은 기능 사이의 데이터 의존이고(B2 동기화가 GitHub 원본을 채워야 B6\~B12가 계산할 수 있다), 실제 착수 판정은 위 「이 표를 믿는 범위」를 따른다.
 
 - **도움 요청 생애주기**(게시판 작성 · 코멘트 · 닫기 · 안건 전환, FR-LRN-15~20)는 B9에 합치지 않고 B13으로 뗐다(2026-10-28). B9는 평가 · 안건만 맡는다.
-- **담당 쏠림**: C 도메인 백엔드가 B6\~B11 여섯 묶음을 맡는다. 00-backlog.md 「일정 · 의존성 점검」 기준 이슈 후보 58개 중 33개다. 도움 요청(IB-53\~58)은 B13으로 떼어 C에 넣지 않았다. 역할 조정은 팀이 정한다.
+- **B8 협업 기본기 · 컨벤션 피드백**(FR-HAB-01\~11)은 습관 체크 삭제로 없앴다(2026-10-30 결정). 기호 B8은 비워 둔다.
+- **강사 대응**(FR-AUTH-06\~08의 서버 쪽 · FR-LRN-21\~23 · FR-REP-11 · FR-LIB-01 · 02)은 B14로 더했다(2026-10-30 결정). 담당은 미정이다.
+- **담당 쏠림**: C 도메인 백엔드가 B6 · B7 · B9 · B10 · B11 다섯 묶음을 맡는다. 00-backlog.md 「일정 · 의존성 점검」 기준 이슈 후보 62개(IB-34\~39는 비움) 중 28개(IB-13\~33 · 46\~50 · 52 · 68)다. 도움 요청(IB-53\~58)은 B13, 강사 대응(IB-59\~67)은 B14로 떼어 C에 넣지 않았다. 역할 조정은 팀이 정한다.
 
 ## 기존 코드에서 손댈 곳
 
@@ -58,7 +60,7 @@ MVP backend 구현 Issue 의 담당·상태 표다. 화면 구현은 [SCREEN_ASS
 | GitHub App 인증 · 권한 검증 | 로그인 · 세션 · 역할 판정 · 요청별 검사 미들웨어 | 역할 검사를 자기 라우트에 붙인다 |
 | GitHub 폴링 · 변환 | GitHub 원본을 읽어 앱 모델(`Task` · `Submission`)로 바꿔 저장, 동기화 상태 | 변환된 앱 모델만 쓴다 — GitHub 원본 모양을 보지 않는다 |
 | DataSource 연동 | 브라우저 `DataSource`(`src/data/DataSource.ts`)의 읽기 경로와 서버 원천 선택 | 앱 자체 기록의 쓰기 메서드(요구사항 연결 · 회의 · 안건 …)를 인터페이스에 더한다 |
-| Hono API 확장 | 인증 · 동기화 · 레포 등록 라우트 | 요구사항 · 막힘 · 습관 · 회의 · 리포트 라우트 |
+| Hono API 확장 | 인증 · 동기화 · 레포 등록 라우트 | 요구사항 · 막힘 · 회의 · 리포트 라우트 (습관 체크는 없앴다 — 2026-10-30 결정) |
 | SQLite 저장 항목 | 팀 설정 · 동기화 상태 · GitHub에서 온 앱 모델 | 요구사항 연결 · 회의 안건 · 스탠드업 · 회고 리포트 · 평가 |
 | 업무 흐름 · 막힘 계산 | — | `core`(`src/data/rules/`)의 순수 규칙 |
 
@@ -68,19 +70,19 @@ MVP backend 구현 Issue 의 담당·상태 표다. 화면 구현은 [SCREEN_ASS
 
 | 기호 | 기존 코드에서 고칠 곳 | 새로 만들 곳 (신규) | 메모 |
 | --- | --- | --- | --- |
-| B1 계정·권한 | `server/src/routes.ts` 미들웨어(인증 · 역할 검사 추가), `server/src/app.ts`(조립) | `server/src/auth/` — GitHub 로그인 · 콜백 · 세션 · 현재 사용자 · 역할 판정. GitHub 호출(코드 교환 · 권한 조회)은 B2의 `adapters/github` 함수를 거친다 | 지금 인증이 전혀 없다. `X-Actor` 헤더는 데모 봇 표시용이라 인증으로 쓰지 않는다. 역할은 로그인할 때만 확인하고 세션은 30분~1시간 뒤 만료된다(2026-10-28 결정 — ARCHITECTURE.md 「인증과 권한」). 권한을 조회할 자격 증명은 여기서 정한다 |
+| B1 계정·권한 | `server/src/routes.ts` 미들웨어(인증 · 역할 검사 추가), `server/src/app.ts`(조립) | `server/src/auth/` — GitHub 로그인 · 콜백 · 세션 · 현재 사용자 · 역할 판정. GitHub 호출(코드 교환 · 권한 조회)은 B2의 `adapters/github` 함수를 거친다 | 지금 인증이 전혀 없다. `X-Actor` 헤더는 데모 봇 표시용이라 인증으로 쓰지 않는다. GitHub 권한은 로그인할 때만 확인하고 세션은 30분~1시간 뒤 만료된다(2026-10-28 결정 — ARCHITECTURE.md 「인증과 권한」). 역할 판정은 admin = 레포 관리자, 앱에서 지정한 강사 = 강사(ROLE-04), 그 밖의 콜라보레이터(read 포함) = 참여자이고, 강사 지정 여부는 요청마다 앱 DB에서 확인한다(2026-10-30 결정 — 강사 지정 저장은 B14). 권한을 조회할 자격 증명은 여기서 정한다 |
 | B2 GitHub 연동 · 동기화 | `server/src/app.ts`(폴링 시작 · 종료), `server/src/events.ts`(동기화 결과를 SSE로 알림) | `server/src/adapters/github/` — 설치 토큰, 이슈 · PR · 리뷰 · 커밋 · 라벨 · 참여자 읽기, 앱 모델 변환, 변경분 조회, 실패 기록 | 폴링(GitHub → 서버)과 SSE(서버 → 브라우저)는 다른 일이다. GitHub 원본을 바꾸는 호출은 만들지 않는다(CON-02) |
 | B3 데이터 어댑터 | `src/data/DataSource.ts` · `src/App.tsx`(`?source=` 선택) · `src/data/mock/` · `src/data/api/` | 서버 쪽 원천 선택(`DATA_SOURCE` 도입 시) | 데이터 소스가 브라우저 · 서버 두 층이고, 가짜 데이터는 브라우저 mock을 새 모델로 확장한다(2026-10-28 결정 — ARCHITECTURE.md 「데이터 소스는 두 층이다」). Task · Member CRUD 메서드는 변경 대상 |
 | B4 PR 상태 동기화 | `src/data/types.ts`(PR 모델 추가 — C · D와 합의), `src/scene/slots.ts` 위치 규칙은 D와 함께 | `adapters/github`의 PR 변환 | 지금 PR 모델이 없다. 검토 영역 위치도 없다 |
 | B5 보안 · 동기화 비기능 | `server/src/routes.ts` 요청 위생(Host · Origin 검사를 `APP_ORIGIN` 기준으로), `server/src/app.ts` 바인딩 주소(지금 `127.0.0.1` 고정) | 로그 마스킹, API 호출량 관리(NFR-10) | 데모 `.gitignore`에 `.env` · `*.pem` · `secrets/`가 없다 — 가장 먼저 추가 |
 | B6 요구사항 추적 | `src/data/types.ts` · `server/src/repo.ts` · `db.ts`(새 저장 항목) | 명세 문서 읽기 · 요구사항 · 요구사항–이슈 연결 저장 · 진행률 계산(`src/data/rules/`) | 형식은 ## 제목만(TBD-01, 2026-10-28 결정). 요구사항은 저장하고 수동 동기화 때 갱신한다 |
 | B7 진행 · 막힘 | `src/data/selectors.ts` · `src/data/insights.ts` — 업무량 · 포인트 기반 계산(`workload`, `computeKpis`의 쏠림 · 가장 바쁜 팀원, `suggestActions`)은 사람별 비교라 제거 대상 | 막힘 계산(막혔다는 표시만, 이유 문구 없음 — 2026-10-29 결정) · 담당 편중 계산(FR-FLOW-03 · 07) · 팀 지표를 `src/data/rules/`에 | 기준값(막힘 48시간 · 48시간)은 팀 설정(`TeamSettings`)에서 읽는다 — 코드 컨벤션 (BE) 「기준값」 |
-| B8 협업 기본기 | — | 컨벤션 검사 규칙(`src/data/rules/`), 규칙 위반 계산 · 본인 응답 | 데모에 대응 코드가 없다 |
 | B9 PR 평가 · 안건 | `src/data/rules/meetings.ts` · `server/src/repo.ts`의 회의 · 안건(`Task.onAgenda` → `AgendaItem`) | 평가 저장(`Evaluation`) · 추천·비추천 수 계산 — PR 상태는 바꾸지 않는다(2026-10-29 결정) | 2026-10-28 채택. 안건 기본 구조(FR-MTG-03 · 04)는 B12와 경계를 정한다 |
 | B13 도움 요청 게시판 | — | 도움 요청 · 코멘트 저장(`HelpRequest`), 닫기 · 도움 된 코멘트 · 배운 점, 48시간 미해결 판정(`src/data/rules/`), 안건 전환 · 종료 | 데모에 대응 코드가 없다. 안건 전환은 B9의 `AgendaItem`을 쓰므로 B9와 경계를 정한다 |
 | B10 활동 기록 | — | 활동 기록 · 동료 피드백 저장 | 데모의 `Activity`(변경 로그)와 이름이 겹친다 — 다른 이름을 쓴다 |
 | B11 회고 리포트 | — | 리포트 생성 · 마크다운 내보내기 · 카드 조립 | 데모에 대응 코드가 없다. 회의록 화면(`MeetingHistoryDialog`)이 가장 가깝다 |
 | B12 회의 · 스탠드업 · 일정판 | `server/src/routes.ts` `/api/meetings` · `src/data/rules/meetings.ts` — 회의 결과(담당 지정 · 상태 변경 · 백로그)는 GitHub 원본을 바꾸므로 결정 · 배운 점 기록으로 바뀐다 | 스탠드업 저장, 일정판 데이터 | **담당 미정** 그대로다. 마감은 작업 필드 새로 기획 예정(2026-10-28 추가 결정) |
+| B14 강사 대응 | — | 강사 지정 저장(`TeamSettings`), 도움 요청의 "강사에게 요청" · 강사 답변(`HelpRequest`), 결정 피드백 요청 · 피드백(`AgendaItem`), 꼬리질문 요청 · 꼬리질문(`DecisionCard`), 컨벤션 라이브러리 항목(`ConventionLibraryItem` — 서버 전체에 하나), 강사 요청함(저장하지 않고 요청 여부에서 계산) | 데모에 대응 코드가 없다. **담당 미정**(2026-10-30 결정). 강사의 허용되지 않은 쓰기는 기존 code `forbidden_role`로 거부한다(새 code 없음). 역할 판정은 B1, 도움 요청 · 안건 · 카드 본체는 B13 · B9 · B11과 경계를 정한다 |
 
 ## 지금 상태 (2026-10-28 snapshot)
 
@@ -97,7 +99,7 @@ MVP backend 구현 Issue 의 담당·상태 표다. 화면 구현은 [SCREEN_ASS
 
 ## 화면 이슈와의 관계
 
-- 화면은 D(3D·프론트엔드)가 맡는다. 화면 이슈의 상태는 [SCREEN_ASSIGNMENTS.md](./SCREEN_ASSIGNMENTS.md) 에 있다.
+- 화면은 D(3D·프론트엔드)가 맡는다. 강사 요청함 · 컨벤션 라이브러리 화면은 담당 미정이다(2026-10-30 결정). 화면 이슈의 상태는 [SCREEN_ASSIGNMENTS.md](./SCREEN_ASSIGNMENTS.md) 에 있다.
 - 이어받는 관계는 아래와 같다(화면 이름은 07-screens.md 「화면 목록」).
 
 | 화면 | 이어받는 backend |
@@ -111,6 +113,7 @@ MVP backend 구현 Issue 의 담당·상태 표다. 화면 구현은 [SCREEN_ASS
 | 활동 기록 | B10 |
 | 스탠드업·회의 | B12 · B9 |
 | 일정판 | B12 |
-| 내 습관 체크 | B8 |
 | 내 학습 타임라인 | B9 |
 | 회고 리포트 | B11 |
+| 강사 요청함 | B14 · B9 · B11 · B13 |
+| 컨벤션 라이브러리 | B14 |
