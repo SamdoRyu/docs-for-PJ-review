@@ -99,7 +99,7 @@ MVP backend 구현 Issue 의 담당·상태 표다. 화면 구현은 [SCREEN_ASS
 
 ## 화면 이슈와의 관계
 
-- 화면은 D(3D·프론트엔드)가 맡는다. 강사 요청함 · 컨벤션 라이브러리 화면은 담당 미정이다(2026-10-30 결정). 화면 이슈의 상태는 [SCREEN_ASSIGNMENTS.md](./SCREEN_ASSIGNMENTS.md) 에 있다.
+- 화면은 D(3D·프론트엔드)가 맡는다. 강사 요청함(강사 화면의 사이드바 · 헤더 요소) · 컨벤션 라이브러리(사무실 안 패널)의 화면 구현은 담당 미정이다(2026-10-30 결정). 화면 이슈의 상태는 [SCREEN_ASSIGNMENTS.md](./SCREEN_ASSIGNMENTS.md) 에 있다.
 - 이어받는 관계는 아래와 같다(화면 이름은 07-screens.md 「화면 목록」).
 
 | 화면 | 이어받는 backend |
