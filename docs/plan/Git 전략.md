@@ -133,5 +133,5 @@ New issue를 누르면 템플릿 세 개 중 하나를 고릅니다(`.github/ISS
 | CI | 프론트는 `npm run lint`, `npm run build`, `npm run test:contract`, 백엔드는 Spring 테스트 · 빌드 명령(빌드 도구가 정해지면 — 2026-11-01 결정으로 백엔드는 Spring Boot)으로 채우고 필수 status check로 등록(`docs/PROJECT_COMMANDS.md`) |
 | `.gitignore` | `.env`, `*.pem`, `secrets/` 추가(데모 코드에는 없음) |
 | Node 버전 | `.nvmrc`에 Node 24 LTS (프론트) |
-| JDK 버전 | 백엔드 JDK 버전 고정 — 버전은 결정 필요(2026-11-01) |
+| JDK 버전 | 백엔드 JDK 버전 고정 — Java 21 (2026-11-01 추가 결정). 빌드 도구는 Gradle(Gradle Wrapper를 커밋한다) |
 | 저장소 구성 | 프론트 · 백엔드를 한 저장소에 둘지 나눌지는 결정 필요 — 나누면 이 표의 설정을 두 저장소에 모두 한다 |

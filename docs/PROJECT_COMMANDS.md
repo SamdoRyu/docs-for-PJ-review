@@ -1,6 +1,6 @@
 # Project Commands
 
-> **스택은 정했다(2026-11-01 결정)**: 프론트엔드는 데모와 같은 React · TypeScript · Three.js(R3F) · Vite이고, 백엔드는 Spring Boot(Spring MVC · Spring Data JPA · Spring Security)로 새로 만든다. 그래서 이 문서의 **프론트 명령은 데모 저장소 기준으로 그대로 재사용**하고, 데모의 Hono 서버 · SQLite 명령은 **참고용**이다(운영 백엔드가 아니다). Spring 쪽 명령은 빌드 도구(Gradle/Maven) · JDK · DB · 저장소 구성이 정해지지 않아 비워 둔다 — 결정 필요(ARCHITECTURE.md 「기술 스택」).
+> **스택은 정했다(2026-11-01 결정)**: 프론트엔드는 데모와 같은 React · TypeScript · Three.js(R3F) · Vite이고, 백엔드는 Spring Boot(Spring MVC · Spring Data JPA · Spring Security)로 새로 만든다. 그래서 이 문서의 **프론트 명령은 데모 저장소 기준으로 그대로 재사용**하고, 데모의 Hono 서버 · SQLite 명령은 **참고용**이다(운영 백엔드가 아니다). Spring 쪽은 Java 21 · Gradle · MySQL 8.x로 정했다(2026-11-01 추가 결정). 명령은 개발 저장소를 만든 뒤 실제로 돌려 확인하고 채운다(ARCHITECTURE.md 「기술 스택」 · 「착수 체크리스트」).
 
 개발에 쓰는 명령 전부다. `.claude/rules/testing.md` 가 이 문서를 가리킨다.
 
@@ -32,8 +32,8 @@ npm run dev          # 화면(Vite :5173) — 브라우저 mock 데이터
 | `npm run build` | `tsc -b && vite build` — 타입 검사 후 `dist/` 빌드. 이어서 `postbuild`가 `scripts/check-bundle.mjs`로 첫 화면이 3D 청크를 바로 부르지 않는지 검사(어기면 실패) | `npm install` | 그대로. 3D 코드를 첫 화면 번들에 넣으면 실패한다(NFR-02). 빌드 결과를 Spring이 서빙할지는 결정 필요 |
 | `npx tsc -b` | 타입 검사만(빌드 없음). `tsconfig.json`이 화면 · 서버 · 도구 프로젝트를 참조한다 | `npm install` | 서버(TS) 프로젝트 참조는 빠진다 |
 | `npm run lint` | `oxlint` — `.oxlintrc.json` 규칙(react · typescript · oxc, `rules-of-hooks` error) | `npm install` | 그대로. 포매터는 없다 |
-| `npm run test:contract` | `tsx --test tests/contract/*.test.ts` — DataSource 계약을 mock과 API(메모리 DB TS 서버) 양쪽에 돌리고, 순수 규칙 · 클라이언트도 검사 | `npm install` | mock · 클라이언트 쪽은 재사용. API 쪽은 Spring 서버 기준으로 다시 구성한다 — ARCHITECTURE.md 「테스트 경계」(방식은 결정 필요). Task · Member CRUD 시나리오는 v1 계약으로 바꾼다 |
-| `npm run test:e2e` | `playwright test` — 시나리오를 mock(`/`)과 api(`/?source=api`) 두 번씩. 테스트가 직접 Vite `:5180` · API `:8790`을 띄운다 | **Google Chrome이 설치돼 있어야 한다**(`channel: 'chrome'`). 포트가 비어 있어야 한다 | mock 쪽은 재사용. api 쪽은 Spring 서버를 띄우는 방식으로 바뀐다(결정 필요). 작업 CRUD · 드래그로 담당 지정 · 주간 계획 시나리오(`02` · `03` · `04` · `07` · `08`)는 v1 동작과 달라 고치거나 뺀다 |
+| `npm run test:contract` | `tsx --test tests/contract/*.test.ts` — DataSource 계약을 mock과 API(메모리 DB TS 서버) 양쪽에 돌리고, 순수 규칙 · 클라이언트도 검사 | `npm install` | mock · 클라이언트 쪽은 재사용. API 쪽 계약은 Spring 통합 테스트가 맡고, 프론트는 핵심 E2E로 확인한다 — ARCHITECTURE.md 「테스트 경계」(구현 기본값 — 2026-11-01 추가 결정). Task · Member CRUD 시나리오는 v1 계약으로 바꾼다 |
+| `npm run test:e2e` | `playwright test` — 시나리오를 mock(`/`)과 api(`/?source=api`) 두 번씩. 테스트가 직접 Vite `:5180` · API `:8790`을 띄운다 | **Google Chrome이 설치돼 있어야 한다**(`channel: 'chrome'`). 포트가 비어 있어야 한다 | mock 쪽은 재사용. api 쪽은 Spring 서버를 띄우는 방식으로 바뀐다 — 띄우는 방법은 개발 저장소를 만든 뒤 정한다. 작업 CRUD · 드래그로 담당 지정 · 주간 계획 시나리오(`02` · `03` · `04` · `07` · `08`)는 v1 동작과 달라 고치거나 뺀다 |
 | `npm run preview` | `vite preview` — 빌드 결과 미리 보기 | `npm run build` | 그대로 |
 | `npx tsx scripts/data-smoke.ts` | mock 데이터 소스의 불변 조건 스모크 검사 | `npm install` | mock 모델이 바뀌면 함께 바뀐다 |
 
@@ -44,27 +44,27 @@ npm run dev          # 화면(Vite :5173) — 브라우저 mock 데이터
 | `npm run server` · `server:once` | `tsx watch server/src/index.ts` — Hono API `127.0.0.1:${PORT ?? 8787}`, `server/data/office.db`(SQLite) 자동 생성 · 시드 | 쓰지 않는다. 동작 · API 설계를 볼 때만 띄운다 |
 | `npm run dev:all` | `concurrently`로 `dev` + `server` | 쓰지 않는다. 프론트 + Spring을 함께 띄우는 방식은 결정 필요 |
 
-## 백엔드 명령 (Spring Boot — 결정 필요)
+## 백엔드 명령 (Spring Boot — Java 21 · Gradle)
 
-빌드 도구 · JDK 버전 · 저장소 구성이 정해지면 채운다. 채울 칸:
+빌드 도구는 Gradle, JDK는 21이다(2026-11-01 추가 결정). 아래 명령은 Gradle Wrapper의 일반 명령으로 적은 **예정**이고, 개발 저장소가 아직 없어 **실행해 확인하지 않았다**. 저장소를 만든 뒤 실제로 돌려 보고 고친다(저장소 구성에 따라 `backend/`에서 실행).
 
 | 하고 싶은 것 | 명령 |
 | --- | --- |
-| 서버 실행 (로컬) | TODO — 빌드 도구 결정 후 |
-| 테스트 (단위 · 통합) | TODO — JUnit. 실제 GitHub를 부르지 않는다 |
-| 빌드 (배포용 산출물) | TODO |
-| DB migration 적용 | TODO — migration 도구 결정 후(Flyway 우선 검토 — `[제안]`) |
+| 서버 실행 (로컬) | `./gradlew bootRun` (예정 — 미확인) |
+| 테스트 (단위 · 통합) | `./gradlew test` (예정 — 미확인). JUnit + Spring 통합 테스트. 실제 GitHub를 부르지 않는다 |
+| 빌드 (배포용 산출물) | `./gradlew build` (예정 — 미확인) |
+| DB migration 적용 | TODO — migration 도구는 골격 만들 때 정한다(`[제안]` Flyway) |
 | 정적 분석 · 포매터 | TODO — 새 도구는 팀 합의 후(`.claude/rules/scope-control.md`) |
 
 ## DB
 
 저장 항목은 [06-data.md](./06-data.md), Entity · 관계 초안은 [CONTRACTS.md](./CONTRACTS.md), 저장 방식은 ARCHITECTURE.md 「저장소 (JPA)」.
 
-- **DB 종류는 결정 필요**(PostgreSQL 우선 검토 — `[제안]`). 데모의 SQLite 파일 · `repo.migrate()` 방식은 쓰지 않는다(2026-11-01 결정 — 2026-10-28의 "JSON 방식 이어 쓰기" 결정을 대신함).
+- **DB는 MySQL 8.x다**(2026-11-01 추가 결정). 데모의 SQLite 파일 · `repo.migrate()` 방식은 쓰지 않는다(2026-11-01 결정 — 2026-10-28의 "JSON 방식 이어 쓰기" 결정을 대신함).
 
 ### 1. 로컬 DB
 
-TODO — DB 종류가 정해지면 쓴다(로컬에 띄우는 방법, 초기 데이터 · 시연 Seed 데이터 넣는 법).
+TODO — 개발 저장소를 만든 뒤 쓴다(로컬 MySQL 8.x를 띄우는 방법, 초기 데이터 · 시연 Seed 데이터 넣는 법).
 
 ### 2. 환경 변수
 
