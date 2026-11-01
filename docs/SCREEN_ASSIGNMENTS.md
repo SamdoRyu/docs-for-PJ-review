@@ -2,7 +2,7 @@
 
 누가 어느 화면을 맡는지, 그 화면의 디자인 원본이 어디인지 적는 표다.
 
-- 만드는 방법: [ARCHITECTURE.md](./ARCHITECTURE.md)
+- 만드는 방법: [ARCHITECTURE.md](./ARCHITECTURE.md) · 공통 계약(DataSource · 화면 타입 · SceneModel · ThemeLayout): [CONTRACTS.md](./CONTRACTS.md)
 - 실행·검증 명령: [PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md)
 - git 흐름(브랜치·커밋·PR·머지): `.claude/rules/git-workflow.md`
 - **backend 구현 담당·상태: [BACKEND_ASSIGNMENTS.md](./BACKEND_ASSIGNMENTS.md)** ← 로그인 · GitHub 동기화 · 평가 처리 · 막힘 계산 · 저장은 이 문서가 아니라 저기다
@@ -21,10 +21,10 @@ git pull --ff-only origin main
 
 ```bash
 npm install
-npm run dev:all      # 화면 :5173 + API :8787. 서버 데이터는 http://localhost:5173/?source=api
+npm run dev          # 화면 :5173 — 브라우저 mock 데이터(?source= 없음)
 ```
 
-명령의 뜻과 선행 조건은 [PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md). 화면 작업은 GitHub 없이 한다 — 브라우저 mock(`?source=` 없음) 또는 서버 데이터(환경 변수 가이드 「환경별 설정」). 명령은 기존 데모 저장소 기준이고, 이 문서를 쓰면서 실행해 보지는 않았다.
+명령의 뜻과 선행 조건은 [PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md). 화면 작업은 GitHub 없이 한다 — 브라우저 mock(`?source=` 없음) 또는 Spring 서버 데이터(`?source=api`, 환경 변수 가이드 「환경별 설정」). 위 명령은 기존 데모 저장소 기준이다. 개발 저장소의 프론트 · Spring 동시 실행 명령은 저장소 구성 · 빌드 도구가 정해지면 PROJECT_COMMANDS.md에 쓴다(결정 필요). 데모의 `npm run dev:all`은 Hono 서버를 같이 띄우므로 v1 서버 데이터 확인에는 쓰지 않는다.
 
 ## 담당 표
 
@@ -36,9 +36,9 @@ npm run dev:all      # 화면 :5173 + API :8787. 서버 데이터는 http://loca
 | 조직·레포 선택 — FR-GH-01 | TODO | 라우터 추가 — 주소 미정 (2026-10-28 결정) | TODO | TODO | D · TODO: 이름 | 시작 전 |
 | 사무실 열기 (팀장) — FR-REQ-01, FR-PLAN-01 | TODO | 라우터 추가 — 주소 미정 (2026-10-28 결정) | TODO | TODO | D · TODO: 이름 | 시작 전 |
 | 수집 동의 (팀원) — FR-ACT | TODO | 라우터 추가 — 주소 미정 (2026-10-28 결정) | TODO | TODO | D · TODO: 이름 | 시작 전 |
-| 3D 사무실 (메인) — FR-OFF-01~06, FR-FLOW-02, FR-LRN-03 · 04 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
+| 3D 사무실 (메인) — FR-OFF-01 · 02 · 04~06, FR-REQ-02 · 04(구역 · 묶음 · 연결), FR-FLOW-02, FR-LRN-03 · 04 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
 | [제안] 2D 팀 보드 — 대응 요구사항 ID 없음 (기획안 "(제안)" · requirements-changes.md 추가 제안 후보 10) | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
-| 상단 바 — FR-PLAN-01, FR-FLOW-05, FR-GH-05, FR-REQ-05(진행률), FR-ACT 안내, FR-AUTH-07(강사 레포 드롭다운) | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
+| 상단 바 — FR-PLAN-01, FR-FLOW-05, FR-GH-05, FR-REQ-05(진행률), FR-ACT 안내, FR-AUTH-07(강사 레포 드롭다운), 팀 설정 버튼 · 시연 데이터 표시(2026-11-01 결정) | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
 | 상세 패널 — FR-OFF-05, FR-LRN-01 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
 | 요구사항 패널 — FR-REQ-03~06 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
 | 활동 기록 — FR-ACT-01~04 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
@@ -46,7 +46,7 @@ npm run dev:all      # 화면 :5173 + API :8787. 서버 데이터는 http://loca
 | 일정판 — FR-PLAN-02~04 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
 | 내 학습 타임라인 — FR-LRN-08 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
 | 회고 리포트 — FR-REP-01~06, FR-REP-07, FR-ACT-03 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D · TODO: 이름 | 시작 전 |
-| 강사 요청함 — FR-LRN-21~23, FR-REP-11 | TODO | 라우터 없음 — 별도 화면이 아니라 강사 화면의 사이드바 또는 헤더 요소(어느 쪽인지는 디자인 때 정함 · 2026-10-30 결정) | TODO | TODO | **미정** (2026-10-30 결정) | 시작 전 |
+| 강사 요청함 — FR-LRN-21~23, FR-REP-11 | TODO | 라우터 없음 — 별도 화면이 아니라 강사 권한으로 연 화면의 사이드바 또는 헤더 요소(어느 쪽인지는 디자인 때 정함 · 2026-10-30 결정) | TODO | TODO | **미정** (2026-10-30 결정) | 시작 전 |
 | 컨벤션 라이브러리 — FR-LIB-01 · 02 | TODO | 라우터 없음 — 사무실 안에서 여는 패널 (2026-10-30 결정) | TODO | TODO | **미정** (2026-10-30 결정) | 시작 전 |
 
 **묶음**: TODO — 팀 회의에서 정한다.
@@ -55,9 +55,9 @@ npm run dev:all      # 화면 :5173 + API :8787. 서버 데이터는 http://loca
 
 ### 기존 데모 코드와의 대응
 
-기존 3D 데모(`SamdoRyu/warehouseDemo_fork`)의 화면 코드를 읽어 정리했다(2026-10-28, 실행은 안 함). 경로는 데모 저장소 기준이다. 화면 쪽 상세는 07-screens.md 「기존 데모 화면과의 대응」, 3D 부품별 판정은 ARCHITECTURE.md 「기존 데모와의 대응」.
+기존 3D 데모(`SamdoRyu/warehouseDemo_fork`)의 화면 코드를 읽어 정리했다(2026-10-28). 데모의 사용 · 수정 권한과 실제 실행은 2026-11-01에 팀이 확인했다. 경로는 데모 저장소 기준이다. 화면 쪽 상세는 07-screens.md 「기존 데모 화면과의 대응」, 3D 부품별 판정은 ARCHITECTURE.md 「기존 데모와의 대응」.
 
-> **구현 스택은 아직 정하지 않았다.** 아래 데모 경로 · 파일 · 명령은 데모 스택(React · TypeScript · Three.js · Hono)을 이어 쓸 때의 기준이다. HTML · CSS · JavaScript 위주로 새로 구현하게 되면 같은 내용을 "참고할 동작과 구조"로 읽는다 — ARCHITECTURE.md 「기술 스택」.
+> **프론트엔드 스택은 데모와 같다(React · TypeScript · Three.js + R3F · Zustand — 2026-11-01 결정).** 아래 경로 · 파일이 그대로 재사용 · 리팩터링할 작업 위치다. 백엔드는 Hono가 아니라 Spring Boot로 새로 만든다 — 선행 데이터(backend) 열의 B 기호는 Spring 쪽 담당이다.
 
 | 화면 | 기존 컴포넌트 · 경로 | 판정 | 수정 핵심 | 선행 데이터 (backend) |
 | --- | --- | --- | --- | --- |
@@ -65,14 +65,14 @@ npm run dev:all      # 화면 :5173 + API :8787. 서버 데이터는 http://loca
 | 조직·레포 선택 | 없음 | 신규 | 조직 · 레포 목록, 승인 요청 안내 | B1 · B2 |
 | 사무실 열기 (팀장) | 없음 | 신규 | 레포 · 기간 · 명세 문서 경로 입력 | B2 · B6 · B12 |
 | 수집 동의 (팀원) | 없음 | 신규 (2026-10-28 추가 결정으로 채택) | — | B10 |
-| **3D 사무실 (메인)** — 수정 규모 큼 | `src/scene/OfficeScene.tsx` · `TaskBox.tsx` · `TaskBoxes.tsx` · `slots.ts` · `MeetingRoomState.tsx` · `DragLayer.tsx` · `dropTarget.ts` · `Avatar.tsx` · `Overlays.tsx` · `src/office/layout.ts` | 수정 · 확장 | 공간 · 책상 · 아바타 · 카메라 · 이동 애니메이션은 데모와 같게 구현. PR 삼각기둥 등 새 도형, 요구사항 구역 · 진행률, 검토 영역 위치, 드래그 대상 변경(담당 · 상태 → 구역 연결 · 회의실), 사람별 업무량 표현(신호 다이아 · 업무량 원판 · 기울기) 제거 | B2 · B4 · B6 · B7 · B9 · B13 |
+| **3D 사무실 (메인)** — 수정 규모 큼 | `src/scene/OfficeScene.tsx` · `TaskBox.tsx` · `TaskBoxes.tsx` · `slots.ts` · `MeetingRoomState.tsx` · `DragLayer.tsx` · `dropTarget.ts` · `Avatar.tsx` · `Overlays.tsx` · `src/office/layout.ts` | 수정 · 확장 | 공간 · 책상 · 아바타 · 카메라 · 이동 애니메이션은 데모를 재사용. **위치 계산을 SceneModel(공간 역할)과 ThemeLayout(기본 테마 좌표 · 드롭 영역)으로 나눈다**(2026-11-01 결정 — ARCHITECTURE.md 「공간 역할과 테마」). PR 삼각기둥 등 새 도형, 요구사항 구역 · 묶음 오브젝트 · 진행률, 검토 공간 위치, 드래그 결과 변경(구역 연결 — 상자는 제자리 / 회의실 — 별도 안건 표현), 게시판 오브젝트(내용은 HUD), 아바타 이벤트 이동, 시연 데이터 표시, 사람별 업무량 표현(신호 다이아 · 업무량 원판 · 기울기) 제거 | B2 · B4 · B6 · B7 · B9 · B13 · B14 |
 | [제안] 2D 팀 보드 | 비슷한 것: `src/ui/KanbanView.tsx` · `ListView.tsx`(작업 목록) | 신규 · 채택 전 착수 안 함 | 안건 아이콘 · 게시판 영역 | [제안] B9 · B13 |
-| 상단 바 | `src/ui/TopBar.tsx` | 수정 | KPI · 균형 칩(가장 바쁜 팀원) 대신 요구사항 진행률 · 열린 PR 수 · 평균 리뷰 대기 · 동기화 상태. 레포 드롭다운 · D-day 신규. 오버레이 전환은 정보 뷰(최근 변화 · 담당 · 막힘) 전환으로 | B2 · B6 · B7 · B12 |
-| 상세 패널 | `src/ui/Detail.tsx` · `src/ui/RightPanel.tsx` | 수정 | 편집 입력(상태 · 우선순위 · 포인트 · 담당 · 마감)을 읽기 전용과 GitHub 링크로. 연결 PR · 리뷰 상태 추가. 팀원 상세의 업무량 게이지(`Vitals`) 제거. 평가 버튼 · 추천·비추천과 이유 | B2 · B4 · B9 |
+| 상단 바 | `src/ui/TopBar.tsx` | 수정 | KPI · 균형 칩(가장 바쁜 팀원) 대신 요구사항 진행률 · 열린 PR 수 · 평균 리뷰 대기 · 동기화 상태. 레포 드롭다운 · D-day · 팀 설정 버튼(패널 — 레포 관리자만 수정) · 시연 데이터 표시 신규(2026-11-01 결정). 오버레이 전환은 정보 뷰(최근 변화 · 담당 · 막힘) 전환으로 | B2 · B6 · B7 · B12 · B14 |
+| 상세 패널 | `src/ui/Detail.tsx` · `src/ui/RightPanel.tsx` | 수정 | 편집 입력(상태 · 우선순위 · 포인트 · 담당)을 읽기 전용과 GitHub 링크로. 우선순위는 `priority:*` 라벨, 마감은 앱 저장 값(입력 위치는 결정 필요 — 2026-11-01 결정). 연결 PR · 리뷰 상태 추가. 팀원 상세의 업무량 게이지(`Vitals`) 제거. 평가 버튼 · 현재 회차의 추천·비추천과 이유 | B2 · B4 · B9 · B12 |
 | 요구사항 패널 | 없음 — `RightPanel.tsx`의 탭 구조를 참고 | 신규 | 요구사항 목록 · 진행률 · 빈틈 · 연결 후보 | B6 |
 | 활동 기록 | 없음 — `src/ui/ActivityFeed.tsx`는 데이터 변경 로그라 다른 기능 | 신규 (2026-10-28 추가 결정으로 채택) | — | B10 |
-| 스탠드업·회의 | `src/ui/MeetingDialogs.tsx`(회의 시작 · 종료 · 회의록) · `src/scene/MeetingRoomState.tsx` | 수정 · 확장 | 회의 종료 결과(담당 지정 · 상태 변경 · 백로그)를 결정 · 배운 점 기록으로. 스탠드업 화면은 신규 | B12 · B9 |
-| 일정판 | `src/ui/WeekView.tsx`(팀원 × 날짜 그리드) | 수정 | 화면 모양(팀원 × 날짜 그리드 · 탭)은 유지하고, 칸 · 행의 포인트 합계 · 팀원별 업무량 막대 · 드래그로 마감일 바꾸기(GitHub 원본)는 뺀다(2026-10-28 추가 결정). 마감은 작업 필드 새로 기획 예정 | B12 |
+| 스탠드업·회의 | `src/ui/MeetingDialogs.tsx`(회의 시작 · 종료 · 회의록) · `src/scene/MeetingRoomState.tsx` | 수정 · 확장 | 회의 종료 결과(담당 지정 · 상태 변경 · 백로그)를 결정 · 배운 점 기록으로. 스탠드업 화면은 신규 — "막힌 것"에서 도움 요청으로 넘기기(FR-LRN-15 · FR-MTG-02 팀 재정의 초안) | B12 · B9 · B13 |
+| 일정판 | `src/ui/WeekView.tsx`(팀원 × 날짜 그리드) | 수정 | 화면 모양(팀원 × 날짜 그리드 · 탭)은 유지하고, 칸 · 행의 포인트 합계 · 팀원별 업무량 막대 · 드래그로 마감일 바꾸기는 뺀다(2026-10-28 추가 결정). 마감은 앱 DB에 저장한다(2026-11-01 결정) | B12 |
 | 내 학습 타임라인 | 없음 | 신규 | — | B9 |
 | 회고 리포트 | 없음 — 회의록(`MeetingHistoryDialog`)이 가장 가깝다 | 신규 | 리포트 · 마크다운 내보내기 | B11 |
 | 강사 요청함 | 없음 | 신규 (2026-10-30 결정) | — | B14 · B9 · B11 · B13 |
@@ -103,14 +103,14 @@ v1 화면 목록에 없는 기존 화면 — `src/ui/TeamView.tsx`(팀원별 업
 | 파일 | 왜 |
 | --- | --- |
 | 공용 컴포넌트(상단 바 · 상세 패널 · 도형 5종 · 정보 뷰(최근 변화 · 담당 · 막힘)) | 여러 화면이 쓴다. 수정은 **별도 PR** 로 분리하고 먼저 공유한다. 경로는 `src/ui/TopBar.tsx` · `src/ui/Detail.tsx` · `src/scene/TaskBox.tsx`(도형) · `src/scene/shared.tsx`(공용 도형 · 재질) · `src/scene/Overlays.tsx`(정보 뷰 틀) |
-| 계약 파일 — `src/data/types.ts` · `src/data/DataSource.ts` · `src/store.ts` · `src/office/layout.ts` · `src/data/selectors.ts` · `src/data/insights.ts` | 화면 · 서버 · mock이 함께 기댄다. 데모의 `CLAUDE.md`도 이 파일들을 계약 파일로 묶어 둔다. 바꾸려면 B · C와 먼저 합의한다 |
-| 기존 3D 팀 오피스의 3D 표현 코드(`src/scene/`) | 표현을 참고해 구현한다. 새 모델링은 하지 않는다(기획안 「기능 동결 규칙」) |
+| 계약 파일 — `src/data/types.ts` · `src/data/DataSource.ts` · `src/store.ts` · `src/office/layout.ts` · `src/data/selectors.ts` · `src/data/insights.ts`, 그리고 SceneModel(`src/scene/model/` — 신규) · ThemeLayout(`src/theme/` — 신규) | 화면 · 서버 · mock이 함께 기댄다. 데모의 `CLAUDE.md`도 앞의 파일들을 계약 파일로 묶어 둔다. 바꾸려면 [CONTRACTS.md](./CONTRACTS.md) 「9. 계약 변경 절차」대로 계약 PR을 따로 내고 B · C와 먼저 합의한다 |
+| 기존 3D 데모의 3D 표현 코드(`src/scene/`) | 재사용 · 리팩터링한다. 새 모델링은 하지 않는다(기획안 「기능 동결 규칙」). 테마(사무실)에 묶인 좌표 · 모양은 ThemeLayout · 테마 컴포넌트에 두고, 도메인 로직이 테마를 모르게 한다(2026-11-01 결정) |
 | 의존성 목록 파일(`package.json` · `package-lock.json`) | 라이브러리 추가는 사전 합의(`.claude/rules/security.md`) |
 | `src/App.tsx` · `src/ui/Hud.tsx` · `src/ui/RightPanel.tsx` · `src/ui/uiState.ts` · `src/index.css` · `vite.config.ts` · `tsconfig*.json` | 전원이 공유하는 레이아웃 · 설정 |
 
 ### 인증은 화면 작업이 아니다
 
-GitHub App 로그인과 역할 판정은 서버 공유 인프라를 건드린다. 화면 브랜치에 섞으면 전원과 충돌한다. **backend 담당 기호 B1(계정·권한 — 00-backlog의 IB 번호가 아니다)에서 구현한다** — [BACKEND_ASSIGNMENTS.md](./BACKEND_ASSIGNMENTS.md). 화면은 역할에 따라 버튼을 숨길 수 있지만, 그것을 권한 확인으로 보지 않는다(FR-AUTH-04).
+GitHub App 로그인과 역할 판정은 서버(Spring Security) 공유 인프라를 건드린다. 화면 브랜치에 섞으면 전원과 충돌한다. **backend 담당 기호 B1(계정·권한 — 00-backlog의 IB 번호가 아니다)에서 구현한다** — [BACKEND_ASSIGNMENTS.md](./BACKEND_ASSIGNMENTS.md). 화면은 역할에 따라 버튼을 숨길 수 있지만, 그것을 권한 확인으로 보지 않는다(FR-AUTH-04).
 
 ### `modify/` 는 화면별로 쓴다
 
@@ -136,7 +136,8 @@ PR base 는 `main` 이다. PR 에는 `Closes #<이슈번호>` 와 "관련 요구
 - [ ] 07-screens.md 「모든 화면 공통 인수 조건」 1 · 2와 「공통 상태」 표 (지금은 초안 — 팀이 확인하면 이 줄의 "초안"을 지운다)
 - [ ] 팀원 간 · 조 간 순위 · 비교 화면이 없고, 개인 지표(학습 타임라인 · 회고 리포트 · 기술 결정 카드)는 본인과 강사에게만 보인다 (FR-FLOW-06 · NFR-06 · 2026-10-30 결정)
 - [ ] 막힘 표시는 막혔다는 사실만 보이고 이유 문구가 없다 (FR-FLOW-02 · 2026-10-29 결정)
-- [ ] `npm run lint` · `npm run build`(타입 검사 · 3D lazy 번들 검사 포함) · `npm run test:contract`를 돌린 결과를 PR 「검증」에 적는다. 3D를 바꿨으면 `npm run test:e2e`도 돌린다(Chrome 필요)
+- [ ] 위치 계산이 테마 좌표에 묶이지 않는다 — 요구사항 연결 · 회의 안건이 원본 도형의 위치를 바꾸지 않는다 (05 「상태값」 · 2026-11-01 결정)
+- [ ] `npm run lint` · `npm run build`(타입 검사 · 3D lazy 번들 검사 포함) · `npm run test:contract`(mock 쪽)를 돌린 결과를 PR 「검증」에 적는다. 3D를 바꿨으면 `npm run test:e2e`도 돌린다(Chrome 필요). 개발 저장소의 명령이 정해지면 PROJECT_COMMANDS.md를 따른다
 
 ## 알려진 문서 ↔ 디자인 차이
 

@@ -1,12 +1,12 @@
 # 코드 컨벤션 (BE)
 
-> 2026-10-28 결정 회의 · 2026-10-30 강사 역할 결정 반영. 꼭 지킬 것만 남기고 나머지는 권장으로 낮춘 판
+> 2026-10-28 결정 회의 · 2026-10-30 강사 역할 결정 · 2026-11-01 기술 스택 결정 반영. 꼭 지킬 것만 남기고 나머지는 권장으로 낮춘 판
 
 ## 전제
 
-> **구현 스택은 아직 정하지 않았습니다**(ARCHITECTURE.md 「기술 스택」 ① 데모 스택 · ② HTML · CSS · JS 위주). 이 문서의 경로 · 도구 · 코드 흐름은 ①을 가정합니다. ②로 정하면 「꼭 지킬 것」 · 「에러 응답」 · 「이름」만 그대로 두고 나머지는 다시 씁니다.
+> **백엔드 스택은 정했습니다(2026-11-01 결정)**: Spring Boot + Spring MVC, Spring Data JPA, Spring Security + 세션 기반 인증. 단일 Spring Boot 애플리케이션의 **모듈형 모놀리스**로 만듭니다. 마이크로서비스 · CQRS · 이벤트 소싱은 전제하지 않습니다. DB · JDK 버전 · 빌드 도구 · migration 도구는 결정 필요입니다(ARCHITECTURE.md 「기술 스택」).
 
-①로 가면 기존 3D 팀 오피스 데모 코드를 고쳐 가며 구현하므로 **그 코드의 언어와 패턴을 먼저 따릅니다.** 서버는 TypeScript + Hono(`@hono/node-server`) + SQLite(`node:sqlite`)이고, 화면과 서버가 한 저장소에서 타입과 순수 규칙(`src/data/rules/`)을 함께 씁니다. Node는 24 LTS로 맞춥니다(`.nvmrc`). 스택과 경로는 ARCHITECTURE.md를 봅니다.
+기존 데모의 Hono 서버 · SQLite 코드는 **동작과 API 설계만 참고**하고 포팅하지 않습니다. 프론트엔드(React · TypeScript)는 데모 코드를 재사용하므로 프론트 쪽은 데모의 언어와 패턴을 먼저 따릅니다. 팀이 배운 범위(Spring MVC 요청 처리 · Controller · 요청/응답 데이터 · 파일 업로드 · 예외 처리, ORM · JPA · Entity 연관관계 · Repository · 페이징 · 정렬, Spring Security · 세션)를 기능에 자연스럽게 씁니다. 그 밖의 Spring 개념(AOP 등)은 필요할 때만 씁니다.
 
 새 규칙과 기존 코드가 다르면 기존 코드는 그대로 두고 새 코드에만 적용합니다.
 
@@ -14,17 +14,18 @@
 
 보안과 제품 정책에서 나온 것이라 리뷰에서 바로 반대합니다.
 
-1. **GitHub API는 `server/src/adapters/github/` 안에서만 부릅니다.** 읽기만 합니다 — 이슈 만들기 · 코멘트 · 라벨 · 머지 · 상태 변경처럼 GitHub 원본을 바꾸는 호출은 만들지 않습니다(CON-02). OAuth 코드 교환과 GitHub App 설치 토큰 발급은 인증 절차라 `POST`여도 괜찮고, 앱 서버 자체 API의 쓰기도 별개입니다.
+1. **GitHub API는 GitHub 어댑터 패키지(`github`) 안에서만 부릅니다.** 읽기만 합니다 — 이슈 만들기 · 코멘트 · 라벨 · 머지 · 상태 변경처럼 GitHub 원본을 바꾸는 호출(GraphQL mutation 포함)은 만들지 않습니다(CON-02). OAuth 코드 교환과 GitHub App 설치 토큰 발급은 인증 절차라 `POST`여도 괜찮고, 앱 서버 자체 API의 쓰기도 별개입니다.
 2. **GitHub 토큰은 서버에만 둡니다.** 브라우저로 보내지 않고, 로그에 토큰 · 쿠키 · 이메일을 남기지 않습니다(NFR-04).
-3. **권한은 API에서 확인합니다.** 버튼을 숨긴 것은 권한 확인이 아닙니다(FR-AUTH-04). `X-Actor` 헤더는 데모 봇 표시용이라 사용자 확인에 쓰지 않습니다.
+3. **권한은 API에서 확인합니다.** 버튼을 숨긴 것은 권한 확인이 아닙니다(FR-AUTH-04). 요청마다 로그인 · 사무실 접근 · 역할을 확인하고, 클라이언트가 보낸 사용자 값(`X-Actor` 같은 헤더 포함)을 믿지 않습니다. 실시간 갱신(SSE)도 같은 검사를 거칩니다(2026-11-01 결정).
 4. **개인 지표(학습 타임라인 · 회고 리포트 · 기술 결정 카드)는 본인과 강사 요청의 응답에만 담습니다**(NFR-06 — 2026-10-30 결정). 다른 팀원의 요청에는 담지 않습니다. **사람별 합계 · 순위 필드는 만들지 않습니다**(FR-FLOW-06, FR-LRN-09).
 5. **GitHub 동기화 실패를 삼키지 않습니다.** 마지막 성공 시각과 실패 사유를 남기고 화면은 마지막 데이터로 둡니다(FR-GH-05, NFR-09).
-6. **SQL은 매개변수 바인딩으로만** 씁니다. 사용자 입력을 문자열로 이어 붙이지 않습니다.
-7. **시각은 UTC ISO 문자열**로 저장 · 응답합니다. 한국 시간 변환은 화면에서 합니다.
+6. **쿼리는 매개변수 바인딩으로만** 씁니다. JPQL · 네이티브 쿼리에 사용자 입력을 문자열로 이어 붙이지 않습니다.
+7. **시각은 UTC로** 저장 · 응답합니다(ISO 8601 문자열). 한국 시간 변환은 화면에서 합니다.
+8. **사무실 단위 데이터는 항상 사무실(Workspace) 조건으로** 조회 · 저장합니다. 여러 조가 같은 DB를 씁니다(2026-11-01 결정).
 
 ## 에러 응답
 
-데모 모양을 그대로 씁니다. code는 소문자 snake입니다.
+데모 모양을 그대로 씁니다. code는 소문자 snake입니다. 스택이 바뀌어도 유지합니다(프론트 `toError` · `DataError`가 이 모양에 기댑니다).
 
 ```json
 { "error": { "code": "forbidden_role", "message": "이 작업을 할 권한이 없어요" } }
@@ -32,7 +33,7 @@
 
 | code | HTTP | 언제 |
 | --- | --- | --- |
-| `invalid` | 400 (요청 위생 검사 실패는 403) | 입력 검증 실패. 이유 없는 추천 · 비추천 평가 등 — 기존 code |
+| `invalid` | 400 (요청 출처 검사 실패는 403) | 입력 검증 실패. 이유 없는 추천 · 비추천 평가 등 — 기존 code |
 | `not_found` | 404 | 대상 없음 — 기존 code |
 | `conflict` | 409 | 상태 충돌 — 기존 code |
 | `unavailable` | 503 | 서버 사용 불가 · 알 수 없는 오류 — 기존 code |
@@ -41,77 +42,85 @@
 | `github_unauthorized` | 503 | GitHub 인증 실패(설치 토큰 등) — 신규 |
 | `github_rate_limited` | 503 | GitHub 호출 한도 초과 — 신규 |
 
-- 실패는 `DataError(message, code)`를 던지고 라우트의 `onError`가 응답으로 바꿉니다. 새 code를 더하면 `src/data/api/index.ts`의 `toError`와 `DataError` 타입도 같이 고칩니다.
-- `message`는 사용자에게 보일 한국어 문장입니다(`src/data/rules/messages.ts`).
+- 실패는 공통 예외(`[제안]` 앱 예외 클래스 하나 + code 열거형)를 던지고, **전역 예외 처리 한 곳**(`[제안]` `@RestControllerAdvice`)이 위 모양으로 바꿉니다. Spring Security의 인증 · 인가 실패(401 · 403)도 같은 모양으로 응답합니다.
+- 새 code를 더하면 프론트 `src/data/api/index.ts`의 `toError`와 `DataError` 타입도 같이 고칩니다. 새 code는 팀 합의 없이 만들지 않습니다(2026-10-30 결정).
+- `message`는 사용자에게 보일 한국어 문장입니다.
 
 ## 서버 코드 흐름
 
-데모 코드의 흐름 **라우트 → repo → rules**를 따릅니다.
+**Controller → Service → Repository**입니다.
 
-- 라우트(`server/src/routes.ts`)는 요청을 읽고 repo를 부르는 일만 합니다.
-- 검증은 `src/data/rules/validate.ts`의 `check*`처럼 공유 규칙으로 둡니다. 브라우저 mock과 서버가 같은 검증을 씁니다.
-- repo(`server/src/repo.ts`)의 쓰기는 `mutate()` 안에서 합니다. 트랜잭션 안에서 저장하고, 커밋이 끝난 뒤에 SSE로 알립니다.
-- 새 라우트에도 요청 위생 미들웨어(Host · Origin · Content-Type 검사)를 그대로 거칩니다.
+- **Controller**: 요청 매핑, 요청 DTO 검증(`[제안]` Bean Validation), 인가 서비스로 권한 검사, Service 호출, 응답 DTO 반환. 규칙을 두지 않습니다.
+- **Service**: 업무 규칙과 트랜잭션(`@Transactional`). 외부 호출 없이 값만으로 판정하는 규칙(막힘 · 평가 처리 · 카드 조립 등)은 따로 떼어 단위 테스트합니다.
+- **Repository**: Spring Data JPA 인터페이스. 다른 패키지의 Repository를 직접 부르지 않고 그 패키지의 Service를 부릅니다(`[제안]`).
+- **DTO**: Entity를 응답으로 바로 내보내지 않습니다. 본인 · 강사 여부로 필드를 빼야 하는 응답은 DTO를 따로 둡니다.
+- 쓰기가 끝난 뒤 브라우저 알림(SSE)은 **트랜잭션 커밋 뒤에** 보냅니다(데모 원칙 유지 — `[제안]` 커밋 뒤 이벤트).
+- 파일 업로드(Spring MVC 멀티파트)는 v1 요구사항에 쓰는 곳이 정해지지 않았습니다 — 필요한 기능이 생기면 그때 정합니다.
 
-## 인증 (신규)
+## 인증
 
-- GitHub 로그인 뒤 서버 세션을 만듭니다. **세션은 30분\~1시간 뒤 만료**됩니다.
-- 역할(참여자 · 레포 관리자)은 **로그인할 때 GitHub 권한으로 한 번 정하고** 세션에 둡니다. 요청마다 GitHub에 다시 묻지 않습니다. 팀 레포 admin은 레포 관리자, 강사로 지정된 사람을 뺀 그 밖의 레포 콜라보레이터 전원(read 포함)은 참여자입니다("write 권한 = 참여자" 규칙은 없앰 — 2026-10-30 결정). 전체 관리자는 `MASTER_ADMIN_GITHUB_LOGIN`으로 지정합니다.
-- 강사는 레포 관리자가 앱 팀 설정에서 참여자 중에 지정합니다. **강사 지정 여부는 요청마다 앱 DB에서 확인**하므로 지정 · 해제가 바로 반영됩니다(2026-10-30 결정).
-- 기초 보안까지만 합니다: 세션 쿠키는 `HttpOnly` · `SameSite`, 쓰기 요청은 기존 Origin 검사를 거침.
+- Spring Security로 인증 · 인가를 하고, **세션 기반**으로 로그인 상태를 둡니다(2026-11-01 결정). GitHub 로그인은 GitHub App의 사용자 인증으로 합니다(`[제안]` OAuth2 Login).
+- **세션은 30분\~1시간 뒤 만료**됩니다(2026-10-28 결정).
+- 역할(참여자 · 레포 관리자)은 **로그인할 때 GitHub 권한으로 레포마다 정하고** 세션에 둡니다. 요청마다 GitHub에 다시 묻지 않습니다. 팀 레포 admin은 레포 관리자, 그 밖의 레포 콜라보레이터 전원(read 포함)은 참여자입니다. 전체 관리자는 `MASTER_ADMIN_GITHUB_LOGIN`으로 지정합니다.
+- 강사는 레포 관리자가 앱 팀 설정에서 **승인된 강사 계정 중에서** 지정합니다. 일반 학생은 지정할 수 없습니다(2026-11-01 결정 — 승인 · 등록 방법은 결정 필요). **강사 지정 여부는 요청마다 앱 DB에서 확인**하므로 지정 · 해제가 바로 반영됩니다(2026-10-30 결정).
+- 외부 공개 배포라 **HTTPS, 세션 쿠키(`HttpOnly` · `Secure` · `SameSite`), CSRF 방어, 허용 출처 검사**를 갖춥니다(2026-11-01 결정). 세부 설정은 ARCHITECTURE.md 「인증과 권한」 · CONTRACTS.md 「6」.
 
-## 저장 (SQLite)
+## 저장 (Spring Data JPA)
 
-- 데모처럼 **엔티티마다 `(id TEXT PRIMARY KEY, data TEXT)` 테이블에 JSON으로 저장**합니다. 새 항목도 같은 방식입니다.
-- 마이그레이션 도구는 없습니다. `CREATE TABLE IF NOT EXISTS`와 `repo.migrate()`를 씁니다. 테스트는 `':memory:'` DB.
+- 06-data.md 「저장 항목」을 **JPA Entity**로 만듭니다. 데모의 `(id, data JSON)` 테이블 방식은 쓰지 않습니다(2026-11-01 결정 — 2026-10-28 결정을 대신함).
+- 연관관계는 기본 **단방향 N–1**로 두고, 양방향은 꼭 필요한 곳만 씁니다. 기본은 지연 로딩이고, 목록 조회에서 N+1이 생기지 않게 조회 방식을 정합니다(fetch join · EntityGraph 등).
+- 목록 API는 **페이징 · 정렬**(Spring Data `Pageable`)을 씁니다.
+- 스키마는 migration 도구로 관리합니다(도구는 결정 필요 — `[제안]` Flyway). 운영 스키마를 JPA 자동 생성(`ddl-auto`)에 맡기지 않습니다(`[제안]`).
 - GitHub에서 온 값은 `syncedAt`을 같이 저장합니다.
+- 테스트 DB는 결정 필요입니다(운영과 같은 DB 또는 내장 DB).
 
 ## 이름 (권장)
 
-- **새 타입은 아래 이름을 씁니다.** 데모에 이미 있는 이름(`Task`, `Member`, `Meeting`, `DataSource`, `Activity`)은 바꾸지 않습니다.
+- **새 타입은 아래 이름을 씁니다.** 데모에 이미 있는 이름(`Task`, `Member`, `Meeting`, `DataSource`, `Activity`)은 바꾸지 않습니다. 서버 Entity `Workspace`(사무실)와 데모 화면 타입 `Workspace`(전체 데이터 묶음)가 겹치는 문제는 CONTRACTS.md 「8」에서 정합니다.
 
   | 정의서 용어 | 코드 이름 |
   | --- | --- |
   | 명세 문서 · 요구사항 | `SpecDocument` · `Requirement` |
   | 제출(PR) | `Submission` (GitHub 원본 타입은 `GithubPullRequest`, 이슈는 `GithubIssue`) |
   | 요구사항–이슈 연결 | `RequirementLink` |
-  | 막힘 · PR 평가(추천 · 비추천) · 회의 안건 · 스탠드업 | `Blocker` · `Evaluation`(`recommend`, `not_recommend`) · `AgendaItem` · `Standup` |
+  | 막힘 · PR 평가(추천 · 비추천) · 평가 회차 · 회의 안건 · 스탠드업 | `Blocker` · `Evaluation`(`recommend`, `not_recommend`) · `EvaluationRound` (`[제안]` — 2026-11-01) · `AgendaItem` · `Standup` |
   | 도움 요청 | `HelpRequest` |
   | 컨벤션 라이브러리 항목 | `ConventionLibraryItem` |
   | 회고 리포트 · 기술 결정 카드 | `RetroReport` · `DecisionCard` |
-  | 팀 설정 | `TeamSettings` |
+  | 팀 설정 · 사무실 | `TeamSettings` · `Workspace` |
 
-- 파일 · 변수 표기는 데모 관례를 따릅니다: 컴포넌트 `PascalCase.tsx`, 그 밖의 모듈 `camelCase.ts`, 서버 파일 소문자, 상수 `UPPER_SNAKE`, 문자열 유니온 값 소문자 snake(`'in_progress'`).
-- ID는 데모처럼 접두사 붙은 문자열입니다(`t_`, `m_`, `mt_`). 새 엔티티도 접두사를 하나 정해 씁니다.
+- 자바 쪽 표기는 Java 관례를 따릅니다: 클래스 `PascalCase`, 메서드 · 필드 `camelCase`, 상수 `UPPER_SNAKE`, 패키지 소문자. 프론트 쪽은 데모 관례(컴포넌트 `PascalCase.tsx`, 그 밖의 모듈 `camelCase.ts`)를 따릅니다.
+- JSON 응답의 필드 이름은 `camelCase`, 문자열 열거 값은 프론트와 맞춰 소문자 snake(`'in_progress'`, `'not_recommend'`)로 냅니다(`[제안]` — 자바 열거형과의 변환 위치는 공통 DTO 한 곳).
+- ID 형식은 결정 필요입니다(CONTRACTS.md 「2」).
 - 헷갈리기 쉬운 값만 이름으로 구분합니다.
   - 시간 값에는 단위: `reviewWaitHours`, `sessionTtlMinutes`
   - GitHub 번호와 앱 ID: `githubIssueNumber` ↔ `taskId`
   - 참 · 거짓은 `is` · `has` · `can`으로 시작하면 읽기 좋습니다.
-- 함수 동사는 따로 정하지 않습니다. 데모의 `compute` · `plan` · `apply` · `check`를 참고하고, GitHub 코드는 `fetch` · `sync` 정도면 충분합니다.
+- 함수 동사는 따로 정하지 않습니다. GitHub 코드는 `fetch` · `sync` 정도면 충분합니다.
 
 ## 기준값
 
 - **팀 설정 화면에서 바꾸는 값**(프로젝트 기간, 막힘 기준 시간 — 기본 리뷰 대기 48시간 · 커밋 없음 48시간)은 `TeamSettings`에서 읽습니다.
-- 그 밖의 숫자(폴링 5분, 도움 요청이 안건 후보가 되는 48시간 등)는 `src/data/rules/constants.ts`처럼 **상수 한 곳에 모아 두면 됩니다.** 코드 여기저기에 숫자를 직접 쓰지만 않으면 됩니다.
+- 그 밖의 숫자(폴링 5분, 도움 요청이 안건 후보가 되는 48시간, 우선순위 라벨 이름, 요구사항 묶음으로 바꾸는 개수 등)는 **상수 한 곳에 모아 두면 됩니다**(백엔드 한 곳, 화면 계산용 프론트 한 곳). 코드 여기저기에 숫자를 직접 쓰지만 않으면 됩니다.
 
 ## 모듈 (권장)
 
-| 모듈 | 경로 |
+| 모듈 | 위치 (`[제안]` — ARCHITECTURE.md 「개발 저장소」) |
 | --- | --- |
-| 순수 규칙 (core) | `src/data/rules/` — GitHub · DB · env를 부르지 않아 단위 테스트가 쉬움 |
-| API | `server/src/routes.ts` |
-| 저장 | `server/src/repo.ts` · `db.ts` |
-| GitHub 어댑터 | `server/src/adapters/github/` (신규) |
-| 인증 | `server/src/auth/` (신규) |
-| 가짜 데이터 | `src/data/mock/` — 브라우저 mock을 새 모델로 넓혀서 화면 작업 · 시연에 씀 |
+| 순수 규칙 (core) | 각 패키지 Service 안의 규칙 클래스 — GitHub · DB · env를 부르지 않아 단위 테스트가 쉬움 |
+| API | 각 패키지의 Controller |
+| 저장 | 각 패키지의 Entity · Repository |
+| GitHub 어댑터 | `github` 패키지 (실제 + 시연용 Seed) |
+| 인증 · 인가 | `auth` · `common` 패키지 |
+| 가짜 데이터 | 화면 개발 · 테스트: 프론트 `src/data/mock/`. 발표 시연: 서버 Seed 사무실(2026-11-01 결정) |
 
 - 화면은 `src/data/DataSource.ts` 인터페이스로만 데이터를 받습니다. 화면 코드에서 `fetch('/api/…')`를 직접 부르지 않습니다.
-- 요청 · 응답 타입을 따로 둘 필요는 없습니다. 본인 · 강사 여부로 필드를 빼야 하는 응답만 `*Response` 타입을 따로 둡니다.
+- 공통 계약(Entity · DTO · API 경로 · 에러 · 보안 설정 · 어댑터)은 CONTRACTS.md 「9. 계약 변경 절차」대로 바꿉니다.
 
 ## 도구
 
 | 항목 | 내용 |
 | --- | --- |
-| 린터 | `oxlint` (`npm run lint`). 포매터는 새로 넣지 않습니다 |
-| 타입 검사 | `tsc -b`. 서버 · `src/data` 쪽(`tsconfig.tools.json`)은 strict |
-| 테스트 | 규칙 · 계약 테스트 `npm run test:contract`, E2E `npm run test:e2e`(Playwright). 명령은 PROJECT_COMMANDS.md |
+| 빌드 도구 · JDK | 결정 필요 (Gradle 또는 Maven, LTS JDK) |
+| 테스트 | JUnit + Spring Boot 테스트. GitHub는 응답 예시 데이터로 대신하고 실제로 부르지 않습니다. 명령은 PROJECT_COMMANDS.md |
+| 린터 · 포매터 | 결정 필요 — 새 도구는 팀 합의 후 (프론트는 데모의 `oxlint` 그대로) |

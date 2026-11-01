@@ -2,77 +2,100 @@
 
 화면과 서버 코드를 만들기 전에 이 문서를 읽는다. **git 흐름(브랜치·커밋·PR·리뷰·머지)은 여기 없다 — `.claude/rules/git-workflow.md`(개발 컨벤션 > Git 전략)를 본다.**
 
+- 공통 계약(도메인 모델 · Entity 관계 · DTO · 엔드포인트 · 에러 · 권한 · 어댑터 · DataSource · SceneModel) 초안: [CONTRACTS.md](./CONTRACTS.md)
 - 누가 어느 화면을 맡는지: [SCREEN_ASSIGNMENTS.md](./SCREEN_ASSIGNMENTS.md)
 - 누가 어느 서버 기능을 맡는지: [BACKEND_ASSIGNMENTS.md](./BACKEND_ASSIGNMENTS.md)
 - 실행·검증 명령과 환경 변수: [PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md)
 
-> **근거와 표기**: 기존 3D 팀 오피스는 데모 저장소 `SamdoRyu/warehouseDemo_fork`(`FG-Kaki/warehouseDemo`의 fork, `main`)다. 이 문서의 "현재 구현"은 2026-10-28에 그 저장소의 소스를 GitHub API로 읽어 확인한 내용이다 — **클론 · 실행 · 테스트 실행은 하지 않았다.** 경로는 데모 저장소 기준 상대 경로다.
+> **근거와 표기**: 기존 3D 데모는 데모 저장소 `SamdoRyu/warehouseDemo_fork`(`FG-Kaki/warehouseDemo`의 fork, `main`)다. 이 문서의 "현재 구현"은 2026-10-28에 그 저장소의 소스를 읽어 확인한 내용이다. 데모의 사용 · 수정 권한과 실제 실행은 2026-11-01에 팀이 확인했다(결정 기록 「기술 스택 · 공간 모델 · 학습 흐름 결정 (2026-11-01)」). 경로는 데모 저장소 기준 상대 경로다.
 >
 > - **현재 구현**: 데모 코드에 실제로 있는 것
-> - **신규 예정**: 오피스 v1을 위해 새로 만들 것. 경로는 권장안이고 아직 없다
+> - **확정 (날짜)**: 팀이 결정 기록으로 정한 것
+> - **신규 예정**: v1을 위해 새로 만들 것. 경로는 권장안이고 아직 없다
+> - **`[제안]`**: 구현할 때 권장하는 설계. 팀 결정이 아니다
 > - **결정 필요**: 팀이 정해야 하는 것. 모아서 PRD.md 「열린 질문」
 
-## 두 저장소
+## 저장소
 
 | 저장소 | 역할 | 비고 |
 | --- | --- | --- |
 | `SamdoRyu/docs-for-PJ-review` (이 저장소) | 기획 · 설계 · 개발 규칙 문서, Issue · PR 템플릿 초안 | 앱 코드가 없다 |
-| `SamdoRyu/warehouseDemo_fork` | 기존 3D 데모 코드. 오피스 v1의 동작 · 화면 구성을 참고하는 기준 구현이다(CON-05) | 참고 원본. **실제 개발은 새로 만들 개발 레포에서 한다**(2026-10-28 결정). 레포 설정은 Git 전략 「8」 |
+| `SamdoRyu/warehouseDemo_fork` | 기존 3D 데모 코드. **프론트엔드를 재사용할 원본**이다 — 3D 장면 · 카메라 · 선택 · 드래그 · 애니메이션 · HUD · Zustand · `DataSource` 개념 · 순수 계산 함수 · 프론트 테스트를 적극 재사용하고, 필요하면 대규모로 리팩터링한다(CON-05 — 2026-11-01 결정). Hono 서버 · SQLite는 동작과 API 설계만 참고한다 | 사용 · 수정 권한 확인됨(2026-11-01). **실제 개발은 새로 만들 개발 저장소에서 한다**(2026-10-28 결정). 레포 설정은 Git 전략 「8」 |
+| 개발 저장소 (아직 없음) | 프론트엔드(React) + 백엔드(Spring Boot) | **구성은 결정 필요** — 한 저장소(`frontend/` + `backend/`) 또는 두 저장소. `[제안]` 한 저장소: 공통 계약 변경을 한 PR로 묶을 수 있다 |
 
 데모 저장소의 `docs/PLAN.md`는 과거 팀 관리 대시보드(관리자 1명 + 팀원 6~10명) 기획이다. 오피스 v1의 요구사항 기준으로 쓰지 않는다.
 
 ## 기술 스택
 
-**구현 스택은 아직 정하지 않았다 — 결정 필요.** 코드 가이드라인과 부트캠프 기술 조건이 나온 뒤 아래 둘 중 하나로 정한다. 어느 쪽이든 오피스 v1의 기능(로그인, GitHub 동기화, 요구사항 구역, PR 평가, 회의실 안건, 도움 요청, 회고 리포트, 강사 대응 등)은 새로 구현한다. 습관 체크는 2026-10-30 결정으로 없앴다.
+**확정 (2026-11-01 결정)**. 강사에게 React · TypeScript · Three.js 사용이 가능함을 확인했다. HTML · CSS · JavaScript 위주 재구현(이전 ②안)은 후보에서 뺐다.
 
-| 안 | 내용 | 데모 코드와의 관계 |
+| 구분 | 확정 | 메모 |
 | --- | --- | --- |
-| ① 데모 스택을 이어 쓴다 | React · TypeScript · Three.js · Hono · SQLite(아래 표) | 데모 코드를 고쳐 가며 구현. 이 문서의 경로 · 대응표가 그대로 작업 위치가 된다 |
-| ② HTML · CSS · JavaScript 위주로 새로 구현 | 프레임워크 없이 또는 최소한으로. 3D 라이브러리 · 서버 구성은 그때 정한다 | 데모는 동작 · 데이터 흐름 · 화면 구성을 참고만 한다. 이 문서의 경로는 "참고할 곳"으로 읽는다 |
+| 프론트엔드 | React + TypeScript | 데모 코드 재사용 · 리팩터링 |
+| 3D | Three.js + React Three Fiber (데모는 drei도 씀) | 데모 장면 재사용 |
+| 상태 관리 | Zustand (데모 구조) | 데이터 사본 · 선택 · 드래그 · 낙관적 갱신 |
+| 백엔드 | Spring Boot + Spring MVC | **단일 Spring Boot 애플리케이션의 모듈형 모놀리스**를 권장한다. 마이크로서비스 · CQRS · 이벤트 소싱은 전제하지 않는다 |
+| 데이터 접근 | Spring Data JPA | Entity · 연관관계 · Repository · 페이징 · 정렬 |
+| 인증 · 인가 | Spring Security + 세션 기반 인증 | GitHub OAuth 로그인 |
+| GitHub 데이터 | GitHub App, 읽기 전용 | CON-02 |
+| 배포 | 외부 인터넷에서 접근할 수 있는 웹 애플리케이션 | SP11 (TBD-09 재결정) |
+| 운영에 쓰지 않는 것 | 데모의 Hono 서버 · `node:sqlite` 저장 | 동작 · API 설계만 참고, 코드 포팅을 전제하지 않음 |
 
-②를 고르면 CON-05("기존 3D 팀 오피스 위에 구축하고, 기존 DataSource 구조의 이름을 유지")를 어떻게 지킬지(구조와 이름만 이어받기 등)도 함께 정한다. 그 전까지 이 문서와 코드 컨벤션(BE)은 ①을 가정하고 쓰여 있다.
+**미확정 — 결정 필요**. 권장안은 `[제안]`이고 확정이 아니다.
 
-### 데모가 쓰는 스택 (참고 — 데모 `package.json` · `package-lock.json`)
+| 항목 | 권장안 `[제안]` | 정할 때 볼 것 |
+| --- | --- | --- |
+| DB | PostgreSQL (우선 검토) | 배포 대상에서 쓸 수 있는지, 로컬 개발 환경 |
+| JDK 버전 | LTS 버전 하나로 통일 | Spring Boot 버전이 요구하는 최소 JDK |
+| 빌드 도구 | Gradle 또는 Maven 중 하나 | 팀이 익숙한 쪽 |
+| DB migration 도구 | Flyway | JPA `ddl-auto`에 운영 스키마를 맡기지 않기 위해 필요 |
+| 테스트 DB | 운영과 같은 DB(컨테이너) 또는 내장 DB | 쿼리 차이 위험 |
+| 세션 저장 위치 | 서버 메모리(서버 1대일 때) | 서버를 여러 대로 늘리거나 재시작 때 세션 유지가 필요하면 DB 저장 |
+| 저장소 구성 | 한 저장소 | 위 「저장소」 |
+| SPA 서빙 방식 | Spring이 빌드 결과를 정적 파일로 서빙(같은 출처) 또는 리버스 프록시 | 같은 출처면 CORS가 필요 없다 |
+| 배포 대상 | — | HTTPS 인증서 · 도메인 |
 
-| 구분 | 패키지 | `package.json` 범위 | lock 실제 버전 |
-| --- | --- | --- | --- |
-| 언어 | TypeScript | `~6.0.2` | 6.0.3 |
-| 화면 | react · react-dom | `^19.2.8` | 19.3.0 |
-| 3D | three | `^0.186.1` | 0.186.1 |
-| 3D | @react-three/fiber | `^9.8.1` | 9.8.1 |
-| 3D | @react-three/drei | `^10.7.9` | 10.7.9 |
-| 상태 관리 | zustand | `^5.0.15` | 5.0.15 |
-| 서버 | hono | `^4.13.13` | 4.13.13 |
-| 서버 | @hono/node-server | `^2.1.3` | 2.1.3 |
-| DB | `node:sqlite` (Node 내장 `DatabaseSync`) | 의존성 아님 | Node 버전에 따름 |
-| 빌드 | vite (Rolldown 기반) | `^8.3.0` | 8.3.2 |
-| 빌드 | @vitejs/plugin-react | `^6.1.1` | 6.1.2 |
-| 실행 | tsx | `^4.23.15` | 4.23.15 |
-| 실행 | concurrently | `^10.0.5` | 10.0.5 |
-| 린터 | oxlint | `^1.81.0` | 1.87.0 |
-| 테스트 | @playwright/test (E2E) | `^1.64.0` | 1.64.0 |
-| 테스트 | `node:test` + tsx (계약 테스트) | 의존성 아님 | — |
-| 타입 | @types/node | `^24.13.3` | 24.19.1 |
+### 데모가 쓰는 스택 (프론트 재사용 기준 — 데모 `package.json` · `package-lock.json`)
+
+| 구분 | 패키지 | `package.json` 범위 | lock 실제 버전 | v1에서 |
+| --- | --- | --- | --- | --- |
+| 언어 | TypeScript | `~6.0.2` | 6.0.3 | 프론트 재사용 |
+| 화면 | react · react-dom | `^19.2.8` | 19.3.0 | 프론트 재사용 |
+| 3D | three | `^0.186.1` | 0.186.1 | 프론트 재사용 |
+| 3D | @react-three/fiber | `^9.8.1` | 9.8.1 | 프론트 재사용 |
+| 3D | @react-three/drei | `^10.7.9` | 10.7.9 | 프론트 재사용 |
+| 상태 관리 | zustand | `^5.0.15` | 5.0.15 | 프론트 재사용 |
+| 서버 | hono | `^4.13.13` | 4.13.13 | 참고만 (운영 백엔드 아님) |
+| 서버 | @hono/node-server | `^2.1.3` | 2.1.3 | 참고만 |
+| DB | `node:sqlite` (Node 내장 `DatabaseSync`) | 의존성 아님 | Node 버전에 따름 | 참고만 |
+| 빌드 | vite (Rolldown 기반) | `^8.3.0` | 8.3.2 | 프론트 재사용 |
+| 빌드 | @vitejs/plugin-react | `^6.1.1` | 6.1.2 | 프론트 재사용 |
+| 실행 | tsx | `^4.23.15` | 4.23.15 | 서버 실행용은 참고만. 프론트 스크립트 · 테스트에 쓰면 유지 |
+| 실행 | concurrently | `^10.0.5` | 10.0.5 | 결정 필요 (프론트 + Spring 동시 실행 방식) |
+| 린터 | oxlint | `^1.81.0` | 1.87.0 | 프론트 재사용 |
+| 테스트 | @playwright/test (E2E) | `^1.64.0` | 1.64.0 | 프론트 재사용 |
+| 테스트 | `node:test` + tsx (계약 테스트) | 의존성 아님 | — | mock 쪽은 재사용. API 쪽은 Spring 서버를 대상으로 다시 구성 — 아래 「테스트 경계」 |
+| 타입 | @types/node | `^24.13.3` | 24.19.1 | 프론트 재사용 |
 
 - 앱 코드는 전부 TypeScript(`.ts` · `.tsx`)다. JavaScript는 `scripts/check-bundle.mjs` 같은 스크립트에만 있고, HTML은 `index.html` 하나, CSS는 `src/index.css`와 `src/ui/*.css`다.
 - 서버 변경 알림은 SSE(직접 구현, 라이브러리 없음), 포매터는 없다(oxlint만).
-- **Node 버전**: 데모에는 `engines`와 `.nvmrc`가 없다. 의존성 조건으로 보면 Node 22.13 이상이 필요하다(`node:sqlite`를 플래그 없이 쓰려면 22.13+, concurrently ≥22, vite ≥22.12). **Node 24 LTS로 통일한다**(2026-10-28 결정) — 개발 저장소에 `.nvmrc`를 추가한다(Git 전략 「8」).
-- **부트캠프 기술 조건**: 기본 조건은 HTML · CSS · JavaScript이고 다른 라이브러리 · 프레임워크도 허용된다고 전달받았다. 별도 평가 기준(예: 순수 JS 비중)이 있는지 확인되지 않아, 위 ① · ② 중 어느 쪽으로 갈지 정하지 않았다 — 결정 필요.
+- **Node 버전**(프론트 개발 도구용): 데모에는 `engines`와 `.nvmrc`가 없다. 의존성 조건으로 보면 Node 22.12 이상이 필요하다(vite ≥22.12, concurrently ≥22). **Node 24 LTS로 통일한다**(2026-10-28 결정) — 개발 저장소에 `.nvmrc`를 추가한다(Git 전략 「8」).
 
 ### 신규 예정 (선정 필요)
 
 | 구분 | 상태 |
 | --- | --- |
-| GitHub API 호출 방식(직접 `fetch` 또는 클라이언트 라이브러리) | 선정 필요 |
+| GitHub API 호출 방식(Spring의 HTTP 클라이언트로 직접 호출 또는 GitHub 클라이언트 라이브러리) | 선정 필요 |
 | GitHub App JWT 서명 · 설치 토큰 발급 | 선정 필요(라이브러리 또는 직접 구현) |
-| 로그인 세션(쿠키 서명 방식) | 선정 필요 — Hono 내장 기능으로 될지 먼저 확인 |
+| GitHub 로그인 | Spring Security OAuth2 Login으로 GitHub App의 사용자 인증(client id · secret)을 쓰는 것이 `[제안]` — 동작은 구현 전 확인 필요 |
 | 명세 문서(마크다운) 파싱 | 선정 필요(형식은 ## 제목만 — TBD-01, 2026-10-28 결정) |
+| 서버 → 브라우저 변경 알림 | `[제안]` Spring MVC의 SSE(`SseEmitter`). 데모 클라이언트(`src/data/api/sse.ts`)의 재연결 동작을 유지할 수 있는지 확인 필요 |
 
-새 dependency는 필요성과 유지보수 상태를 확인하고 팀에 먼저 말한 뒤 추가한다(`.claude/rules/security.md`). 프레임워크 교체는 하지 않는다.
+새 dependency는 필요성과 유지보수 상태를 확인하고 팀에 먼저 말한 뒤 추가한다(`.claude/rules/security.md`). 확정 스택 밖으로 프레임워크를 바꾸지 않는다.
 
 ## 폴더 구조
 
-### 현재 구현
+### 현재 구현 (데모)
 
 ```text
 warehouseDemo_fork/
@@ -94,7 +117,7 @@ warehouseDemo_fork/
 │  ├─ theme.ts · index.css
 │  └─ ui/                         HUD — TopBar, RightPanel, Detail, Kanban/List/Team/WeekView,
 │                                 MeetingDialogs, Dialogs, Suggestions, ActivityFeed, Toasts …
-├─ server/src/
+├─ server/src/                    (참고만 — 운영 백엔드는 Spring Boot)
 │  ├─ index.ts · app.ts           서버 시작(127.0.0.1, PORT ?? 8787) · 조립
 │  ├─ routes.ts                   Hono 라우트 · 요청 위생 미들웨어 · 에러 응답
 │  ├─ repo.ts · db.ts             저장 로직 · SQLite(node:sqlite)
@@ -104,26 +127,65 @@ warehouseDemo_fork/
 └─ scripts/                       check-bundle.mjs(빌드 후 번들 검사) · data-smoke.ts
 ```
 
+### 개발 저장소 (신규 예정 — `[제안]`, 저장소 구성은 결정 필요)
+
+```text
+(개발 저장소)
+├─ frontend/                      데모의 index.html · src/ · tests/ · scripts/ 를 옮겨 리팩터링
+│  └─ src/
+│     ├─ app/ · scene/ · ui/      데모 구조 유지
+│     ├─ scene/model/             SceneModel 계산 — 도메인 데이터 → 공간 역할 · 강조 (순수 함수)
+│     ├─ theme/office/            ThemeLayout 기본 테마(사무실) — layout.ts 좌표 · 드롭 영역을 옮겨 옴
+│     ├─ data/                    DataSource · types · mock · api (Spring API 클라이언트) · rules(화면 계산 · mock 규칙)
+│     └─ store.ts
+└─ backend/                       Spring Boot 단일 애플리케이션 (모듈형 모놀리스)
+   └─ src/main/java/<base>/       패키지마다 controller · service · repository · domain(Entity) · dto
+      ├─ common/                  에러 응답 · 보안 설정 · UTC 시각 · 로그 마스킹
+      ├─ auth/                    로그인 · 세션 · 역할 판정 · 승인된 강사 계정
+      ├─ workspace/               사무실(레포 등록 · 시연 사무실) · 팀 설정 · 강사 지정
+      ├─ github/                  GitHub 어댑터 — GitHub API를 부르는 유일한 패키지 (+ 시연용 Seed 어댑터)
+      ├─ sync/                    폴링 · 수동 동기화 · 동기화 상태
+      ├─ requirement/             명세 문서 · 요구사항 · RequirementLink · 진행률
+      ├─ flow/                    막힘 · 팀 지표 · 담당 · 최근 변화
+      ├─ evaluation/              PR 평가 · 평가 회차
+      ├─ meeting/                 스탠드업 · 회의 · 회의 안건
+      ├─ help/                    도움 요청 · 코멘트
+      ├─ report/                  학습 타임라인 · 회고 리포트 · 기술 결정 카드
+      ├─ activity/                활동 기록 · 동료 피드백
+      ├─ plan/                    일정판 · 작업 마감
+      ├─ instructor/              강사 요청함 · 컨벤션 라이브러리
+      └─ realtime/                SSE 변경 알림 (사무실별 구독)
+```
+
+- 계층은 **Controller → Service → Repository**다. Controller는 요청 · 응답 DTO만 다루고, 규칙과 트랜잭션은 Service에, 저장은 Repository(Spring Data JPA)에 둔다. Entity를 응답으로 바로 내보내지 않는다 — 본인 · 강사 여부로 필드를 빼야 하는 응답이 있어서다(NFR-06).
+- 패키지 사이는 Service의 공개 메서드로만 부른다. 다른 패키지의 Repository를 직접 쓰지 않는다(`[제안]` — 병렬 개발에서 충돌을 줄이려는 규칙).
+
 ### 모듈 이름과 실제 경로
 
-모듈 이름과 의존 방향은 코드 컨벤션(BE) 「모듈」 · NFR-08 그대로다. 실제 경로는 아래처럼 대응한다.
+모듈 이름과 의존 방향은 코드 컨벤션(BE) 「모듈」 · NFR-08 그대로다.
 
-| 모듈 | 현재 구현에서 해당하는 곳 | 신규 예정 (권장 경로) |
+| 모듈 | 데모에서 해당하는 곳 | v1 위치 (신규 예정 · `[제안]`) |
 | --- | --- | --- |
-| `core` (순수 규칙) | `src/data/rules/` — 이미 mock과 서버가 함께 쓰는 순수 규칙이고 `tsconfig.tools.json`에서 strict로 검사된다 | 막힘 계산 · 평가 처리 · 카드 조립을 같은 폴더에 더한다(컨벤션 검사는 습관 체크와 함께 없앴다 — 2026-10-30 결정) |
-| `api` | `server/src/routes.ts` | 인증 · 역할 검사 미들웨어, 응답 DTO 조립 |
-| `store` | `server/src/repo.ts` · `server/src/db.ts` | 06-data.md 「저장 항목」 테이블. 컨벤션 라이브러리 항목(`ConventionLibraryItem`)은 사무실 단위가 아니라 서버 전체에 하나다(2026-10-30 결정) |
-| `adapters/github` | 없음 | `server/src/adapters/github/` — GitHub API를 부르는 유일한 곳 |
-| `adapters/fake` | `src/data/mock/` (브라우저 쪽) | 브라우저 mock을 새 모델로 확장해 쓴다(2026-10-28 결정 — 「데이터 소스는 두 층이다」) |
+| `core` (순수 규칙) | `src/data/rules/` — mock과 서버가 함께 쓰는 순수 규칙 | **도메인 규칙의 기준은 백엔드**다(막힘 · 진행률 · 평가 처리 · 카드 조립 · 강사 요청함 · 개인 지표 접근). 각 패키지 Service 안에서 외부 호출 없이 값만으로 판정하는 클래스로 둔다. 화면용 계산(SceneModel · 공간 역할 · 강조)과 mock용 규칙은 `frontend/src/` 에 둔다 |
+| `api` | `server/src/routes.ts` | 백엔드 각 패키지의 Controller |
+| `store` | `server/src/repo.ts` · `db.ts` | 백엔드 각 패키지의 Repository + Entity (Spring Data JPA). 컨벤션 라이브러리 항목(`ConventionLibraryItem`)과 승인된 강사 계정은 사무실 단위가 아니라 서버 전체에 하나다 |
+| `adapters/github` | 없음 | 백엔드 `github` 패키지 — GitHub API를 부르는 유일한 곳 |
+| `adapters/fake` | `src/data/mock/` (브라우저 쪽) | ① 화면 개발 · 테스트: 브라우저 mock을 새 모델로 확장(2026-10-28 결정 유지) ② 발표 시연의 다른 레포: 서버 Seed 사무실(2026-11-01 결정) — 「데이터 소스는 두 층이다」 |
 | `adapters/local` | 없음 | 무엇을 뜻하는지 기준 문서에 정의가 없다 — 결정 필요 |
-| `packs` | 없음(기준값은 `src/data/rules/constants.ts` · `src/data/meta.ts`에 상수로 있음) | `packs/bootcamp/` — 기준값 기본값 · 용어 |
-| 인증 | 없음 | `server/src/auth/` — 세션 · 역할 판정(강사 지정은 요청마다 앱 DB에서 확인 — 2026-10-30 결정). OAuth 코드 교환 · 사용자 정보 · 레포 권한 조회처럼 GitHub를 부르는 일은 `adapters/github`의 함수를 거친다("GitHub API는 `adapters/github`에서만" 규칙 유지) |
+| `packs` | 없음(기준값은 `src/data/rules/constants.ts` · `src/data/meta.ts`에 상수로 있음) | 기준값 기본값 · 용어. 팀 설정 밖의 숫자는 백엔드 상수 한 곳 + 화면용 상수 한 곳 |
+| 인증 | 없음 | 백엔드 `auth` 패키지 — Spring Security 설정 · 세션 · 역할 판정(강사 지정은 요청마다 앱 DB에서 확인 — 2026-10-30 결정). OAuth 코드 교환 · 사용자 정보 · 레포 권한 조회처럼 GitHub를 부르는 일은 `github` 패키지를 거친다("GitHub API는 GitHub 어댑터에서만" 규칙 유지) |
 
-데모의 `CLAUDE.md`는 `src/data/types.ts` · `store.ts` · `layout.ts` · `selectors.ts` · `insights.ts`를 계약 파일로 보고 메인 세션에서만 바꾸게 한다. 팀 작업에서도 이 파일들은 「건드리기 전에 말해야 하는 곳」이다(SCREEN_ASSIGNMENTS.md).
+데모의 `CLAUDE.md`는 `src/data/types.ts` · `store.ts` · `layout.ts` · `selectors.ts` · `insights.ts`를 계약 파일로 보고 메인 세션에서만 바꾸게 한다. 팀 작업에서도 이 파일들과 [CONTRACTS.md](./CONTRACTS.md)가 가리키는 백엔드 공통 파일(에러 · 보안 설정 · 공통 DTO · Entity)은 「건드리기 전에 말해야 하는 곳」이다(SCREEN_ASSIGNMENTS.md · BACKEND_ASSIGNMENTS.md).
+
+### 테스트 경계 (`[제안]`)
+
+- 데모의 계약 테스트는 같은 시나리오를 mock과 API(TS 서버)에 함께 돌린다. API 쪽 서버가 Spring으로 바뀌므로, **같은 시나리오를 두 언어에서 따로 유지하면 어긋난다** — 구현 위험이다.
+- 권장: 시나리오의 입력 · 기대 결과를 JSON 예시 데이터로 두고, 프론트(mock DataSource)와 백엔드(Spring 통합 테스트)가 같은 파일을 읽는다. 또는 TS 계약 테스트를 띄운 Spring 서버에 돌린다. 어느 쪽인지는 결정 필요.
+- 백엔드 규칙 테스트는 JUnit으로 Service 안의 순수 규칙을 검사한다. GitHub 어댑터 변환은 GitHub 응답 예시 데이터로 테스트하고 실제 GitHub를 부르지 않는다.
 
 ## 실행 구조
 
-### 현재 구현된 구조
+### 현재 구현된 구조 (데모)
 
 ```text
 브라우저 (Vite :5173)
@@ -136,36 +198,49 @@ warehouseDemo_fork/
 데모 봇 (server/src/bot) ─ HTTP + X-Actor 헤더 ─▶ 같은 API
 ```
 
-- 3D는 lazy 로딩이고 HUD가 먼저 뜬다. `npm run build` 뒤 `scripts/check-bundle.mjs`가 첫 HTML이 three · r3f 청크를 바로 부르면 빌드를 실패시킨다 — 코드상 NFR-02("상단 바와 패널이 3D보다 먼저")를 지키는 구조다(실행 확인 전).
-- 1024px 반응형 레이아웃이 있다(`src/ui/responsive.css`, E2E `11-responsive`) — 코드상 NFR-07과 맞는다(실행 확인 전).
+- 3D는 lazy 로딩이고 HUD가 먼저 뜬다. `npm run build` 뒤 `scripts/check-bundle.mjs`가 첫 HTML이 three · r3f 청크를 바로 부르면 빌드를 실패시킨다 — 코드상 NFR-02("상단 바와 패널이 3D보다 먼저")를 지키는 구조다.
+- 1024px 반응형 레이아웃이 있다(`src/ui/responsive.css`, E2E `11-responsive`) — 코드상 NFR-07과 맞는다.
 
-### 확장할 구조 (신규 예정)
+### v1 구조 (신규 예정)
 
 ```text
-GitHub ──(설치 토큰으로 읽기만 · 폴링 · 웹훅 없음)──▶ 서버 adapters/github
+GitHub ──(설치 토큰으로 읽기만 · 폴링 · 웹훅 없음)──▶ Spring github 어댑터
                                                         │ GitHub 원본(Github*) → 앱 모델(Task · Submission) 변환
                                                         ▼
-                                                  store (SQLite) ── syncedAt · 동기화 상태
-                                                        │
-브라우저 ◀── SSE 변경 알림 ── Hono api (인증 · 역할 검사) ◀── DataSource(api) ── 3D 화면 · HUD
-              │
-              └─ 앱 자체 기록(요구사항 연결 · 회의 · 안건 · 평가 …)은 인증된 앱 API 로 저장
+                                          sync ─▶ JPA Repository (공통 DB) ── syncedAt · 동기화 상태
+                                                        │  (모든 사무실 단위 데이터는 Workspace에 속함)
+                                                        ▼
+브라우저 ◀── SSE 변경 알림(사무실별) ── Spring MVC Controller ◀── Spring Security(세션 · 역할 · 사무실 접근 · CSRF)
+   │                                                        ▲
+   └─ DataSource(api) ─── REST /api/** ─────────────────────┘
+   └─ DataSource(mock) ── 화면 개발 · 테스트 (서버 없음)
+
+시연 사무실 ── Seed 어댑터(가짜 데이터) ── 같은 저장 · 같은 API · 같은 접근 검사 · "시연 데이터" 표시
 ```
 
-- **GitHub 폴링과 SSE는 다른 일이다.** 폴링은 서버가 GitHub의 변경을 가져오는 방법이고(CON-03, FR-GH-03), SSE는 앱 서버가 브라우저에 "바뀌었다"를 알리는 기존 방법이다. 동기화 결과도 SSE로 브라우저에 알린다. SSE를 없앨 이유는 없다.
+- **GitHub 폴링과 SSE는 다른 일이다.** 폴링은 서버가 GitHub의 변경을 가져오는 방법이고(CON-03, FR-GH-03), SSE는 앱 서버가 브라우저에 "바뀌었다"를 알리는 방법이다. 동기화 결과도 SSE로 알린다.
+- **SSE도 권한 검사를 거친다**(2026-11-01 결정). 구독은 사무실 단위이고, 연결할 때 세션과 그 사무실의 접근 권한을 검사한다. 사용자가 볼 수 없는 사무실의 변경은 보내지 않는다. `[제안]` 세션이 끝나면 연결을 닫고, 이벤트 본문에는 "무엇이 바뀌었나"만 담아 화면이 권한 검사를 거친 REST로 다시 읽게 한다(개인 지표가 이벤트로 새지 않게).
 - GitHub 웹훅은 쓰지 않는다(CON-03, 기획안 「이번 범위에서 제외」).
 - 화면은 GitHub를 직접 부르지 않는다. GitHub 토큰은 서버에만 있다(NFR-04).
+- 여러 조가 서버 1개 · 공통 DB를 같이 쓴다(2026-11-01 결정 — SP11). 사무실(Workspace)마다 데이터를 나누고, 사용자는 접근할 수 있는 사무실만 받는다(P2).
 
 ## 데이터 소스는 두 층이다
 
-기획안은 "기존 DataSource 구조 위에 GitHub 어댑터를 붙인다"고 했다(CON-05). 실제 코드에서 `DataSource`는 **브라우저 쪽 인터페이스**다. GitHub 토큰은 브라우저로 나갈 수 없으므로(NFR-04) GitHub 어댑터는 **서버 안**에 새로 만들어야 한다.
+실제 코드에서 `DataSource`는 **브라우저 쪽 인터페이스**다. GitHub 토큰은 브라우저로 나갈 수 없으므로(NFR-04) GitHub 어댑터는 **서버 안**에 있다.
 
-| 층 | 현재 구현 | 신규 예정 |
+| 층 | 현재 구현 | v1 |
 | --- | --- | --- |
-| 브라우저 `DataSource` (`src/data/DataSource.ts`) | `mock`(localStorage) · `api`(Hono 클라이언트). `?source=api` 쿼리로 고른다 | 이름과 교체 구조를 유지한다. 화면은 계속 이 인터페이스로만 데이터를 받는다 |
-| 서버 데이터 원천 | 없음 — 서버는 자기 DB만 안다 | `adapters/github`(실제 GitHub) · fake(시연)를 고르는 서버 쪽 선택. 기획 문서의 `DATA_SOURCE` 환경 변수(`github` · `fake` · `local`)가 이 층이다 |
+| 브라우저 `DataSource` (`src/data/DataSource.ts`) | `mock`(localStorage) · `api`(Hono 클라이언트). `?source=api` 쿼리로 고른다 | 이름과 교체 구조를 유지한다(CON-05). `api`는 Spring API 클라이언트로 바뀐다. 화면은 계속 이 인터페이스로만 데이터를 받는다 |
+| 서버 데이터 원천 | 없음 — 서버는 자기 DB만 안다 | 사무실 종류에 따라 고른다 — 실제 사무실은 GitHub 어댑터, 시연 사무실은 Seed 어댑터(2026-11-01 결정). `[제안]` 서버 전체 환경 변수(`DATA_SOURCE`)가 아니라 사무실의 종류 값으로 고른다 |
 
-**정함 (2026-10-28 결정)**: 화면 작업 · 발표 시연의 가짜 데이터는 **기존 브라우저 mock을 새 모델로 확장**해서 쓴다(서버 `DATA_SOURCE=fake`가 아니다). 서버 `DATA_SOURCE`는 동기화 원천 선택에만 쓰는 것이 권장안이다. 기존 mock · api 계약 테스트 구조를 그대로 살릴 수 있다.
+**정함**:
+
+- (2026-10-28 결정) 화면 작업의 가짜 데이터는 기존 브라우저 mock을 새 모델로 확장해서 쓴다. → **화면 개발 · 테스트에는 그대로 유지한다.**
+- (2026-11-01 결정) 실제 개발 · 발표의 데이터 원천은 우리 조 GitHub 레포다. 다른 레포로 전환하는 시연은 서버의 Fake/Seed 데이터 사무실로 한다.
+  - 같은 프론트 데이터 계약을 쓴다.
+  - "시연 데이터"로 표시해 실제 GitHub 활동과 구분하고, 다른 조의 실제 데이터처럼 보이지 않게 한다.
+  - 인증 · 접근 제어를 똑같이 적용한다.
+  - 이 결정으로 10-28 결정의 "발표 시연도 브라우저 mock" 부분은 바뀐다.
 
 ### DataSource 인터페이스에서 바꿀 것
 
@@ -173,24 +248,24 @@ GitHub ──(설치 토큰으로 읽기만 · 폴링 · 웹훅 없음)──▶
 
 | 책임 | 현재 | v1 방향 |
 | --- | --- | --- |
-| GitHub 원본 읽기 | 없음 | 서버 `adapters/github`가 폴링으로 읽는다(B2) |
-| GitHub 원본 → 앱 모델 변환 | 없음 | 서버 `adapters/github`. GitHub 모양은 어댑터 밖으로 내보내지 않는다 |
-| 앱 모델 저장 · 동기화 상태 | `repo.ts`(Task · Member · Meeting CRUD) | `store`에 `syncedAt` · 마지막 성공 시각 · 실패 사유와 함께 저장(FR-GH-05) |
-| 이슈 · 팀원 만들기 · 고치기 · 지우기 | `createTask` · `updateTask` · `deleteTask` · `createMember` … | **변경 대상** — GitHub에서 오는 값은 앱에서 바꾸지 않는다(CON-02). 이 메서드들은 없애거나 앱 자체 칸(예: 요구사항 연결)만 바꾸는 메서드로 바뀐다 |
-| 앱 자체 기록 쓰기 | `startMeeting` · `endMeeting` | 요구사항–이슈 연결, 회의 · 안건, 스탠드업, 평가 등 쓰기 메서드 신규. 시그니처는 아직 정하지 않는다 |
-| 화면 표시 | `load` → 스토어 → 장면 · HUD, `subscribe`로 변경 반영 | 유지 |
-| 시연 | mock + 데모 봇 | mock을 새 모델로 확장. 데모 봇은 시연용으로 고친다(2026-10-28 결정) — 안건 상태를 앱에서 바꾸지 못하는 것은 그대로 두고, GitHub에서 바꿀 것은 GitHub 화면으로 넘기는 경로를 둔다 |
+| GitHub 원본 읽기 | 없음 | 서버 GitHub 어댑터가 폴링으로 읽는다(B2) |
+| GitHub 원본 → 앱 모델 변환 | 없음 | 서버 GitHub 어댑터. GitHub 모양은 어댑터 밖으로 내보내지 않는다 |
+| 앱 모델 저장 · 동기화 상태 | `repo.ts`(Task · Member · Meeting CRUD) | JPA Entity에 `syncedAt` · 마지막 성공 시각 · 실패 사유와 함께 저장(FR-GH-05) |
+| 이슈 · 팀원 만들기 · 고치기 · 지우기 | `createTask` · `updateTask` · `deleteTask` · `createMember` … | **없앤다** — GitHub에서 오는 값은 앱에서 바꾸지 않는다(CON-02) |
+| 앱 자체 기록 쓰기 | `startMeeting` · `endMeeting` | 요구사항–이슈 연결, 회의 · 안건, 스탠드업, 평가, 도움 요청, 작업 마감, 강사 답변 등 쓰기 메서드 신규 — 초안은 CONTRACTS.md |
+| 화면 표시 | `load` → 스토어 → 장면 · HUD, `subscribe`로 변경 반영 | 유지. 사무실 단위로 읽는다 |
+| 시연 | mock + 데모 봇 | 화면 개발은 mock. 발표 시연은 서버 Seed 사무실(2026-11-01 결정). 데모 봇은 `[제안]` Spring 서버로 옮기지 않는다 |
 
 이 인터페이스에 기대는 곳이 많아 변경 영향이 크다. 실제 TypeScript 인터페이스는 이번 문서 작업에서 바꾸지 않았다.
 
 | 파일 | 지금 기대는 것 | 바꿔야 하는 이유 |
 | --- | --- | --- |
-| `src/store.ts` | Task · Member CRUD 낙관적 갱신, `endDrag`의 담당 지정 · 상태 변경 · 마감일 변경 · 안건 올리기 | 담당 · 상태 · 마감은 GitHub 원본이라 드래그로 바꿀 수 없다. 드래그 결과는 요구사항 연결 · 안건 올리기로 바뀐다(주간 탭의 드래그로 마감 바꾸기도 뺀다 — 2026-10-28 추가 결정) |
+| `src/store.ts` | Task · Member CRUD 낙관적 갱신, `endDrag`의 담당 지정 · 상태 변경 · 마감일 변경 · 안건 올리기 | 담당 · 상태는 GitHub 원본이라 드래그로 바꿀 수 없다. 드래그 결과는 요구사항 연결(상자는 제자리로) · 안건 만들기(별도 `AgendaItem`)로 바뀐다(2026-11-01 결정). 드래그로 마감 바꾸기도 뺀다(2026-10-28 추가 결정) |
 | `src/data/selectors.ts` · `insights.ts` | `estimate`(포인트) · `capacity` · `dueDate`로 업무량 · KPI · 추천 계산 | 포인트 · 용량은 GitHub에 없고, 사람별 비교는 금지다(FR-FLOW-06) |
-| `src/scene/slots.ts` | `status` · `assigneeId` · `onAgenda`로 위치 계산 | 검토 영역 · 요구사항 구역 위치가 새로 필요하다(머지 준비 선반은 없음 — 2026-10-29 결정) |
+| `src/scene/slots.ts` | `status` · `assigneeId` · `onAgenda`로 위치 계산 | SceneModel(공간 역할)과 ThemeLayout(좌표)로 나눈다 — 「공간 역할과 테마」 |
 | `src/ui/MeetingDialogs.tsx` · `src/data/rules/meetings.ts` | 회의 종료 결과로 담당 지정 · 상태 변경 · 백로그로 | GitHub 원본을 바꾸는 결정이라 CON-02와 충돌한다. 결정 기록 · 배운 점 저장으로 바뀐다 |
-| `server/src/bot/index.ts` | API로 작업을 만들고 옮긴다 | 위와 같은 이유로 바뀐다 |
-| `tests/contract/*` | 위 CRUD 계약 | 계약이 바뀌면 함께 바뀐다 |
+| `server/src/bot/index.ts` | API로 작업을 만들고 옮긴다 | 운영 백엔드가 아니므로 옮기지 않는다 `[제안]` |
+| `tests/contract/*` | 위 CRUD 계약 | 계약이 바뀌면 함께 바뀐다 — 「테스트 경계」 |
 
 ## GitHub 원본 상태와 앱 상태
 
@@ -198,36 +273,42 @@ GitHub ──(설치 토큰으로 읽기만 · 폴링 · 웹훅 없음)──▶
 
 | 종류 | 예 | 누가 바꾸나 | 어디에 |
 | --- | --- | --- | --- |
-| GitHub 원본 상태 | 이슈 담당자 · 열림 · 닫힘, PR 열림 · 리뷰 요청 · 머지 · 닫힘 | GitHub(사람이 GitHub에서). 앱은 다음 동기화에 반영만 한다 | `adapters/github`가 읽어 앱 모델(`Task` · `Submission`)로 바꾸고 `syncedAt`과 함께 `store`에 둔다 |
-| 계산한 값 | 사무실 위치(백로그 · 책상 · 검토 · 완료 선반), 막힘, 진행률, 팀 지표, PR별 추천·비추천 수(평가에서 계산 — 위치는 바꾸지 않음, 2026-10-29 결정), 강사 요청함 목록(요청 여부에서 계산 — 2026-10-30 결정). 규칙 위반은 습관 체크와 함께 없앴다(2026-10-30 결정) | `core`가 원본 상태와 앱 상태에서 계산한다 | `core` |
-| 앱 상태 | 요구사항–이슈 연결, 동기화 상태, 회의 안건 상태, PR 평가(`Evaluation`), 도움 요청 상태, 강사 지정(`TeamSettings`), 강사 요청과 답변(도움 요청의 "강사에게 요청" · 강사 답변, 결정 피드백 요청 · 피드백, 꼬리질문 요청 · 꼬리질문), 컨벤션 라이브러리 항목(서버 전체에 하나) — 2026-10-30 결정 | 앱 사용자 · 앱 규칙 | `store` (앱 서버에만 — CON-02) |
+| GitHub 원본 상태 | 이슈 담당자 · 열림 · 닫힘 · 라벨(`priority:*` 포함), PR 열림 · Draft · 리뷰 요청 · 머지 · 닫힘 · 최신 커밋(`headSha`), 콜라보레이터, PR–이슈 연결 | GitHub(사람이 GitHub에서). 앱은 다음 동기화에 반영만 한다 | GitHub 어댑터가 읽어 앱 모델(`Task` · `Submission`)로 바꾸고 `syncedAt`과 함께 저장 |
+| 계산한 값 | 표시 상태 · 공간 역할(05 「상태값」 표), 막힘, 진행률, 팀 지표, 현재 평가 회차의 추천·비추천 수(위치는 바꾸지 않음 — 2026-10-29 결정), 강사 요청함 목록, 우선순위 색, 요구사항 묶음 | 원본 상태와 앱 상태에서 계산한다 | 도메인 계산은 백엔드, 화면 표현(공간 역할 · 묶음 · 색)은 프론트 `[제안]` |
+| 앱 상태 | 요구사항–이슈 연결, 동기화 상태, 회의 안건 상태, PR 평가 · 평가 회차, 도움 요청 상태, 작업 마감, 강사 지정(`TeamSettings`), 승인된 강사 계정, 강사 요청과 답변, 컨벤션 라이브러리 항목(서버 전체에 하나), 사무실(Workspace) | 앱 사용자 · 앱 규칙 | 앱 DB에만 (CON-02) |
 
-- **지금 데모의 `Task.status`(`todo` · `in_progress` · `review` · `done`)는 앱이 직접 바꾸는 값이다.** v1에서는 GitHub 원본(열림 · 닫힘, 담당자, 연결 PR 상태)에서 계산하는 값으로 바뀐다. 필드별 출처는 06-data.md 「기존 데모 데이터와의 대응」.
+- **지금 데모의 `Task.status`(`todo` · `in_progress` · `review` · `done`)는 앱이 직접 바꾸는 값이다.** v1에서는 GitHub 원본(열림 · 닫힘, 담당자)에서 계산한다. 열린 이슈에 담당자가 있으면 "작업 중"이다(2026-11-01 결정). 이슈와 PR은 다른 항목이고, "닫힌 이슈 = 머지된 PR"로 가정하지 않는다.
+- **위치는 원본에서만 계산한다**(2026-11-01 결정). 요구사항 연결은 `RequirementLink`만 만들고, 회의 안건은 별도 `AgendaItem`을 만든다 — 둘 다 원본 이슈 · PR의 위치를 바꾸지 않는다.
 - PR이 회의 안건이 되어도 PR 평가는 그대로다. 안건은 따로 저장한다(06-data.md 「PR 평가」 · 「회의 안건」).
+- **PR 평가 회차**(2026-11-01 결정): 회차 식별자와 `headSha`는 별개다.
+  - 새 회차는 새 PR · 새 커밋(동기화에서 `headSha`가 바뀜) · 회의의 "수정 후 재평가" 결정 때 연다.
+  - 각 회차에 시작 시점의 `headSha`를 남긴다. 같은 `headSha`에 회차가 여러 개일 수 있다.
+  - 이전 회차는 보존한다.
+- **PR–이슈 연결**(FR-GH-04 팀 재정의 초안): GitHub의 실제 데이터에서만 가져오고, 앱이 추측해 만들지 않는다. 판정 방법은 결정 필요다.
+  - `[제안]` GitHub가 PR에 "이 PR이 닫을 이슈"로 기록한 연결(GraphQL의 closing issue references)을 우선 쓴다. 쓸 수 있는 API · 권한은 구현 전 확인 필요다.
+  - PR 본문의 `Closes #N` 키워드를 직접 읽어 보탤지도 결정 필요다.
+- **우선순위**(2026-11-01 결정): `priority:high` · `priority:medium` · `priority:low` 라벨을 쓰고, 라벨이 없으면 중립이다.
+  - 이 방식은 바뀔 수 있다. 라벨 이름 → 우선순위 대응은 상수 한 곳에 둔다.
+  - `[제안]` 라벨이 여러 개면 가장 높은 값을 쓴다.
 - 원본 상태를 앱이 바꾸는 경로는 없다. 머지 · 이슈 만들기는 GitHub 화면 링크로 넘긴다(P3).
 
 ## 서버 API
 
-### 기존 API와 신규 API
+### 데모 API와 v1 API
 
-| 구분 | 경로 | 상태 | v1에서 |
-| --- | --- | --- | --- |
-| 상태 확인 | `GET /api/health` | 현재 구현 | 유지 |
-| 전체 데이터 | `GET /api/workspace` (`X-Seq` 헤더) | 현재 구현 | 유지하되 응답이 새 모델(이슈 · PR · 요구사항 · 안건 …)로 바뀐다. 역할 · 본인 여부에 따라 필드를 뺀다 |
-| 작업 CRUD | `POST /api/tasks` · `PATCH` · `DELETE /api/tasks/:id` | 현재 구현 | 변경 대상 — 이슈는 GitHub에서만 만든다 |
-| 팀원 CRUD | `POST /api/members` · `PATCH` · `DELETE /api/members/:id` | 현재 구현 | 변경 대상 — 팀원은 GitHub 레포 참여자에서 온다 |
-| 회의 | `POST /api/meetings` · `POST /api/meetings/:id/end` | 현재 구현 | 수정 · 확장 — 안건 · 결정 · 배운 점 기록(FR-MTG-03 · 04) |
-| 데모 · 초기화 | `GET` · `PUT /api/demo`, `POST /api/reset` | 현재 구현 | 시연용으로 남길지 결정 필요. 운영 서버에서는 막는다 |
-| 변경 알림 | `GET /api/events` (SSE) | 현재 구현 | 유지 |
-| 로그인 · 세션 | — | 신규 예정 | GitHub 로그인 시작 · 콜백 · 로그아웃 · 현재 사용자 |
-| 조직 · 레포 · 사무실 열기 | — | 신규 예정 | FR-GH-01 · P2 |
-| 수동 동기화 · 동기화 상태 | — | 신규 예정 | FR-GH-03 · 05 · 06 |
-| 요구사항 · 연결 | — | 신규 예정 | FR-REQ |
-| 스탠드업 · 일정판 · 회고 리포트 | — | 신규 예정 | FR-MTG · FR-PLAN · FR-REP (습관 체크 FR-HAB는 없앴다 — 2026-10-30 결정) |
-| 평가 · 안건 · 도움 요청 | — | 신규 예정 | FR-LRN (도움 요청은 FR-LRN-15~20 — 2026-10-28 추가 결정) |
-| 강사 지정 · 강사 요청함 · 컨벤션 라이브러리 | — | 신규 예정 | FR-AUTH-06~08 · FR-LRN-21~23 · FR-REP-11 · FR-LIB (2026-10-30 결정) |
+데모 API는 **참고**다. v1 API는 Spring에서 새로 만들고, 엔드포인트 · DTO 초안은 [CONTRACTS.md](./CONTRACTS.md) 「API」에 둔다.
 
-경로 이름은 아직 정하지 않는다. 기존 계약은 데모의 `docs/API.md`에 있지만 실제 코드와 다른 곳이 있다 — PROJECT_COMMANDS.md 「데모 docs/API.md와 코드의 차이」.
+| 구분 | 데모 경로 | v1에서 |
+| --- | --- | --- |
+| 상태 확인 | `GET /api/health` | 같은 목적의 엔드포인트를 둔다 |
+| 전체 데이터 | `GET /api/workspace` (`X-Seq` 헤더) | 사무실 단위로 읽는다. 응답이 새 모델(이슈 · PR · 요구사항 · 안건 …)이고 역할 · 본인 여부에 따라 필드를 뺀다 |
+| 작업 · 팀원 CRUD | `POST` · `PATCH` · `DELETE /api/tasks` · `/api/members` | 없앤다 — 이슈와 팀원은 GitHub에서 온다 |
+| 회의 | `POST /api/meetings` · `POST /api/meetings/:id/end` | 안건 · 결정 · 배운 점 기록으로 다시 만든다(FR-MTG-03 · 04) |
+| 데모 · 초기화 | `GET` · `PUT /api/demo`, `POST /api/reset` | 운영 서버에는 두지 않는다 `[제안]`. 시연은 Seed 사무실로 한다 |
+| 변경 알림 | `GET /api/events` (SSE) | 사무실별 SSE로 다시 만든다 — 권한 검사 포함 |
+| 신규 | — | 로그인 · 세션, 조직 · 레포 · 사무실 열기, 수동 동기화 · 동기화 상태, 요구사항 · 연결, 스탠드업 · 일정판 · 작업 마감 · 회고 리포트, 평가 · 평가 회차 · 안건 · 도움 요청, 강사 지정 · 강사 요청함 · 컨벤션 라이브러리 |
+
+데모의 `docs/API.md`는 실제 코드와 다른 곳이 있다 — PROJECT_COMMANDS.md 「데모 docs/API.md와 코드의 차이」(참고용).
 
 ### GitHub 읽기 전용 원칙 (CON-02)
 
@@ -235,80 +316,171 @@ CON-02는 **앱이 GitHub의 원본(이슈 · PR · 코멘트 · 라벨 등)을 
 
 | 요청 | 허용 | 이유 |
 | --- | --- | --- |
-| GitHub API로 이슈 · PR · 커밋 · 리뷰 · 라벨 · 참여자 읽기(GET) | 허용 | 읽기 |
+| GitHub API로 이슈 · PR · 커밋 · 리뷰 · 라벨 · 참여자 읽기 | 허용 | 읽기 |
 | GitHub 로그인의 OAuth 코드 교환(`POST https://github.com/login/oauth/access_token`) | 허용 | 인증 절차. 원본을 바꾸지 않는다 |
 | GitHub App 설치 토큰 발급(`POST /app/installations/{id}/access_tokens`) | 허용 | 인증 절차. 원본을 바꾸지 않는다 |
+| GraphQL의 조회(query) | 허용 | 읽기. mutation은 금지 |
 | 이슈 만들기 · 코멘트 · 라벨 붙이기 · 머지 · 상태 변경 등 GitHub 원본을 바꾸는 호출 | **금지** | CON-02. 할 일은 GitHub 화면 링크로 넘긴다(P3) |
-| 브라우저 → 앱 서버 API의 `POST` · `PATCH` · `PUT` · `DELETE` | 허용 | 앱 자체 기록(요구사항 연결 · 회의 · 평가 등)을 앱 서버에 저장한다 |
+| 브라우저 → 앱 서버 API의 `POST` · `PATCH` · `PUT` · `DELETE` | 허용 | 앱 자체 기록을 앱 서버에 저장한다 |
 
 GitHub App 권한을 Metadata · Contents · Issues · Pull requests 모두 **읽기 전용**으로 두면, 실수로 쓰기 호출을 만들어도 GitHub가 거부한다.
 
 ### 에러 응답 형식
 
-데모 모양 `{ "error": { "code", "message" } }`를 그대로 쓰고, 새 code도 소문자 snake로 더한다(2026-10-28 결정). 클라이언트 `src/data/api/index.ts`의 `toError`(`not_found`면 로컬에서 지우고 `unavailable`이면 SSE 재연결), `DataError` 타입, 계약 테스트가 이 모양에 기댄다.
+데모 모양 `{ "error": { "code", "message" } }`를 그대로 쓰고, code는 소문자 snake다(2026-10-28 결정 — 스택이 바뀌어도 유지). Spring에서는 공통 예외 처리(`[제안]` `@RestControllerAdvice` 한 곳)가 이 모양으로 바꾼다. 클라이언트 `src/data/api/index.ts`의 `toError`(`not_found`면 로컬에서 지우고 `unavailable`이면 SSE 재연결)와 `DataError` 타입이 이 모양에 기댄다.
 
-- 기존: `invalid`(400 · 위생 검사 실패는 403) · `not_found`(404) · `conflict`(409) · `unavailable`(503)
-- 신규: `unauthorized` · `forbidden_role` · `github_unauthorized` · `github_rate_limited` — 표는 코드 컨벤션(BE) 「에러 응답」
+- 기존: `invalid`(400 · 요청 출처 검사 실패는 403) · `not_found`(404) · `conflict`(409) · `unavailable`(503)
+- 신규: `unauthorized` · `forbidden_role` · `github_unauthorized` · `github_rate_limited` — 표는 코드 컨벤션(BE) 「에러 응답」 · CONTRACTS.md
 
 ## 인증과 권한
 
-### 현재 구현
+### 현재 구현 (데모)
 
 - **로그인 · 세션 · 권한 검사가 없다.** 데모 `docs/API.md`도 "Local-only: no auth"라고 적는다.
-- 서버는 요청 위생 미들웨어(`server/src/routes.ts`)만 가진다 — `Host`가 `localhost:<포트>` · `127.0.0.1:<포트>`가 아니면 거부(DNS 리바인딩 방지), `Origin`이 있으면 `http://localhost` · `http://127.0.0.1`만 허용, 쓰기 요청은 `Content-Type: application/json` 필수. 기획안 「시스템 구조」의 "기존 서버의 요청 검사 규칙 유지"(NFR-05)는 이 미들웨어를 가리킨다.
-- `X-Actor: <memberId>` 헤더는 데모 봇이 "어느 팀원이 한 일인지"를 표시하는 값이다. 누구나 아무 값이나 보낼 수 있으므로 **인증이 아니다.** 헤더가 없으면 관리자(사용자)로 처리한다.
-- 서버는 `127.0.0.1`에만 바인딩한다 — 다른 기기에서 접속할 수 없다.
+- 서버는 요청 위생 미들웨어(`server/src/routes.ts`)만 가진다 — `Host` 검사(DNS 리바인딩 방지), `Origin` 검사, 쓰기 요청의 `Content-Type: application/json` 필수. 기획안 「시스템 구조」의 "기존 서버의 요청 검사 규칙 유지"(NFR-05)는 이 미들웨어를 가리킨다.
+- `X-Actor: <memberId>` 헤더는 데모 봇이 "어느 팀원이 한 일인지"를 표시하는 값이다. **인증이 아니다.**
 
-### 신규 예정
+### v1 (신규 예정 — Spring Security + 세션, 2026-11-01 결정)
 
 GitHub 로그인과 레포 읽기는 **GitHub App 하나**로 처리한다. OAuth App은 비공개 레포를 읽으려면 쓰기까지 포함된 `repo` 권한이 필요해서 읽기 전용 최소 권한(NFR-04)을 지킬 수 없기 때문이다 — 개발 컨벤션 > 환경 변수 가이드.
 
+**외부 인터넷에 공개하는 서버다.** GitHub 로그인이 있다는 이유로 아래 검사를 빼지 않는다(2026-11-01 결정).
+
 | 단계 | 내용 | 상태 |
 | --- | --- | --- |
-| 로그인 | `GITHUB_APP_CLIENT_ID` · `GITHUB_APP_CLIENT_SECRET`으로 GitHub 로그인을 처리해 "누가 들어왔는지"를 정한다 | 신규 예정 |
-| 세션 | 로그인한 사용자를 서명된 쿠키로 기억한다(`SESSION_SECRET`). 세션은 30분~1시간 뒤 만료된다(2026-10-28 결정 — 코드 컨벤션(BE) 「인증」). 로그아웃 처리는 결정 필요 | 신규 예정 |
-| 역할 판정 | 팀 레포의 GitHub 권한과 앱의 강사 지정에서 정한다 — admin = 레포 관리자(ROLE-02), 레포 관리자가 앱 팀 설정에서 강사로 지정한 사람 = 강사(ROLE-04), 그 밖의 레포 콜라보레이터 전원(read 포함) = 참여자(ROLE-01), `MASTER_ADMIN_GITHUB_LOGIN` = 전체 관리자(ROLE-03) · P1. "write = 참여자" 규칙은 없앴다(2026-10-30 결정). GitHub 권한은 로그인할 때만 확인해 세션에 두고, 요청마다 GitHub에 다시 묻지 않는다(2026-10-28 결정 · 05-policy.md P1). 강사 지정 여부는 요청마다 앱 DB에서 확인하므로 지정 · 해제가 바로 반영된다(2026-10-30 결정 · FR-AUTH-06). 어느 자격 증명으로 권한을 조회하는지는 결정 필요(BACKEND_ASSIGNMENTS.md B1에서 정한다) | 신규 예정 |
-| 요청마다 권한 검사 | API에서 요청마다 역할을 확인한다(FR-AUTH-04). 화면에서 버튼을 숨긴 것을 권한 확인으로 보지 않는다. 클라이언트가 보낸 사용자 값(`X-Actor` 같은 헤더 포함)을 믿지 않는다. 강사는 학생이 요청한 건(도움 요청 답변 · 결정 피드백 · 꼬리질문)과 컨벤션 라이브러리에만 쓸 수 있고, 그 밖의 쓰기는 기존 code `forbidden_role`로 거부한다(FR-AUTH-08 · P13 · 2026-10-30 결정) | 신규 예정 |
-| 설치 토큰 | `GITHUB_APP_ID`와 키 파일(`GITHUB_APP_PRIVATE_KEY_PATH`)로 설치 토큰을 받아 레포를 동기화한다. 토큰은 서버 메모리에서만 쓰고 만료 전에 다시 발급한다. DB 저장 여부는 결정 필요(권장: 저장하지 않음). `adapters/github` 안에서만 쓰고 브라우저로 내보내지 않는다(NFR-04) | 신규 예정 |
-| 요청 위생 | 기존 미들웨어를 유지하되, 시범 서버에서는 `APP_ORIGIN`을 허용 출처에 넣고 바인딩 주소를 바꿔야 한다 | 수정 · 확장 |
+| 로그인 | GitHub App의 사용자 인증(`GITHUB_APP_CLIENT_ID` · `GITHUB_APP_CLIENT_SECRET`)으로 "누가 들어왔는지"를 정한다. `[제안]` Spring Security OAuth2 Login | 신규 예정 |
+| 세션 | 서버 세션(HttpSession)과 세션 쿠키. 세션은 30분~1시간 뒤 만료된다(2026-10-28 결정). 세션 저장 위치는 결정 필요. 로그아웃하면 세션을 끝낸다 | 신규 예정 |
+| 쿠키 · HTTPS | 외부 배포는 HTTPS로만 받는다. 세션 쿠키는 `HttpOnly` · `Secure` · `SameSite` | 신규 예정 |
+| CSRF | Spring Security의 CSRF 방어를 켠다. `[제안]` SPA는 쿠키로 받은 CSRF 토큰을 요청 헤더에 담아 보낸다. SSE · 조회 요청은 대상이 아니다 | 신규 예정 |
+| 출처 검사 (NFR-05) | 데모 미들웨어의 목적(다른 출처의 요청 차단)을 Spring에서 다시 지킨다 — 허용 출처는 `APP_ORIGIN`. SPA를 같은 출처로 서빙하면 CORS를 열지 않는다 | 신규 예정 |
+| 역할 판정 | 팀 레포의 GitHub 권한과 앱의 강사 지정에서 정한다 — admin = 레포 관리자(ROLE-02), 레포 관리자가 앱 팀 설정에서 승인된 강사 계정 중 지정한 사람 = 강사(ROLE-04), 그 밖의 레포 콜라보레이터 전원(read 포함) = 참여자(ROLE-01), `MASTER_ADMIN_GITHUB_LOGIN` = 전체 관리자(ROLE-03) · P1. GitHub 권한은 로그인할 때만 확인해 세션에 두고(레포마다), 강사 지정 여부는 요청마다 앱 DB에서 확인한다(2026-10-30 결정). 어느 자격 증명으로 권한을 조회하는지는 결정 필요(BACKEND_ASSIGNMENTS.md B1) | 신규 예정 |
+| 요청마다 권한 검사 | API에서 요청마다 ① 로그인 ② 그 사무실에 접근할 수 있는지(현재 GitHub 자격 또는 강사 지정) ③ 그 동작을 할 수 있는 역할인지 확인한다(FR-AUTH-04). 버튼을 숨긴 것은 권한 확인이 아니다. `[제안]` 사무실 접근과 역할 판정은 인가 서비스 한 곳에 두고, 컨트롤러 메서드마다 그 서비스로 검사한다(Spring Security 메서드 보안 등). 강사의 허용되지 않은 쓰기는 `forbidden_role`(FR-AUTH-08 · P13) | 신규 예정 |
+| 실시간 갱신 권한 | SSE 연결도 세션 · 사무실 접근을 검사한다 — 「v1 구조」 | 신규 예정 |
+| 설치 토큰 | `GITHUB_APP_ID`와 키 파일(`GITHUB_APP_PRIVATE_KEY_PATH`)로 설치 토큰을 받아 레포를 동기화한다. 토큰은 서버 메모리에서만 쓰고 만료 전에 다시 발급한다. DB 저장 여부는 결정 필요(권장: 저장하지 않음). GitHub 어댑터 안에서만 쓰고 브라우저로 내보내지 않는다(NFR-04) | 신규 예정 |
 
+**강사 계정** (2026-11-01 결정):
+
+- **확정**: 일반 학생은 강사로 지정할 수 없다. 레포 관리자는 승인된 강사 계정 중에서만 지정한다. 목록에 없는 계정을 지정하는 요청은 서버가 거부한다.
+- **결정 필요**: 승인 · 등록 방법. 대안은 아래 표이고 고르지 않았다.
+
+| 대안 | 방법 | 장점 | 단점 |
+| --- | --- | --- | --- |
+| A 환경 변수 | 서버 설정에 강사 GitHub 로그인 목록(`MASTER_ADMIN_GITHUB_LOGIN`과 같은 방식) | 구현이 가장 작고 화면이 필요 없다 | 바꾸려면 서버 설정을 고치고 재시작해야 한다 |
+| B DB + 전체 관리자 기능 | 전체 관리자(ROLE-03)가 앱에서 강사 계정을 등록 · 해제 | 재시작 없이 바로 반영, 등록 이력을 남길 수 있다 | 전체 관리자용 화면 · API가 새로 필요하다(범위 증가) |
+| C DB 시드 · 관리 명령 | 배포할 때 시드 데이터나 관리용 명령으로 DB에 넣는다 | 화면 없이 DB 한 곳에서 관리 | 운영 절차가 필요하고 실수 위험이 있다 |
+
+- **지정 전후 기록**(2026-11-01 결정): 지정 전에 남긴 평가 · 안건 · 코멘트는 지우지 않는다. 지정 뒤에는 강사 정책을 적용한다. 해제 뒤에도 과거 강사 답변 · 피드백은 보존한다. 해제할 때 학생 자격(그 레포 콜라보레이터)이 없는 계정에 학생 권한을 자동으로 주지 않는다.
+- **권한 상승 방지**: 레포 관리자와 강사가 같은 사람인 경우는 운영상 없다고 전제한다(2026-11-01 결정). 그래도 서버가 막는다.
+  - `[제안]` 한 사무실에서 한 사람의 역할은 하나로만 정한다. 강사로 지정되면 그 사무실에서는 강사 정책만 적용하고, 레포 관리자 · 참여자의 쓰기 권한을 함께 주지 않는다.
+  - `[제안]` 레포 관리자가 자기 자신을 강사로 지정하는 요청은 거부한다.
 - GitHub App 권한은 Metadata, Contents, Issues, Pull requests를 모두 **읽기 전용**으로 둔다.
-- 앱은 조마다 조직에 설치한다. 레포 등록은 학생 기준 자기 조 조직 안의 레포만 받는다(P2). 강사는 자신이 강사로 지정된 모든 조의 사무실을 본다(FR-AUTH-07 · 2026-10-30 결정 — 정의서 ASM-02와 다름). 앱이 설치되지 않은 조직은 "승인 요청하기"로 GitHub 요청 화면에 넘긴다.
+- 앱은 조마다 조직에 설치한다. 레포 등록은 학생 기준 자기 조 조직 안의 레포만 받는다(P2). 강사는 자신이 강사로 지정된 모든 조의 사무실을 본다(FR-AUTH-07).
 - 토큰 · 쿠키 · 이메일을 로그에 남기지 않는다. 디버깅이 필요하면 앞 4자리만 남기고 가린다(NFR-04).
 - 키 파일(`*.pem`)은 `./secrets/` 에만 둔다. **데모 저장소의 `.gitignore`에는 `.env` · `*.pem` · `secrets/`가 아직 없다** — 개발 저장소에서 먼저 추가한다(환경 변수 가이드).
 
-## 저장소 (SQLite)
+## 저장소 (JPA)
 
-- **현재 구현**: `server/src/db.ts`가 `node:sqlite`로 `server/data/office.db`(gitignore됨)를 연다. WAL 모드, `busy_timeout` 3초. 테이블은 `projects` · `members` · `tasks` · `meetings` · `activity`가 모두 `(id TEXT PRIMARY KEY, data TEXT)` — 엔티티 전체를 JSON 문자열로 저장한다. `meta` 테이블에 `seq` · `nextNumber` · `demo`를 둔다. 경로를 바꾸는 환경 변수는 없다.
-- 모든 쓰기는 `repo.ts`의 `mutate()`가 트랜잭션(`BEGIN IMMEDIATE`)으로 감싸고, 커밋 뒤에 SSE로 알린다.
-- 마이그레이션 도구가 없다. `CREATE TABLE IF NOT EXISTS`와 시작 시 `repo.migrate()`로 옛 데이터를 고친다.
-- **신규 예정**: 06-data.md 「저장 항목」(팀 설정, 동기화 상태, GitHub 원본에서 바꾼 앱 모델, 요구사항–이슈 연결, 스탠드업, 회의, 회의 안건, 회고 리포트, 채택된 제안 항목)도 같은 JSON 방식으로 더한다(2026-10-28 결정 — 코드 컨벤션(BE) 「저장」). 컨벤션 규칙은 습관 체크와 함께 없앴고, 컨벤션 라이브러리 항목(`ConventionLibraryItem`)은 사무실 단위가 아니라 서버 전체에 하나로 저장한다(2026-10-30 결정). 저장 방식을 바꾸면 DB schema 변경이므로 PR에 위험 범위로 적는다.
+- **현재 구현 (데모, 참고만)**: `server/src/db.ts`가 `node:sqlite`로 `server/data/office.db`를 열고, 테이블마다 `(id TEXT PRIMARY KEY, data TEXT)`로 엔티티 전체를 JSON 문자열로 저장한다. 쓰기는 `repo.ts`의 `mutate()` 트랜잭션, 커밋 뒤 SSE 알림. 2026-10-28에는 이 방식을 이어 쓰기로 했지만, **2026-11-01 결정으로 Spring Data JPA로 바꿔 이 방식은 쓰지 않는다.**
+- **v1 (신규 예정)**: 06-data.md 「저장 항목」을 JPA Entity로 만든다. Entity · 연관관계 초안은 CONTRACTS.md 「도메인 모델과 Entity 관계」.
+  - DB는 결정 필요(PostgreSQL 우선 검토 — `[제안]`).
+  - 사무실 단위 항목은 모두 사무실(Workspace)에 속한다. 조회는 항상 사무실 조건을 포함한다 — 다른 조 데이터가 섞이지 않게 하는 핵심이다.
+  - 컨벤션 라이브러리 항목 · 승인된 강사 계정은 서버 전체에 하나다.
+  - 쓰기의 트랜잭션은 Service 메서드 단위다. SSE 알림은 커밋이 끝난 뒤에 보낸다(데모 원칙 유지 — `[제안]` 트랜잭션 커밋 뒤 이벤트).
+  - 스키마 변경은 migration 도구로 관리한다(도구는 결정 필요 — `[제안]` Flyway). 운영에서 JPA가 스키마를 자동으로 바꾸게 두지 않는다 `[제안]`.
+  - JPA 주의: 지연 로딩과 N+1 조회, 양방향 연관관계는 꼭 필요한 곳만, 목록 API는 페이징 · 정렬을 쓴다 — 코드 컨벤션 (BE) 「저장」.
+  - 시각은 UTC로 저장 · 응답한다. GitHub에서 온 값은 `syncedAt`을 같이 둔다.
+  - 저장 구조를 바꾸면 DB schema 변경이므로 PR에 위험 범위로 적는다.
+
+## 공간 역할과 테마
+
+**확정 (2026-11-01 결정)**: 비즈니스 로직과 시각적 테마를 분리한다. 사무실(책상 · 선반 · 회의실)은 기능을 표현하는 기본 테마일 뿐이고, 앞으로 아기자기한 3D 마을 · 캐주얼 로우폴리 공간 등으로 바뀔 수 있다. 기존 게임의 에셋 · 캐릭터는 복제하지 않는다. 테마가 바뀌어도 팀원 표시, 이슈 · PR 표시, 상태별 공간 배치, 요구사항 연결, 회의 안건, 도움 요청, 진행 상태, 학습 타임라인, 기술 결정 카드, 강사 피드백은 그대로다.
+
+### 공간 역할 ↔ 기본 테마 표현
+
+| 공간 역할 | 들어가는 것 | v1 기본 테마(사무실) 표현 | 다른 테마 예 (참고) |
+| --- | --- | --- | --- |
+| 작업 공간 (팀원마다) | 팀원 아바타, 담당자 있는 열린 이슈 | 책상 + 아바타 | 집 · 작업대 |
+| 대기 | 담당자 없는 열린 이슈 | 백로그 선반 | 창고 |
+| 검토 | 열린 PR | 검토 영역 | 우체통 · 검사대 |
+| 완료 | 닫힌 이슈 · 머지된 PR | 완료 선반 | 진열장 |
+| 회의 | 회의 안건(`AgendaItem`)의 표현 | 회의실 테이블 | 광장 · 모닥불 |
+| 게시 | 도움 요청 · 회의 결정 기록 · 강사 피드백 · 배운 점 공유 | 게시판 오브젝트 (내용은 HUD) | 마을 게시판 |
+| 요구사항 영역 | 요구사항(구역 또는 묶음 오브젝트) | 바닥 구역 | 밭 · 구획 |
+
+도형 종류(이슈 상자 · PR 삼각기둥 · 도움 요청 구 · 배운 점 공유 팔면체 · 기타 메모지)도 기본 테마의 표현이다. 요구는 "종류를 구분해 보인다"이다.
+
+### 계층 (`[제안]` — 구조 방향은 2026-11-01 결정, 세부는 제안)
+
+```text
+도메인 상태 (API 응답 · store)       이슈 · PR · 평가 · 안건 · 도움 요청 … — 테마를 모른다
+      │  순수 함수
+      ▼
+SceneModel                            객체마다 { id, kind, placeRole, badges, highlight, groupKey }
+      │                               placeRole 예: backlog · desk:<memberId> · review · done · meeting · board · requirement:<id>
+      ▼
+ThemeLayout (테마 하나 = 구현 하나)    공간 역할 → 기준 좌표(anchor) · 드롭 영역(dropZone) · 이동 경로
+      │
+      ▼
+R3F 렌더러 (테마 컴포넌트)            실제 3D 모델 · 재질 · 애니메이션
+```
+
+- **처음에는 테마 하나(사무실)만 구현한다.** 테마 엔진 · 테마 선택 화면 · 런타임 테마 교체는 만들지 않는다(2026-11-01 결정). 목표는 "테마를 바꿀 때 도메인 로직을 고치지 않는다"까지다.
+- 데모와의 차이: 데모는 `src/scene/slots.ts`가 위치 계산 로직을 가지면서도 `Furniture.tsx`(`BACKLOG_CENTER_X` · `BACKLOG_LEVELS` · `DONE_TOP` · `TABLE_TOP_Y`)와 `Desks.tsx`(`DESK_TOP_Y` · `deskLocalToWorld`)에서 상수를 가져온다. 그래서 위치 로직이 가구 컴포넌트에 묶여 있다.
+  - `dropTarget.ts`도 책상 · 선반 · 회의 테이블 좌표를 직접 갖고 있다.
+  - `[제안]` 공간 역할 계산은 SceneModel로, 좌표 · 드롭 영역은 ThemeLayout으로 옮긴다.
+  - 드롭 결과는 "어느 공간 역할에 놓였나"로만 해석한다 — 요구사항 영역이면 연결, 회의면 안건 만들기, 그 밖은 제자리로.
+- 테마를 바꿀 때 드는 일:
+  - 색 · 조명 · 재질만 바꾸기: `theme.ts` 팔레트 · 재질 캐시
+  - 가구 · 아바타 모양 바꾸기: 테마 컴포넌트를 교체한다. 외부 3D 모델을 쓰면 에셋 준비 · 라이선스 · 용량 확인이 새로 필요하다(데모는 코드로 만든 기본 도형뿐이다)
+  - 공간 배치 바꾸기: ThemeLayout(`layout.ts` · `paths.ts` 이동 경로 · 드롭 영역)
+  - 상호작용 방식 바꾸기: 카메라 · 드래그 방식. 이건 기획 결정이 필요하다
+
+## 요구사항 묶음 표시 — 최소 설계 (`[제안]`)
+
+**확정 (2026-11-01 결정)**:
+
+- 요구사항이 많아지면 비슷한 조건의 항목을 대표 오브젝트 하나로 묶어 보인다. 묶인 항목 수를 표시하고, 선택하면 내부 목록과 상세를 보인다.
+- 명세 문서의 `##` 제목 하나 = 요구사항 하나는 그대로다(TBD-01).
+- 묶음은 **시각화 방식일 뿐**이다. 요구사항 · 이슈의 ID와 상태, `RequirementLink`, 진행률은 원본(요구사항) 단위로 계산한다.
+
+**아래는 모두 `[제안]`이고, 고를 것은 결정 필요다.**
+
+| 항목 | 최소 설계 |
+| --- | --- |
+| 계산 위치 | SceneModel 계산(프론트)의 표시용 값. 저장하지 않는다. 결과 모양: `DisplayGroup { key, label, requirementIds[], doneCount, totalCount }` |
+| 묶음 키 | 함수 하나 `groupKeyOf(requirement)`로만 정하고, 키의 원천은 바꿔 끼울 수 있게 둔다. 원천 후보: ⓐ 요구사항 종류 — 제목 앞의 요구사항 ID 접두사(예: `FR-AUTH-…` → "인증 · 권한") ⓑ 연결된 이슈의 영역 라벨(`area:*`) ⓒ 명세 문서의 상위 제목. **어느 것을 기본으로 할지는 결정 필요.** 원천 값이 없으면 "미분류" 묶음 |
+| 여러 라벨이 겹칠 때 | 한 요구사항은 **대표 묶음 하나에만** 넣는다(개수가 두 번 세지지 않게). 대표는 연결된 이슈 중 가장 많이 붙은 라벨, 동률이면 상수로 정한 순서 → 이름순. 대안: 여러 묶음에 모두 보이되 "다른 묶음에도 있음" 표시 — 개수가 겹치는 문제가 있다 |
+| 묶음으로 바꾸는 때 | 요구사항 수가 상수(예: 8) 이하이면 개별 구역, 넘으면 묶음 오브젝트(×N 배지). 숫자는 상수 한 곳 |
+| 최대 표시 개수 | 묶음 오브젝트 수가 공간에 놓을 수 있는 수(ThemeLayout의 anchor 수)를 넘으면, 나머지를 "기타 ×N" 하나로 접는다 |
+| 선택 | 묶음을 고르면 HUD 패널에 묶음 안 요구사항 목록(각 ID · 진행률 · 빈 요구사항 표시)과 상세가 열린다 |
+| 드래그 연결 | 묶음 오브젝트에 이슈 상자를 놓으면 HUD에서 요구사항을 골라야 연결된다(연결은 항상 요구사항 하나와). 상자는 제자리로 돌아간다 |
+| 진행률 | 요구사항마다 기존 규칙(FR-REQ-05). 묶음 배지는 "완료 요구사항 k/N"만 보인다 — 묶음 단위의 새 지표를 만들지 않는다 |
 
 ## 기존 데모와의 대응
 
-> **구현 스택은 아직 정하지 않았다.** 아래 표의 데모 경로 · 파일 · 명령은 데모 스택(React · TypeScript · Three.js · Hono)을 이어 쓸 때의 기준이다. HTML · CSS · JavaScript 위주로 새로 구현하게 되면 같은 내용을 "참고할 동작과 구조"로 읽는다 — ARCHITECTURE.md 「기술 스택」.
+> 프론트엔드는 데모 코드를 재사용 · 리팩터링한다(2026-11-01 결정). 아래 경로는 데모 저장소 기준이다. 서버 파일은 참고만 한다.
 
 ### 3D 장면
 
 | 기능 | 기존 파일 | 판정 | 필요한 수정 | 관련 요구사항 |
 | --- | --- | --- | --- | --- |
-| 사무실 공간 · 벽 · 바닥 · 조명 | `src/scene/Room.tsx` · `Lighting.tsx` · `Furniture.tsx` · `src/office/layout.ts` | 데모와 같음 | 요구사항 구역을 그릴 바닥 영역을 `layout.ts`에 구현한다 | FR-OFF-01 |
-| 책상 · 아바타 | `Desks.tsx` · `Avatar.tsx` · `Avatars.tsx` | 수정 · 확장 | 책상은 10개 고정(`MAX_MEMBERS = 10`)이라 4인 팀에 충분하다. 팀원 → 책상 배정은 GitHub 참여자 기준으로 자동 배정. 강사는 팀원이 아니라 책상 · 아바타가 없다(2026-10-30 결정). GitHub 프로필 사진 표시(FR-OFF-06) 신규. 머리 위 신호 다이아 · "업무량 140%" 태그는 사람별 비교라 제거 대상 | FR-OFF-01 · 06, FR-FLOW-06 |
-| 작업 상자 | `TaskBox.tsx` · `TaskBoxes.tsx` · `TaskTooltip.tsx` | 수정 · 확장 | 둥근 상자 한 종류뿐이다. 높이 = 포인트(`estimate`), 색 = 우선순위 · 프로젝트 · 마감 위험이다. 도형 색은 우선순위로 구분한다. 우선순위 · 포인트는 GitHub 이슈에 없어 작업 필드를 새로 기획 예정이다(2026-10-28 추가 결정 · P6) | FR-OFF-02 · 04 |
+| 사무실 공간 · 벽 · 바닥 · 조명 | `src/scene/Room.tsx` · `Lighting.tsx` · `Furniture.tsx` · `src/office/layout.ts` | 재사용 | 기본 테마(사무실) 컴포넌트로 둔다. `layout.ts`의 좌표는 ThemeLayout의 공간 역할 기준 좌표로 옮기고, 요구사항 영역(구역 · 묶음)을 놓을 자리를 더한다 | FR-OFF-01 |
+| 책상 · 아바타 | `Desks.tsx` · `Avatar.tsx` · `Avatars.tsx` | 수정 · 확장 | 책상은 10개 고정(`MAX_MEMBERS = 10`)이라 4인 팀에 충분하다. 팀원 → 책상 배정은 GitHub 콜라보레이터 기준으로 자동 배정. 아바타는 기본 작업 공간, 회의 같은 앱 이벤트에 따라 이동(2026-11-01 결정 — `paths.ts` 이동 경로 재사용). 직접 조작은 Must 아님. 강사는 책상 · 아바타가 없다. GitHub 프로필 사진 표시(FR-OFF-06) 신규. 머리 위 신호 다이아 · "업무량 140%" 태그는 사람별 비교라 제거 대상 | FR-OFF-01 · 06, FR-FLOW-06 |
+| 작업 상자 | `TaskBox.tsx` · `TaskBoxes.tsx` · `TaskTooltip.tsx` | 수정 · 확장 | 둥근 상자 한 종류뿐이다. 높이 = 포인트(`estimate`)는 뺀다. 색은 `priority:*` 라벨에서, 라벨이 없으면 중립(2026-11-01 결정 · P6) | FR-OFF-02 · 04 |
 | PR 도형(삼각기둥) | 없음 | 신규 | `shared.tsx`의 기본 도형 패턴으로 만든다. 새 3D 모델링은 하지 않는다 | FR-OFF-02, FR-LRN-03 |
-| 안건 도형 5종(상자 · 삼각기둥 · 구 · 팔면체 · 납작한 메모) | 없음 — 상자 1종만 있다 | 신규 | 이슈 상자를 빼면 4종이 새 도형이다. 도형 5종이 이미 있다고 가정하지 않는다 | FR-OFF-02, FR-LRN-10 |
-| 위치 배치 | `slots.ts` (`home`: `desk` · `backlog` · `done` · `agenda`) | 수정 · 확장 | 검토 영역(review 위치가 지금 없다 — 책상에서 할 일과 같게 보인다), 요구사항 구역 위치를 더한다(머지 준비 선반은 없음 — 2026-10-29 결정). 완료 선반은 최근 16개만 그린다. 과부하 책상 기울기(`wobble`)는 제거 대상 | FR-OFF-02 · 03, FR-FLOW-06 |
-| 백로그 · 완료 선반 | `Furniture.tsx`(`BacklogShelf` · `DoneShelf`) · `slots.ts` | 데모와 같음 | 백로그 = 담당자 없는 열린 이슈, 완료 = 닫힌 이슈 · 머지된 PR로 기준만 바꾼다 | FR-OFF-02 |
-| 회의실 | `MeetingRoomState.tsx` · `Room.tsx` | 수정 · 확장 | 회의 중 표시 · 안건 수 라벨 · 드롭 강조는 데모와 같게 구현한다. 안건은 지금 `Task.onAgenda` 하나뿐이라 종류가 없다 → `AgendaItem`으로 바꾸고 5종 도형을 놓는다. 안건 노출은 21개까지 | FR-MTG-03 · 04, FR-LRN-04 · 10 |
-| 요구사항 구역 · 연결 | 없음 | 신규 | 바닥 구역 · 구역별 진행률 · 상자를 구역으로 드래그(ROLE-02) | FR-REQ-02 · 04 · 05, FR-OFF-03 |
-| 막힘 · 리뷰 대기 표시 | 비슷한 것: `TaskBox`의 지연 깜빡임, `Overlays.tsx`의 업무량 원판 | 수정 · 확장 | 막힘은 강조하고 "막힘" 표시만 붙인다 — 이유 문구 없음(FR-FLOW-02 · 2026-10-29 결정). 업무량 원판(사람별)은 제거 대상 | FR-FLOW-01 · 02 |
-| PR 평가 표시 | 없음 | 신규 | 삼각기둥 위 추천 · 비추천 수와 이유. PR 위치는 바꾸지 않는다(2026-10-29 결정) | FR-LRN-01~03 |
-| 공용 게시 공간 | 없음 | 신규 | 회의 결정 기록 · 도움 요청 · 배운 점 (공지 없음 — 2026-10-28 결정, 팀 규칙 표시 없음 — 2026-10-30 결정) | FR-MTG-04, 추가 제안 후보 |
-| 정보 뷰(최근 변화 · 담당 · 막힘 — 2026-10-29 결정) | 비슷한 것: `TopBar`의 `OverlaySwitch`(기본 · 업무량 · 마감 위험 · 프로젝트)와 `Overlays.tsx` | 수정 · 확장 | 오버레이 전환 구조는 데모를 참고하고, 정보 뷰 내용은 새로 구현한다. 업무량 오버레이는 제거 대상 | 기획안 「정보 뷰」 |
-| 카메라 회전 · 줌 · 이동 | `CameraRig.tsx` | 데모와 같음 | — | FR-OFF-01 |
-| 도형 드래그 | `DragLayer.tsx` · `dropTarget.ts` · `store.ts` `endDrag` | 수정 · 확장 | 드롭 대상이 지금은 팀원(담당 지정) · 백로그 · 상태 열 · 회의실 · 날짜다. 담당 · 상태 · 마감은 GitHub 원본이라 바꿀 수 없으므로 요구사항 구역(연결)과 회의실(안건)만 남긴다(날짜 드롭 = 마감 바꾸기도 뺀다 — 2026-10-28 추가 결정). 완료 상자는 드래그가 막혀 있다 | FR-REQ-04, FR-LRN-04 |
-| 상세 패널 연동 | `src/ui/Detail.tsx` · `RightPanel.tsx` | 수정 · 확장 | 선택 → 패널 구조는 데모를 참고해 구현한다. 편집 입력란(상태 · 우선순위 · 포인트 · 담당 · 마감)은 읽기 전용 + GitHub 링크로 바꾼다 | FR-OFF-05 |
-| 위치 이동 애니메이션 | `TaskBox.tsx`(호 그리며 이동 · 등장 · 흔들림) | 데모와 같음 | 흔들림(과부하)만 제거 | FR-OFF-02 |
+| 안건 도형 5종(상자 · 삼각기둥 · 구 · 팔면체 · 납작한 메모) | 없음 — 상자 1종만 있다 | 신규 | 이슈 상자를 빼면 4종이 새 도형이다(기본 테마 표현). 도형 5종이 이미 있다고 가정하지 않는다 | FR-OFF-02, FR-LRN-10 |
+| 위치 배치 | `slots.ts` (`home`: `desk` · `backlog` · `done` · `agenda`) | 구조 변경 | SceneModel(공간 역할)과 ThemeLayout(좌표)로 나눈다 — 「공간 역할과 테마」. 검토 공간(지금 없음)을 더한다. **`agenda`는 원본 상자를 옮기는 위치가 아니라 `AgendaItem` 표현의 위치로 바꾼다**(데모는 `onAgenda`면 상자 자체를 회의 테이블로 옮긴다 — 2026-11-01 결정과 다름). 완료 선반은 최근 16개만 그린다. 과부하 책상 기울기(`wobble`)는 제거 대상 | FR-OFF-02, FR-MTG-03, FR-FLOW-06 |
+| 백로그 · 완료 선반 | `Furniture.tsx`(`BacklogShelf` · `DoneShelf`) · `slots.ts` | 재사용 | 대기 = 담당자 없는 열린 이슈, 완료 = 닫힌 이슈 · 머지되거나 닫힌 PR(05 「상태값」 표 — FR-LRN-07). 머지 안 되고 닫힌 PR을 머지와 구분해 표시할지, Draft PR을 따로 표시할지는 결정 필요 | FR-OFF-02 |
+| 회의실 | `MeetingRoomState.tsx` · `Room.tsx` | 수정 · 확장 | 회의 중 표시 · 안건 수 라벨 · 드롭 강조는 재사용. 안건은 지금 `Task.onAgenda` 하나뿐이라 종류가 없다 → `AgendaItem`의 표현을 5종 도형으로 놓는다. 원본 이슈 · PR은 회의실로 옮기지 않는다(2026-11-01 결정). 안건 노출은 21개까지 | FR-MTG-03 · 04, FR-LRN-04 · 10 |
+| 요구사항 구역 · 연결 | 없음 | 신규 | 구역 · 묶음 오브젝트 · 구역별 진행률 · 상자를 구역으로 드래그(ROLE-02). 연결 뒤 상자는 제자리로(2026-11-01 결정) | FR-REQ-02 · 04 · 05 |
+| 막힘 · 리뷰 대기 표시 | 비슷한 것: `TaskBox`의 지연 깜빡임, `Overlays.tsx`의 업무량 원판 | 수정 · 확장 | 막힘은 강조하고 "막힘" 표시만 붙인다 — 이유 문구 없음(FR-FLOW-02). 업무량 원판(사람별)은 제거 대상 | FR-FLOW-01 · 02 |
+| PR 평가 표시 | 없음 | 신규 | 삼각기둥 위 현재 회차의 추천 · 비추천 수와 이유. PR 위치는 바꾸지 않는다 | FR-LRN-01~03 · 06 |
+| 공용 게시 공간 | 없음 | 신규 | 3D에는 게시판 오브젝트(개수 배지)만, 내용(회의 결정 기록 · 강사 피드백 · 도움 요청 · 배운 점)은 HUD 패널(2026-11-01 결정). 긴 글을 3D 텍스트로 그리지 않는다 | FR-MTG-04, FR-LRN-15~22 |
+| 정보 뷰(최근 변화 · 담당 · 막힘) | 비슷한 것: `TopBar`의 `OverlaySwitch`와 `Overlays.tsx` | 수정 · 확장 | 오버레이 전환 구조를 재사용하고 정보 뷰 내용은 새로 구현한다. 업무량 오버레이는 제거 대상 | FR-FLOW-03 · 07 · 08 |
+| 카메라 회전 · 줌 · 이동 | `CameraRig.tsx` | 재사용 | — | FR-OFF-01 |
+| 도형 드래그 | `DragLayer.tsx` · `dropTarget.ts` · `store.ts` `endDrag` | 구조 변경 | 드롭 판정 박스를 ThemeLayout의 드롭 영역으로 옮긴다. 드롭 결과는 요구사항 영역(연결 — 상자는 제자리) · 회의(안건 만들기)만 남긴다. 담당 · 상태 · 마감은 드래그로 바꾸지 않는다(2026-10-28 추가 결정). 완료 상자는 드래그가 막혀 있다 | FR-REQ-04, FR-LRN-04 · 10 |
+| 상세 패널 연동 | `src/ui/Detail.tsx` · `RightPanel.tsx` | 수정 · 확장 | 선택 → 패널 구조는 재사용한다. 편집 입력란(상태 · 우선순위 · 포인트 · 담당)은 읽기 전용 + GitHub 링크로 바꾼다. 마감은 앱 저장 값(입력 위치는 결정 필요) | FR-OFF-05, FR-PLAN-03 |
+| 위치 이동 애니메이션 | `TaskBox.tsx`(호 그리며 이동 · 등장 · 흔들림) | 재사용 | 흔들림(과부하)만 제거 | FR-OFF-02 |
 
 ### 화면 (HUD)
 
@@ -331,37 +503,37 @@ FR-FLOW-06 · P6("팀원 간 순위 · 비교와 사람별 합계 금지")와 �
 
 ## 개발 경로
 
-기획안 「2주 개발 일정」의 순서와 우선순위를 바꾸지 않는다. 기존 데모에서 출발할 때의 기술적 순서다.
+기획안 「2주 개발 일정」의 순서와 우선순위를 바꾸지 않는다. Must 범위도 줄이지 않는다(2026-11-01 결정). 이슈별 구현 순서(P0 · P1 · P2)는 00-backlog.md 「이슈 백로그 (Must)」에 있다 — 순서일 뿐 범위 축소가 아니다.
 
 | 단계 | 목표 | 주로 바뀌는 곳 | 선행 | 규모 메모 |
 | --- | --- | --- | --- | --- |
-| 1차 기존 데모 유지 (1~2일차) | 설치 · 실행 확인, mock으로 3D 사무실 표시, 컴포넌트 · 데이터 구조 파악, 데모에서 참고할 범위와 구현 스택(① · ②) 확정 | 코드 변경 없음. 실행 결과 · 결정 사항 기록 | 개발 저장소 확정, Node 버전 | 4명이 함께 — 기획안 「역할 분담」 |
-| 2차 GitHub 이슈를 사무실에 (5일차 첫 목표) | GitHub 연결, 이슈 읽기, 앱 모델로 변환, 기존 상자로 표시, 담당자 · 상태에 따른 위치 | 서버 `auth` · `adapters/github` · `store` 신규, `types.ts` · `slots.ts` · `store.ts` 수정 | 1차, GitHub App 생성, Task 필드 출처 결정(06) | 가장 큰 단계. 로그인 없이 설치 토큰만으로 먼저 이슈를 띄우고 로그인을 나중에 붙이는 순서도 가능하다 — 결정 필요 |
-| 3차 기획 핵심 확장 | 요구사항 구역과 진행률, PR 시각화, 회의실 안건 · 결정 기록, 회고 리포트, PR 평가 | `core`(`src/data/rules/`) · 장면 도형 · 회의 화면 · 새 패널 | 2차, 명세 문서 형식(TBD-01 — ## 제목만, 2026-10-28 결정) | 7일차 데모의 PR 평가(FR-LRN-01~03)는 2026-10-28에 채택되어 일정에 든다 |
+| 1차 공통 계약 · 골격 (1~2일차) | 데모 실행은 확인됨(2026-11-01). 공통 계약(CONTRACTS.md) 확정, 개발 저장소 생성, Spring Boot 골격(공통 에러 · 보안 설정 · 사무실 Entity), 프론트 데모 이전 | 문서 · 공통 파일. 4명이 함께 | 미확정 기술(DB · JDK · 빌드 도구 · 저장소 구성) 결정 | 여러 Claude Code 세션이 서로 다른 계약을 만들지 않도록 이 단계를 먼저 끝낸다 |
+| 2차 GitHub 이슈를 사무실에 (5일차 첫 목표) | GitHub 로그인 · 세션, 설치 토큰으로 이슈 · PR 읽기, 앱 모델로 변환 · 저장, `DataSource(api)`를 Spring에 연결, 상태에 따른 위치(SceneModel · ThemeLayout) | 백엔드 `auth` · `github` · `sync` · `workspace`, 프론트 `types.ts` · `slots.ts` → SceneModel · `store.ts` | 1차, GitHub App 생성, FR-GH-02 · 04 초안 승인 | 가장 큰 단계. 로그인 없이 설치 토큰만으로 먼저 이슈를 띄우고 로그인을 나중에 붙이는 순서도 가능하다 — 결정 필요 |
+| 3차 기획 핵심 확장 | 요구사항 구역 · 묶음과 진행률, PR 시각화 · 평가 · 회차, 회의실 안건 · 결정 기록, 도움 요청, 강사 대응, 회고 리포트 | 백엔드 도메인 패키지, 프론트 장면 도형 · 회의 화면 · 새 패널 | 2차, 명세 문서 형식(TBD-01 — ## 제목만) | 7일차 데모의 PR 평가(FR-LRN-01~03)는 일정에 든다 |
 
 ## 공용 컴포넌트
 
-여러 화면이 쓰는 화면 조각이다. 3D 표현은 기존 3D 팀 오피스의 표현을 참고해 구현하고 새 모델링은 하지 않는다(기획안 「기능 동결 규칙」). 기존 경로는 데모 기준이다.
+여러 화면이 쓰는 화면 조각이다. 3D 표현은 기존 데모의 표현을 재사용하고 새 모델링은 하지 않는다(기획안 「기능 동결 규칙」). 기존 경로는 데모 기준이다.
 
 ### 상단 바
 
-기존 `src/ui/TopBar.tsx`. 레포 드롭다운, D-day, 요구사항 진행률, 열린 PR 수, 평균 리뷰 대기, 동기화 상태, "기록되지 않은 기여는 반영되지 않습니다" 안내 — 07-screens.md 「상단 바」. 지금은 KPI 칩 · 균형 칩 · 회의 버튼 · 오버레이 전환이 있고, 레포 선택 · D-day · 동기화 상태는 없다(신규). 3D보다 먼저 뜬다(NFR-02 — 이미 lazy 로딩).
+기존 `src/ui/TopBar.tsx`. 레포 드롭다운, D-day, 요구사항 진행률, 열린 PR 수, 평균 리뷰 대기, 동기화 상태, "기록되지 않은 기여는 반영되지 않습니다" 안내, 팀 설정 버튼(레포 관리자만 수정 — 2026-11-01 결정), 시연 사무실이면 "시연 데이터" 표시 — 07-screens.md 「상단 바」. 지금은 KPI 칩 · 균형 칩 · 회의 버튼 · 오버레이 전환이 있고, 레포 선택 · D-day · 동기화 상태 · 설정 버튼은 없다(신규). 3D보다 먼저 뜬다(NFR-02 — 이미 lazy 로딩).
 
 ### 상세 패널
 
-기존 `src/ui/Detail.tsx`(`RightPanel.tsx`의 서랍). 도형 · 아바타를 선택하면 제목, 담당자, 연결 PR, 리뷰 상태, 추천·비추천과 이유, 평가 버튼, GitHub PR 화면 링크를 보여 준다 — 07-screens.md 「상세 패널」 · FR-OFF-05.
+기존 `src/ui/Detail.tsx`(`RightPanel.tsx`의 서랍). 도형 · 아바타를 선택하면 제목, 담당자, 연결 PR, 리뷰 상태, 우선순위, 마감, 현재 회차의 추천·비추천과 이유, 평가 버튼, GitHub PR 화면 링크를 보여 준다 — 07-screens.md 「상세 패널」 · FR-OFF-05.
 
-### 도형 5종
+### 도형 5종 (기본 테마 표현)
 
-이슈는 정육면체 상자, PR은 삼각기둥, 도움 요청은 구, 배운 점 공유는 팔면체(보석 모양), 기타는 납작한 메모지다. 2D 팀 보드 아이콘은 ■ ▲ ● ◆ 모서리 접힌 메모로 1:1 대응한다. 도형은 종류만 나타내고, 상태는 도형을 바꾸지 않고 배지 · 테두리 · 크기로 표시한다(기획안 「안건 도형과 상태 표시」). **지금 있는 것은 상자(`src/scene/TaskBox.tsx`) 하나뿐이다.** 공유 도형 · 재질 캐시는 `src/scene/shared.tsx`에 있다.
+이슈는 정육면체 상자, PR은 삼각기둥, 도움 요청은 구, 배운 점 공유는 팔면체(보석 모양), 기타는 납작한 메모지다. 2D 팀 보드 아이콘은 ■ ▲ ● ◆ 모서리 접힌 메모로 1:1 대응한다. 도형은 종류만 나타내고, 상태는 도형을 바꾸지 않고 배지 · 테두리 · 크기로 표시한다(기획안 「안건 도형과 상태 표시」). **지금 있는 것은 상자(`src/scene/TaskBox.tsx`) 하나뿐이다.** 공유 도형 · 재질 캐시는 `src/scene/shared.tsx`에 있다. 테마가 바뀌면 모양은 바뀔 수 있고, "종류를 구분해 보인다"는 요구만 남는다.
 
 ### 정보 뷰
 
-최근 변화 · 담당 · 막힘 뷰 세 가지를 같은 사무실 위에 겹쳐 보여 준다(2026-10-29 결정). 최근 변화 뷰는 가장 최근 스탠드업 날 이후 상태가 바뀐 도형을 밝게, 그대로인 도형을 흐리게 보이고(요구사항 ID 없음), 담당 뷰는 몰린 사람 책상과 담당자 없는 도형을, 막힘 뷰는 막힌 도형 · 아바타를 강조한다. 담당 · 막힘 표시에는 이유 문구와 숫자 비교가 없다. 요구사항 진행률 · 빈 구역은 상단 바와 요구사항 패널, 추천 리뷰어는 상세 패널, 마감 · 뒤처짐은 일정판에서 본다. 일정상 밀리면 패널 목록으로 대신한다(기획안 「정보 뷰」 · 「기능 동결 규칙」). 기존 오버레이 전환(`TopBar.tsx` `OverlaySwitch`, `store.ts`의 `overlay`, `src/scene/Overlays.tsx`)을 틀로 쓴다.
+최근 변화 · 담당 · 막힘 뷰 세 가지를 같은 사무실 위에 겹쳐 보여 준다(2026-10-29 결정). 최근 변화 뷰(FR-FLOW-08)는 가장 최근 스탠드업 날 이후 상태가 바뀐 도형을 밝게, 그대로인 도형을 흐리게 보인다. 담당 뷰는 몰린 사람 책상과 담당자 없는 도형을, 막힘 뷰는 막힌 도형 · 아바타를 강조한다. 담당 · 막힘 표시에는 이유 문구와 숫자 비교가 없다. 요구사항 진행률 · 빈 구역은 상단 바와 요구사항 패널, 추천 리뷰어는 상세 패널, 마감 · 뒤처짐은 일정판에서 본다. 일정상 밀리면 패널 목록으로 대신한다(기획안 「정보 뷰」 · 「기능 동결 규칙」). 기존 오버레이 전환(`TopBar.tsx` `OverlaySwitch`, `store.ts`의 `overlay`, `src/scene/Overlays.tsx`)을 틀로 쓴다.
 
 ## 디자인 토큰
 
-기존 값은 세 곳에 있다. v1에서 쓸 토큰은 이 파일들을 기준으로 정리한다.
+기존 값은 세 곳에 있다. v1에서 쓸 토큰은 이 파일들을 기준으로 정리한다. 테마는 확정이 아니므로(2026-11-01 결정) 3D 색 · 재질은 테마 쪽에, HUD 토큰은 HUD 쪽에 둔다.
 
 - `src/theme.ts` `PALETTE` — 3D 색(배경 · 바닥 · 벽 · 가구 · 강조색 `accent` · 선택 · 드롭 가능 · 지연 강조). 공간은 흰색 계열이고 색은 데이터에만 쓴다는 원칙이 주석에 있다.
 - `src/data/meta.ts` — 상태 · 우선순위 · 접속 상태 라벨과 색, 팀원 색 목록 `MEMBER_COLORS`, 업무량 등급 `WORKLOAD_LEVELS`(사람별 비교라 제거 대상).
@@ -369,7 +541,7 @@ FR-FLOW-06 · P6("팀원 간 순위 · 비교와 사람별 합계 금지")와 �
 
 ### 색
 
-색은 사람이 아니라 **우선순위**에 부여한다 — 화면이 사람 비교처럼 보이지 않게 하기 위해서다(P6). 우선순위의 출처는 작업 필드 새로 기획 예정이다. 요구사항 구역별 색은 두지 않는다(2026-10-28 추가 결정 — FR-OFF-03과 다름). 안건 종류는 색으로 구분하지 않는다(도형으로 구분). 지금 데모는 상자 색을 우선순위 · 프로젝트에, 아바타 색을 팀원(`Member.color`)에 준다 — 아바타 색을 팀원 식별용으로 남길지는 결정 필요.
+색은 사람이 아니라 **우선순위**에 부여한다 — 화면이 사람 비교처럼 보이지 않게 하기 위해서다(P6). 우선순위는 GitHub `priority:*` 라벨에서 읽고, 라벨이 없으면 중립 색이다(2026-11-01 결정). 요구사항 구역별 색은 두지 않는다(2026-10-28 추가 결정 — FR-OFF-03은 2026-11-01에 삭제). 안건 종류는 색으로 구분하지 않는다(도형으로 구분). 지금 데모는 상자 색을 우선순위 · 프로젝트에, 아바타 색을 팀원(`Member.color`)에 준다 — 아바타 색을 팀원 식별용으로 남길지는 결정 필요.
 
 ### 글자 크기
 
@@ -389,7 +561,7 @@ TODO: 대응 내용 없음 (삭제 여부 확인)
 
 ## 렌더링 방식
 
-브라우저에서 모두 그리는 SPA다(Vite + React, 서버 렌더링 없음). 서버(Hono)는 `/api/*`만 응답하고 정적 파일을 서빙하지 않는다 — 시범 서버(팀원 컴퓨터 한 대 — TBD-09, 2026-10-28 결정)에서 빌드 결과(`dist/`)를 어떻게 서빙할지는 결정 필요. GitHub 토큰과 비밀 값은 서버에만 두고 브라우저로 내보내지 않는다(NFR-04). 상단 바와 패널이 3D보다 먼저 뜨고 3D는 이어서 로딩한다(NFR-02).
+브라우저에서 모두 그리는 SPA다(Vite + React, 서버 렌더링 없음). Spring Boot 서버는 `/api/**`(REST · SSE)를 응답한다. 빌드 결과를 Spring이 정적 파일로 같이 서빙할지, 리버스 프록시 뒤에 따로 둘지는 결정 필요다. `[제안]` 같은 출처로 서빙하면 세션 쿠키 · CSRF · CORS가 단순해진다. 외부 인터넷 배포라 HTTPS로만 받는다(SP11). GitHub 토큰과 비밀 값은 서버에만 두고 브라우저로 내보내지 않는다(NFR-04). 상단 바와 패널이 3D보다 먼저 뜨고 3D는 이어서 로딩한다(NFR-02).
 
 ## 이미지
 
@@ -399,11 +571,11 @@ TODO: 대응 내용 없음 (삭제 여부 확인)
 
 기존 데모의 흐름을 따른다. 화면 목록과 보이는 것은 07-screens.md, 담당은 [SCREEN_ASSIGNMENTS.md](./SCREEN_ASSIGNMENTS.md)를 따른다.
 
-1. 필요한 데이터가 `src/data/types.ts`에 있는지 본다. 없으면 타입과 DataSource 변경을 먼저 합의한다(계약 파일).
-2. 계산은 `src/data/selectors.ts` · `src/data/rules/`에 순수 함수로 둔다. 화면에서 직접 계산하지 않는다.
+1. 필요한 데이터가 `src/data/types.ts`와 [CONTRACTS.md](./CONTRACTS.md)에 있는지 본다. 없으면 타입 · DataSource · API DTO 변경을 먼저 합의한다(계약 파일).
+2. 화면 계산(공간 역할 · 강조 · 묶음)은 `src/` 의 순수 함수(SceneModel · selectors)에 둔다. 도메인 판정(막힘 · 권한 · 집계)은 서버 응답을 쓴다. 화면에서 직접 계산하지 않는다.
 3. 화면 상태는 `src/store.ts`(데이터 · 선택 · 드래그)와 `src/ui/uiState.ts`(탭 · 패널 같은 UI 전용 값) 중 맞는 곳에 둔다.
-4. HUD는 `src/ui/`, 3D는 `src/scene/`에 만든다. 3D 쪽은 첫 화면 번들에 들어가지 않게 lazy 경로 안에 둔다(`npm run build`의 번들 검사).
-5. mock(`?source=` 없이)과 api(`?source=api`) 두 경로에서 확인하고, 필요하면 E2E에 시나리오를 더한다.
+4. HUD는 `src/ui/`, 3D는 `src/scene/`에 만든다. 테마에 묶인 좌표 · 모양은 ThemeLayout · 테마 컴포넌트에 둔다. 3D 쪽은 첫 화면 번들에 들어가지 않게 lazy 경로 안에 둔다(`npm run build`의 번들 검사).
+5. mock(`?source=` 없이)과 api(`?source=api` — Spring 서버) 두 경로에서 확인하고, 필요하면 E2E에 시나리오를 더한다.
 
 ## 기획 문서와 다르게 구현했다면
 
@@ -411,19 +583,20 @@ TODO: 대응 내용 없음 (삭제 여부 확인) — 구현이 기획 문서와
 
 ## 플랫폼 제약
 
-v1은 **웹 서비스**이고 **1024px 이상 노트북 · 태블릿**에서 쓴다(NFR-07). 모바일 반응형은 범위 밖이다.
+v1은 **외부 인터넷에서 접속하는 웹 서비스**이고(SP11 · 2026-11-01 결정) **1024px 이상 노트북 · 태블릿**에서 쓴다(NFR-07). 모바일 반응형은 범위 밖이다.
 
-- GitHub 변경은 웹훅 없이 **폴링**으로 받는다(CON-03). 그래서 내부망 서버도 가능하다(기획안 「리스크 및 대응 방안」, TBD-09).
+- GitHub 변경은 웹훅 없이 **폴링**으로 받는다(CON-03). 그래서 서버가 GitHub에서 들어오는 요청을 받을 필요가 없다.
 - 연결이 끊겨도 마지막 데이터로 화면을 유지한다(NFR-09). 데모에는 이미 오프라인 배너와 재연결(`src/ui/Toasts.tsx` `ConnectionBanner`, SSE 재연결 1~10초 backoff)이 있다.
 
 ## 함수 리전
 
-TODO: 대응 내용 없음 (삭제 여부 확인) — 서버 위치는 팀원 컴퓨터 한 대(같은 네트워크)로 정했다(TBD-09, 2026-10-28 결정).
+TODO: 대응 내용 없음 (삭제 여부 확인) — 서버 위치는 외부 인터넷 배포로 정했다(SP11 · 2026-11-01 결정 — TBD-09 "팀원 컴퓨터 한 대"를 대신함). 배포 대상이 정해지면 쓴다.
 
 ## 아직 없는 것
 
-- **개발 저장소** — 새로 만들기로 했고 아직 만들지 않았다. 만든 뒤 Git 전략 「8」 설정을 한다.
-- **실행 확인** — 데모의 설치 · 실행 · 테스트를 이 문서 작성 중에 돌리지 않았다. 1차 단계에서 확인한다(PROJECT_COMMANDS.md).
-- **정의서 v0.1 원문** — 범위로만 인용된 요구사항과 6장 데이터 요구사항(03 · 06 머리말).
-- **미결 TBD** — 2026-10-28 결정 회의에서 TBD-01 · 04 · 05 · 06 · 09를 정했다. 남은 [?]는 TBD-02(공개 범위)다(05-policy.md 서비스 정책). 막힘 기준은 리뷰 대기 48시간 · 커밋 없음 48시간으로 정했다(2026-10-28 추가 결정). 그 밖의 결정 필요 항목(이 문서의 결정 필요 항목 등)은 PRD.md 「열린 질문」.
-- **제안 채택 여부** — 평가 처리, 회의 안건 종류, 도움 요청, 카드 조립은 2026-10-28에 채택했다. 도움 요청은 FR-LRN-15~20(안건 후보 시간 48시간)이 됐고, 활동 기록(FR-ACT)도 채택했다(2026-10-28 추가 결정). 2026-10-30에는 강사 대응(FR-AUTH-06~08 · FR-LRN-21~23 · FR-REP-11 · FR-LIB-01 · 02)을 채택 · Must로 더하고 FR-REP-07을 Must로 올렸으며, 습관 체크(FR-HAB-01~11)는 없앴다.
+- **개발 저장소** — 새로 만들기로 했고 아직 만들지 않았다. 구성(한 저장소 / 두 저장소)은 결정 필요. 만든 뒤 Git 전략 「8」 설정을 한다.
+- **미확정 기술** — DB · JDK 버전 · 빌드 도구 · migration 도구 · 세션 저장 위치 · SPA 서빙 방식 · 배포 대상(위 「기술 스택」).
+- **공통 계약 확정** — CONTRACTS.md는 초안이다. 1차 단계에서 팀이 확정한다.
+- **정의서 v0.1 원문** — 없을 가능성이 높다. Must 4건(FR-AUTH-02 · FR-GH-02 · FR-GH-04 · FR-MTG-02)은 팀 재정의 초안으로 대신했고 승인 전이다(requirements-changes.md).
+- **미결 TBD** — 남은 [?]는 TBD-02(공개 범위)다(05-policy.md 서비스 정책). TBD-09는 2026-11-01에 다시 정했다. 그 밖의 결정 필요 항목은 PRD.md 「열린 질문」.
+- **제안 채택 여부** — 2026-10-28 · 2026-10-29 · 2026-10-30에 채택한 제안은 requirements-changes.md. 2026-11-01 결정은 새 ID 없이 기존 ID를 고쳤다.
