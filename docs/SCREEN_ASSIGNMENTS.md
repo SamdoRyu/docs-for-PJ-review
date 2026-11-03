@@ -2,7 +2,7 @@
 
 누가 어느 화면을 맡는지, 그 화면의 디자인 원본이 어디인지 적는 표다.
 
-- 만드는 방법: [ARCHITECTURE.md](./ARCHITECTURE.md) · 공통 계약(DataSource · 화면 타입 · SceneModel · ThemeLayout): [CONTRACTS.md](./CONTRACTS.md)
+- 만드는 방법: [ARCHITECTURE.md](./ARCHITECTURE.md) · 공통 계약(DataSource · 화면 타입 · SceneModel · ThemeLayout — v1 확정 2026-11-03): [CONTRACTS.md](./CONTRACTS.md) · 화면이 부르는 API와 DTO · DataSource 메서드: [CONTRACTS_API.md](./CONTRACTS_API.md)
 - 실행·검증 명령: [PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md)
 - git 흐름(브랜치·커밋·PR·머지): `.claude/rules/git-workflow.md`
 - **backend 구현 담당·상태: [BACKEND_ASSIGNMENTS.md](./BACKEND_ASSIGNMENTS.md)** ← 로그인 · GitHub 동기화 · 평가 처리 · 막힘 계산 · 저장은 이 문서가 아니라 저기다
@@ -24,7 +24,7 @@ npm install
 npm run dev          # 화면 :5173 — 브라우저 mock 데이터(?source= 없음)
 ```
 
-명령의 뜻과 선행 조건은 [PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md). 화면 작업은 GitHub 없이 한다 — 브라우저 mock(`?source=` 없음) 또는 Spring 서버 데이터(`?source=api`, 환경 변수 가이드 「환경별 설정」). 위 명령은 기존 데모 저장소 기준이다. 개발 저장소의 프론트 · Spring(Gradle) 동시 실행 명령은 저장소 구성이 정해지고 개발 저장소를 만든 뒤 PROJECT_COMMANDS.md에 쓴다. 데모의 `npm run dev:all`은 Hono 서버를 같이 띄우므로 v1 서버 데이터 확인에는 쓰지 않는다.
+명령의 뜻과 선행 조건은 [PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md). 화면 작업은 GitHub 없이 한다 — 브라우저 mock(`?source=` 없음) 또는 Spring 서버 데이터(`?source=api`, 환경 변수 가이드 「환경별 설정」). 위 명령은 기존 데모 저장소 기준이다. 개발 저장소는 모노레포라(2026-11-03 결정) 화면 명령은 `frontend/`에서 돌리고, Spring 서버 데이터가 필요하면 루트에서 로컬 MySQL(`compose.yaml`)을 띄운 뒤 `backend/`에서 Spring을 따로 실행한다 — 확인된 명령은 개발 저장소를 만든 뒤 PROJECT_COMMANDS.md에 쓴다. 데모의 `npm run dev:all`은 Hono 서버를 같이 띄우므로 v1 서버 데이터 확인에는 쓰지 않는다.
 
 ## 담당 표
 

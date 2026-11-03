@@ -1,6 +1,6 @@
 # 코드 컨벤션 (BE)
 
-> 2026-10-28 결정 회의 · 2026-10-30 강사 역할 결정 · 2026-11-01 기술 스택 결정 · 2026-11-01 추가 결정 반영. 꼭 지킬 것만 남기고 나머지는 권장으로 낮춘 판
+> 2026-10-28 결정 회의 · 2026-10-30 강사 역할 결정 · 2026-11-01 기술 스택 결정 · 2026-11-01 추가 결정 · 2026-11-03 공통 계약 확정 결정 반영. 꼭 지킬 것만 남기고 나머지는 권장으로 낮춘 판
 
 ## 전제
 
@@ -85,15 +85,15 @@
   | 명세 문서 · 요구사항 | `SpecDocument` · `Requirement` |
   | 제출(PR) | `Submission` (GitHub 원본 타입은 `GithubPullRequest`, 이슈는 `GithubIssue`) |
   | 요구사항–이슈 연결 | `RequirementLink` |
-  | 막힘 · PR 평가(추천 · 비추천) · 평가 회차 · 회의 안건 · 스탠드업 | `Blocker` · `Evaluation`(`recommend`, `not_recommend`) · `EvaluationRound` (`[제안]` — 2026-11-01) · `AgendaItem` · `Standup` |
+  | 막힘 · PR 평가(추천 · 비추천) · 평가 회차 · 회의 안건 · 스탠드업 | `Blocker` · `Evaluation`(`recommend`, `not_recommend`) · `EvaluationRound` (2026-11-01 — CONTRACTS.md 2026-11-03 확정) · `AgendaItem` · `Standup` |
   | 도움 요청 | `HelpRequest` |
   | 컨벤션 라이브러리 항목 | `ConventionLibraryItem` |
   | 회고 리포트 · 기술 결정 카드 | `RetroReport` · `DecisionCard` |
   | 팀 설정 · 사무실 | `TeamSettings` · `Workspace` |
 
 - 자바 쪽 표기는 Java 관례를 따릅니다: 클래스 `PascalCase`, 메서드 · 필드 `camelCase`, 상수 `UPPER_SNAKE`, 패키지 소문자. 프론트 쪽은 데모 관례(컴포넌트 `PascalCase.tsx`, 그 밖의 모듈 `camelCase.ts`)를 따릅니다.
-- JSON 응답의 필드 이름은 `camelCase`, 문자열 열거 값은 프론트와 맞춰 소문자 snake(`'in_progress'`, `'not_recommend'`)로 냅니다(`[제안]` — 자바 열거형과의 변환 위치는 공통 DTO 한 곳).
-- ID 형식은 결정 필요입니다(CONTRACTS.md 「2」).
+- JSON 응답의 필드 이름은 `camelCase`, 문자열 열거 값은 프론트와 맞춰 소문자 snake(`'not_recommend'`)로 냅니다. 자바 열거형과의 변환은 공통 코드 한 곳에서 합니다(값 목록은 CONTRACTS.md 「3」).
+- **ID**(2026-11-03 결정): Entity 기본키는 `Long`(MySQL `BIGINT`)이고, API에서는 내부 ID를 문자열로 주고받습니다(`"taskId": "42"`). 이슈 · PR 번호와 GitHub 사용자 · 레포 ID는 내부 ID와 다른 필드에 둡니다. 규칙은 CONTRACTS.md 「2」 ID 정책.
 - 헷갈리기 쉬운 값만 이름으로 구분합니다.
   - 시간 값에는 단위: `reviewWaitHours`, `sessionTtlMinutes`
   - GitHub 번호와 앱 ID: `githubIssueNumber` ↔ `taskId`

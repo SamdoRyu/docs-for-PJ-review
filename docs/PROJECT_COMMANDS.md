@@ -4,7 +4,7 @@
 
 개발에 쓰는 명령 전부다. `.claude/rules/testing.md` 가 이 문서를 가리킨다.
 
-**저장소를 구분한다.** 이 저장소(`docs-for-PJ-review`)는 문서뿐이라 실행할 명령이 없다. 아래 「프론트 명령」은 **기존 3D 데모 저장소(`SamdoRyu/warehouseDemo_fork`) 루트** 기준이다. 실제 개발은 새로 만들 개발 저장소에서 한다(2026-10-28 결정 — ARCHITECTURE.md 「저장소」). 개발 저장소가 생기면 실행 위치와 경로(예: `frontend/`)를 그쪽으로 바꾼다.
+**저장소를 구분한다.** 이 저장소(`docs-for-PJ-review`)는 문서뿐이라 실행할 명령이 없다. 아래 「프론트 명령」은 **기존 3D 데모 저장소(`SamdoRyu/warehouseDemo_fork`) 루트** 기준이다. 실제 개발은 새로 만들 개발 저장소에서 한다(2026-10-28 결정 — ARCHITECTURE.md 「저장소」). 개발 저장소는 모노레포다(2026-11-03 결정) — 만들면 프론트 명령은 `frontend/`, 백엔드 명령은 `backend/`, 로컬 DB(`compose.yaml`)는 저장소 루트에서 실행한다.
 
 > **확인 범위**: 명령과 동작은 2026-10-28에 데모의 `package.json` · 설정 · 소스를 읽어서 정리했다. 데모가 실제로 실행되는 것은 2026-11-01에 팀이 확인했다. 아래 명령별 통과 여부(예: `test:contract` · `test:e2e`)는 따로 기록되지 않았다 — 개발 저장소로 옮길 때 다시 돌려 보고 이 문서를 고친다.
 
@@ -42,11 +42,11 @@ npm run dev          # 화면(Vite :5173) — 브라우저 mock 데이터
 | 명령 | 하는 일 | v1에서 |
 | --- | --- | --- |
 | `npm run server` · `server:once` | `tsx watch server/src/index.ts` — Hono API `127.0.0.1:${PORT ?? 8787}`, `server/data/office.db`(SQLite) 자동 생성 · 시드 | 쓰지 않는다. 동작 · API 설계를 볼 때만 띄운다 |
-| `npm run dev:all` | `concurrently`로 `dev` + `server` | 쓰지 않는다. 프론트 + Spring을 함께 띄우는 방식은 결정 필요 |
+| `npm run dev:all` | `concurrently`로 `dev` + `server` | 쓰지 않는다. v1 로컬은 MySQL만 컨테이너로 띄우고 프론트(`frontend/`)와 Spring(`backend/`)을 각자 직접 실행한다(2026-11-03 결정 — 권장 구성) |
 
 ## 백엔드 명령 (Spring Boot — Java 21 · Gradle)
 
-빌드 도구는 Gradle, JDK는 21이다(2026-11-01 추가 결정). 아래 명령은 Gradle Wrapper의 일반 명령으로 적은 **예정**이고, 개발 저장소가 아직 없어 **실행해 확인하지 않았다**. 저장소를 만든 뒤 실제로 돌려 보고 고친다(저장소 구성에 따라 `backend/`에서 실행).
+빌드 도구는 Gradle, JDK는 21이다(2026-11-01 추가 결정). 아래 명령은 Gradle Wrapper의 일반 명령으로 적은 **예정**이고, 개발 저장소가 아직 없어 **실행해 확인하지 않았다**. 저장소를 만든 뒤 실제로 돌려 보고 고친다(모노레포의 `backend/`에서 실행).
 
 | 하고 싶은 것 | 명령 |
 | --- | --- |
@@ -58,13 +58,19 @@ npm run dev          # 화면(Vite :5173) — 브라우저 mock 데이터
 
 ## DB
 
-저장 항목은 [06-data.md](./06-data.md), Entity · 관계 초안은 [CONTRACTS.md](./CONTRACTS.md), 저장 방식은 ARCHITECTURE.md 「저장소 (JPA)」.
+저장 항목은 [06-data.md](./06-data.md), Entity · 관계 · ID · 무결성 제약은 [CONTRACTS.md](./CONTRACTS.md)(v1 확정 — 2026-11-03), 저장 방식은 ARCHITECTURE.md 「저장소 (JPA)」.
 
 - **DB는 MySQL 8.x다**(2026-11-01 추가 결정). 데모의 SQLite 파일 · `repo.migrate()` 방식은 쓰지 않는다(2026-11-01 결정 — 2026-10-28의 "JSON 방식 이어 쓰기" 결정을 대신함).
 
 ### 1. 로컬 DB
 
-TODO — 개발 저장소를 만든 뒤 쓴다(로컬 MySQL 8.x를 띄우는 방법, 초기 데이터 · 시연 Seed 데이터 넣는 법).
+권장 구성(2026-11-03 결정): 로컬 MySQL 8.x는 저장소 루트의 `compose.yaml`(Docker Compose)로 띄우고, 프론트와 Spring은 컨테이너 밖에서 직접 실행한다. Docker는 개발 환경 선택일 뿐 배포 플랫폼과 같다고 가정하지 않는다.
+
+| 하고 싶은 것 | 명령 |
+| --- | --- |
+| 로컬 MySQL 띄우기 · 내리기 | `docker compose up -d` · `docker compose down` (예정 — 미확인. 저장소 루트) |
+
+TODO — 개발 저장소를 만든 뒤 쓴다: `compose.yaml`의 DB 이름 · 포트, 초기 데이터 · 시연 Seed 데이터 넣는 법. DB 접속 정보는 `.env`에서 읽고 `compose.yaml`에 비밀 값을 적지 않는다.
 
 ### 2. 환경 변수
 
@@ -120,7 +126,9 @@ npm run lint
 npm run build            # tsc -b 타입 검사 + 빌드 + 번들 검사
 npm run test:contract    # mock · 클라이언트 쪽
 npm run test:e2e         # 화면 · 3D 를 바꿨을 때. Chrome 필요
-# 백엔드 — 빌드 도구가 정해지면 테스트 · 빌드 명령을 여기에 더한다
+# 백엔드 (backend/ — 예정, 미확인)
+./gradlew test           # 단위 · Spring 통합 · 계약 테스트
+./gradlew build
 ```
 
 - 실제로 돌린 명령과 결과만 PR 「검증」에 적는다. 못 돌린 것은 못 돌렸다고 적는다.
@@ -142,6 +150,7 @@ v1의 테스트 대상:
 
 - **백엔드 도메인 규칙**: 막힘 계산, 평가 처리(이유 필수 검사 · 현재 회차 집계 · 회차 열기), 기술 결정 카드 조립, 강사 쓰기 허용 · 거부, 사무실 접근 검사. 외부 서비스 없이 값만으로 판정하는 것을 JUnit으로 테스트한다(코드 컨벤션 BE 「모듈」).
 - **프론트 화면 계산**: SceneModel(공간 역할 · 요구사항 연결 · 안건 뒤에도 원본 위치 유지), 묶음 표시.
+- **계약 테스트**(2026-11-03 결정 — Q5): 모노레포 루트 `contract/examples/`의 예시 JSON을 백엔드(JUnit — Java DTO)와 프론트(`tsc` — TypeScript 타입)가 함께 읽어 어긋나면 실패하고, 권한 · IDOR · 익명성 · 평가 회차 · 요구사항 재동기화 시나리오는 Spring 통합 테스트로 확인한다. 범위와 통과 기준은 CONTRACTS.md 「9」 계약 테스트. 테스트 코드는 개발 저장소를 만든 뒤 쓴다 — 아직 없다.
 - 화면 시연과 화면 테스트는 **브라우저 mock** 으로 하고(2026-10-28 결정) GitHub API 를 부르지 않는다. GitHub 어댑터의 변환은 GitHub 응답 예시 데이터로 테스트한다(신규 예정).
 
 PR 에 "테스트 완료"라고만 적지 않는다. 실제로 한 것만 적고, 테스트하지 못한 부분은 PR 에 명시한다(`.claude/rules/testing.md`).

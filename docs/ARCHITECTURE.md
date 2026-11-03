@@ -2,7 +2,7 @@
 
 화면과 서버 코드를 만들기 전에 이 문서를 읽는다. **git 흐름(브랜치·커밋·PR·리뷰·머지)은 여기 없다 — `.claude/rules/git-workflow.md`(개발 컨벤션 > Git 전략)를 본다.**
 
-- 공통 계약(도메인 모델 · Entity 관계 · DTO · 엔드포인트 · 에러 · 권한 · 어댑터 · DataSource · SceneModel) 초안: [CONTRACTS.md](./CONTRACTS.md)
+- 공통 계약(도메인 모델 · Entity 관계 · ID · DTO · 엔드포인트 · 에러 · 권한 · 어댑터 · DataSource · SceneModel · 계약 테스트) — v1 확정(2026-11-03): [CONTRACTS.md](./CONTRACTS.md), 엔드포인트별 상세: [CONTRACTS_API.md](./CONTRACTS_API.md)
 - 누가 어느 화면을 맡는지: [SCREEN_ASSIGNMENTS.md](./SCREEN_ASSIGNMENTS.md)
 - 누가 어느 서버 기능을 맡는지: [BACKEND_ASSIGNMENTS.md](./BACKEND_ASSIGNMENTS.md)
 - 실행·검증 명령과 환경 변수: [PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md)
@@ -22,7 +22,7 @@
 | --- | --- | --- |
 | `SamdoRyu/docs-for-PJ-review` (이 저장소) | 기획 · 설계 · 개발 규칙 문서, Issue · PR 템플릿 초안 | 앱 코드가 없다 |
 | `SamdoRyu/warehouseDemo_fork` | 기존 3D 데모 코드. **프론트엔드를 재사용할 원본**이다 — 3D 장면 · 카메라 · 선택 · 드래그 · 애니메이션 · HUD · Zustand · `DataSource` 개념 · 순수 계산 함수 · 프론트 테스트를 적극 재사용하고, 필요하면 대규모로 리팩터링한다(CON-05 — 2026-11-01 결정). Hono 서버 · SQLite는 동작과 API 설계만 참고한다 | 사용 · 수정 권한 확인됨(2026-11-01). **실제 개발은 새로 만들 개발 저장소에서 한다**(2026-10-28 결정). 레포 설정은 Git 전략 「8」 |
-| 개발 저장소 (아직 없음) | 프론트엔드(React) + 백엔드(Spring Boot) | **구성은 결정 필요** — 한 저장소(`frontend/` + `backend/`) 또는 두 저장소. `[제안]` 한 저장소: 공통 계약 변경을 한 PR로 묶을 수 있다 |
+| 개발 저장소 (아직 없음) | 프론트엔드(React) + 백엔드(Spring Boot) | **모노레포 — 한 저장소에 `frontend/` + `backend/`**(2026-11-03 결정 — Q6). 공통 계약 변경(Java DTO · TypeScript 타입 · 예시 JSON)을 한 PR에서 검토한다. 이 기획 저장소는 기획 · 설계 기록의 출처로 남는다. 구조는 아래 「개발 저장소」 |
 
 데모 저장소의 `docs/PLAN.md`는 과거 팀 관리 대시보드(관리자 1명 + 팀원 6~10명) 기획이다. 오피스 v1의 요구사항 기준으로 쓰지 않는다.
 
@@ -52,7 +52,7 @@
 | DB migration 도구 | `[제안]` Flyway — JPA `ddl-auto`에 운영 스키마를 맡기지 않기 위해 도구는 쓴다 | 골격 만들 때 |
 | 테스트 DB | 운영과 같은 MySQL 8.x(컨테이너) 또는 내장 DB — 쿼리 차이 위험을 본다 | 골격 만들 때 |
 | 세션 저장 위치 | `[구현 기본값]` 단일 서버의 기본 세션(서버 메모리). 서버를 늘리거나 재시작 때 세션 유지가 필요해지면 바꾼다 | 필요할 때 |
-| 저장소 구성 | `[제안]` 한 저장소 | 개발 저장소 만들기 전 — 위 「저장소」 |
+| 로컬 개발 구성 | 2026-11-03 결정(권장 구성): React(Vite)와 Spring Boot는 로컬에서 직접 실행하고, MySQL 8.x만 저장소 루트의 `compose.yaml`(Docker Compose)로 띄운다. Docker는 개발 환경 선택일 뿐 배포 플랫폼과 같다고 가정하지 않는다 | 개발 저장소 만들 때 |
 | SPA 서빙 방식 | `[제안]` Spring이 빌드 결과를 정적 파일로 서빙(같은 출처 — CORS 불필요) 또는 리버스 프록시 | 배포 플랫폼과 함께 |
 | 배포 플랫폼 | 특정 클라우드를 문서에서 정하지 않는다. HTTPS 인증서 · 도메인 · MySQL 8.x를 쓸 수 있는지 본다 | Spring Boot 초기 프로젝트 구축 단계 |
 
@@ -72,7 +72,7 @@
 | 빌드 | vite (Rolldown 기반) | `^8.3.0` | 8.3.2 | 프론트 재사용 |
 | 빌드 | @vitejs/plugin-react | `^6.1.1` | 6.1.2 | 프론트 재사용 |
 | 실행 | tsx | `^4.23.15` | 4.23.15 | 서버 실행용은 참고만. 프론트 스크립트 · 테스트에 쓰면 유지 |
-| 실행 | concurrently | `^10.0.5` | 10.0.5 | 결정 필요 (프론트 + Spring 동시 실행 방식) |
+| 실행 | concurrently | `^10.0.5` | 10.0.5 | 프론트 · Spring은 기본적으로 각자 직접 실행한다(2026-11-03 결정 — 권장 로컬 구성). 한 명령으로 띄우는 스크립트가 필요하면 그때 정한다 |
 | 린터 | oxlint | `^1.81.0` | 1.87.0 | 프론트 재사용 |
 | 테스트 | @playwright/test (E2E) | `^1.64.0` | 1.64.0 | 프론트 재사용 |
 | 테스트 | `node:test` + tsx (계약 테스트) | 의존성 아님 | — | mock 쪽은 재사용. API 쪽은 Spring 서버를 대상으로 다시 구성 — 아래 「테스트 경계」 |
@@ -128,10 +128,15 @@ warehouseDemo_fork/
 └─ scripts/                       check-bundle.mjs(빌드 후 번들 검사) · data-smoke.ts
 ```
 
-### 개발 저장소 (신규 예정 — `[제안]`, 저장소 구성은 결정 필요)
+### 개발 저장소 (신규 예정 — 모노레포는 2026-11-03 결정, 그 안의 패키지 경로는 `[제안]`)
 
 ```text
-(개발 저장소)
+(개발 저장소 — 이름 예: gitvillage)
+├─ compose.yaml                   로컬 개발용 MySQL 8.x (권장 구성 — 배포 설정 아님)
+├─ .env.example                   변수 이름만, 비밀 값 없음 (환경 변수 가이드)
+├─ .gitignore                     .env · *.pem · secrets/ 를 가장 먼저
+├─ README.md
+├─ contract/examples/             계약 예시 JSON — 백엔드 · 프론트 계약 테스트가 함께 읽는다 (CONTRACTS.md 「9」)
 ├─ frontend/                      데모의 index.html · src/ · tests/ · scripts/ 를 옮겨 리팩터링
 │  └─ src/
 │     ├─ app/ · scene/ · ui/      데모 구조 유지
@@ -181,7 +186,8 @@ warehouseDemo_fork/
 ### 테스트 경계 (`[제안]`)
 
 - 데모의 계약 테스트는 같은 시나리오를 mock과 API(TS 서버)에 함께 돌린다. API 쪽 서버가 Spring으로 바뀌므로, **같은 시나리오를 두 언어에서 따로 유지하면 어긋난다** — 구현 위험이다.
-- `[구현 기본값]` 계약 테스트는 **Spring 통합 테스트 + 프론트 핵심 E2E**로 한다(2026-11-01 추가 결정). 백엔드 계약(엔드포인트 · DTO · 권한 · 에러)은 Spring 통합 테스트가 맡고, 프론트는 mock DataSource로 화면 동작을, Spring 서버를 띄운 핵심 흐름은 E2E로 확인한다. `[제안]` 시나리오의 입력 · 기대 결과를 JSON 예시 데이터로 두고 양쪽이 같은 파일을 읽으면 어긋남이 줄어든다.
+- `[구현 기본값]` 계약 테스트는 **Spring 통합 테스트 + 프론트 핵심 E2E**로 한다(2026-11-01 추가 결정). 백엔드 계약(엔드포인트 · DTO · 권한 · 에러)은 Spring 통합 테스트가 맡고, 프론트는 mock DataSource로 화면 동작을, Spring 서버를 띄운 핵심 흐름은 E2E로 확인한다.
+- **Java DTO ↔ TypeScript 타입**(2026-11-03 결정 — Q5): 논리 계약은 CONTRACTS.md · CONTRACTS_API.md가 기준이고, 자동 생성(OpenAPI → TS)은 쓰지 않는다. 모노레포 루트 `contract/examples/`의 대표 요청 · 응답 JSON을 백엔드(JUnit — DTO로 읽고 다시 써서 비교)와 프론트(`tsc` — 타입 변수에 넣기)가 함께 읽어 어긋나면 실패한다. 범위와 통과 기준은 CONTRACTS.md 「9」 계약 테스트.
 - 백엔드 규칙 테스트는 JUnit으로 Service 안의 순수 규칙을 검사한다. GitHub 어댑터 변환은 GitHub 응답 예시 데이터로 테스트하고 실제 GitHub를 부르지 않는다.
 
 ## 실행 구조
@@ -253,7 +259,8 @@ GitHub ──(설치 토큰으로 읽기만 · 폴링 · 웹훅 없음)──▶
 | GitHub 원본 → 앱 모델 변환 | 없음 | 서버 GitHub 어댑터. GitHub 모양은 어댑터 밖으로 내보내지 않는다 |
 | 앱 모델 저장 · 동기화 상태 | `repo.ts`(Task · Member · Meeting CRUD) | JPA Entity에 `syncedAt` · 마지막 성공 시각 · 실패 사유와 함께 저장(FR-GH-05) |
 | 이슈 · 팀원 만들기 · 고치기 · 지우기 | `createTask` · `updateTask` · `deleteTask` · `createMember` … | **없앤다** — GitHub에서 오는 값은 앱에서 바꾸지 않는다(CON-02) |
-| 앱 자체 기록 쓰기 | `startMeeting` · `endMeeting` | 요구사항–이슈 연결, 회의 · 안건, 스탠드업, 평가, 도움 요청, 작업 마감, 강사 답변 등 쓰기 메서드 신규 — 초안은 CONTRACTS.md |
+| 앱 자체 기록 쓰기 | `startMeeting` · `endMeeting` | 요구사항–이슈 연결, 회의 · 안건, 스탠드업, 평가, 도움 요청, 작업 마감, 강사 답변 등 쓰기 메서드 신규 — API와 1:1, 메서드 이름은 CONTRACTS_API.md 「0」 |
+| 개인 학습 데이터 읽기 | 없음 | `load`(Snapshot)에 넣지 않고 따로 읽는다 — 학습 타임라인 · 회고 리포트 · 기술 결정 카드(2026-11-03 결정 — CONTRACTS.md 「5」) |
 | 화면 표시 | `load` → 스토어 → 장면 · HUD, `subscribe`로 변경 반영 | 유지. 사무실 단위로 읽는다 |
 | 시연 | mock + 데모 봇 | 화면 개발은 mock. 발표 시연은 서버 Seed 사무실(2026-11-01 결정). 데모 봇은 `[제안]` Spring 서버로 옮기지 않는다 |
 
@@ -300,12 +307,12 @@ GitHub ──(설치 토큰으로 읽기만 · 폴링 · 웹훅 없음)──▶
 
 ### 데모 API와 v1 API
 
-데모 API는 **참고**다. v1 API는 Spring에서 새로 만들고, 엔드포인트 · DTO 초안은 [CONTRACTS.md](./CONTRACTS.md) 「API」에 둔다.
+데모 API는 **참고**다. v1 API는 Spring에서 새로 만들고, 공통 규칙은 [CONTRACTS.md](./CONTRACTS.md) 「4」 · 「5」 · 「6」, 엔드포인트 · DTO는 [CONTRACTS_API.md](./CONTRACTS_API.md)에 있다(v1 확정 — 2026-11-03).
 
 | 구분 | 데모 경로 | v1에서 |
 | --- | --- | --- |
 | 상태 확인 | `GET /api/health` | 같은 목적의 엔드포인트를 둔다 |
-| 전체 데이터 | `GET /api/workspace` (`X-Seq` 헤더) | 사무실 단위로 읽는다. 응답이 새 모델(이슈 · PR · 요구사항 · 안건 …)이고 역할 · 본인 여부에 따라 필드를 뺀다 |
+| 전체 데이터 | `GET /api/workspace` (`X-Seq` 헤더) | 사무실 단위 `GET /api/workspaces/{workspaceId}/snapshot`(`WorkspaceSnapshot`). 응답이 새 모델(이슈 · PR · 요구사항 · 안건 …)이고, 개인 지표는 넣지 않고 개인 API로 나눈다(2026-11-03 결정) |
 | 작업 · 팀원 CRUD | `POST` · `PATCH` · `DELETE /api/tasks` · `/api/members` | 없앤다 — 이슈와 팀원은 GitHub에서 온다 |
 | 회의 | `POST /api/meetings` · `POST /api/meetings/:id/end` | 안건 · 결정 · 배운 점 기록으로 다시 만든다(FR-MTG-03 · 04) |
 | 데모 · 초기화 | `GET` · `PUT /api/demo`, `POST /api/reset` | 운영 서버에는 두지 않는다 `[제안]`. 시연은 Seed 사무실로 한다 |
@@ -404,7 +411,8 @@ GitHub 로그인과 레포 읽기는 **GitHub App 하나**로 처리한다. OAut
 ## 저장소 (JPA)
 
 - **현재 구현 (데모, 참고만)**: `server/src/db.ts`가 `node:sqlite`로 `server/data/office.db`를 열고, 테이블마다 `(id TEXT PRIMARY KEY, data TEXT)`로 엔티티 전체를 JSON 문자열로 저장한다. 쓰기는 `repo.ts`의 `mutate()` 트랜잭션, 커밋 뒤 SSE 알림. 2026-10-28에는 이 방식을 이어 쓰기로 했지만, **2026-11-01 결정으로 Spring Data JPA로 바꿔 이 방식은 쓰지 않는다.**
-- **v1 (신규 예정)**: 06-data.md 「저장 항목」을 JPA Entity로 만든다. Entity · 연관관계 초안은 CONTRACTS.md 「도메인 모델과 Entity 관계」.
+- **v1 (신규 예정)**: 06-data.md 「저장 항목」을 JPA Entity로 만든다. Entity · 연관관계 · ID 정책 · 무결성 제약은 CONTRACTS.md 「2」 · 「3」(v1 확정 — 2026-11-03).
+  - 기본키는 `Long`(MySQL `BIGINT`)이고 API에서는 문자열로 낸다. GitHub 이슈 · PR 번호와 사용자 · 레포 ID는 다른 칸에 둔다(2026-11-03 결정 — Q1).
   - DB는 MySQL 8.x다(2026-11-01 추가 결정).
   - 사무실 단위 항목은 모두 사무실(Workspace)에 속한다. 조회는 항상 사무실 조건을 포함한다 — 다른 조 데이터가 섞이지 않게 하는 핵심이다.
   - 컨벤션 라이브러리 항목 · 심사용 계정은 서버 전체에 하나다. 승인된 강사 계정은 서버 설정 허용 목록이다(2026-11-01 추가 결정).
@@ -532,7 +540,7 @@ FR-FLOW-06 · P6("팀원 간 순위 · 비교와 사람별 합계 금지")와 �
 
 | 단계 | 목표 | 주로 바뀌는 곳 | 선행 | 규모 메모 |
 | --- | --- | --- | --- | --- |
-| 1차 공통 계약 · 골격 (1~2일차) | 데모 실행은 확인됨(2026-11-01). 공통 계약(CONTRACTS.md) 확정, 개발 저장소 생성, Spring Boot 골격(Java 21 · Gradle · MySQL 8.x — 공통 에러 · 보안 설정 · 사무실 Entity), 배포 플랫폼 확정, 프론트 데모 이전 | 문서 · 공통 파일. 4명이 함께 | 저장소 구성 결정 (스택 · DB는 2026-11-01 추가 결정으로 확정) | 여러 Claude Code 세션이 서로 다른 계약을 만들지 않도록 이 단계를 먼저 끝낸다 — 아래 「착수 체크리스트」 |
+| 1차 공통 계약 · 골격 (1~2일차) | 데모 실행은 확인됨(2026-11-01). 공통 계약 확정(2026-11-03 — CONTRACTS.md v1), 개발 저장소(모노레포) 생성, Spring Boot 골격(Java 21 · Gradle · MySQL 8.x — 공통 에러 · 보안 설정 · ID 변환 · 사무실 Entity), 배포 플랫폼 확정, 프론트 데모 이전 | 문서 · 공통 파일. 4명이 함께 | 없음 — 스택 · DB(2026-11-01 추가 결정), 계약 · 저장소 구성(2026-11-03 결정) 확정 | 여러 Claude Code 세션이 서로 다른 계약을 만들지 않도록 이 단계를 먼저 끝낸다 — 아래 「착수 체크리스트」 |
 | 2차 GitHub 이슈를 사무실에 (5일차 첫 목표) | GitHub 로그인 · 세션, 설치 토큰으로 이슈 · PR 읽기, 앱 모델로 변환 · 저장, `DataSource(api)`를 Spring에 연결, 상태에 따른 위치(SceneModel · ThemeLayout) | 백엔드 `auth` · `github` · `sync` · `workspace`, 프론트 `types.ts` · `slots.ts` → SceneModel · `store.ts` | 1차, GitHub App 생성 (FR-GH-02 · 04는 2026-11-01 추가 결정으로 채택) | 가장 큰 단계. 로그인 없이 설치 토큰만으로 먼저 이슈를 띄우고 로그인을 나중에 붙이는 순서도 가능하다 — 결정 필요 |
 | 3차 기획 핵심 확장 | 요구사항 구역 · 묶음과 진행률, PR 시각화 · 평가 · 회차, 회의실 안건 · 결정 기록, 도움 요청, 강사 대응, 회고 리포트, 시연 사무실 · 심사용 로그인(IB-69) | 백엔드 도메인 패키지, 프론트 장면 도형 · 회의 화면 · 새 패널 | 2차, 명세 문서 형식(TBD-01 — ## 제목만) | 7일차 데모의 PR 평가(FR-LRN-01~03)는 일정에 든다 |
 
@@ -540,12 +548,14 @@ FR-FLOW-06 · P6("팀원 간 순위 · 비교와 사람별 합계 금지")와 �
 
 기획 전면 검토는 끝났다. 아래 순서로 개발에 들어간다.
 
-1. **공통 계약 확정** — CONTRACTS.md를 팀이 확인해 확정한다(계약 PR). 「10」의 남은 결정 중 ID 형식을 여기서 닫는다.
-2. **개발 저장소 생성** — 구성(한 저장소 / 두 저장소)을 정하고 만든다. `.gitignore`에 `.env` · `*.pem` · `secrets/`를 가장 먼저 넣고, Git 전략 「8」 설정을 한다.
-3. **Spring Boot 골격** — Java 21 · Gradle · MySQL 8.x로 만들고, Spring Boot 버전 · migration 도구 · 배포 플랫폼 · SPA 서빙 방식을 이때 정한다. 공통 에러 · 보안 설정 · 사무실 Entity를 넣는다.
-4. **GitHub App 생성** — 읽기 전용 권한(Metadata · Contents · Issues · Pull requests)으로 만들고 우리 조 조직에 설치한다.
-5. **GitHub 이슈 생성과 담당 배분** — 00-backlog.md 「이슈 백로그 (Must)」로 이슈를 만들며 담당자를 정한다. B12 · B13 · B14처럼 지금 미정인 묶음도 **병렬 기능 개발 전에는 담당자와 작업 경계를 지정**한다(BACKEND_ASSIGNMENTS.md).
-6. **병렬 개발 시작** — 계약을 바꿀 일이 생기면 CONTRACTS.md 「9」대로 계약 PR을 따로 낸다.
+1. ~~**공통 계약 확정**~~ — 완료(2026-11-03 결정 — CONTRACTS.md v1 · CONTRACTS_API.md). ID 형식 · 저장소 구성도 이때 닫았다. 이 문서들을 `main`에 합치는 PR의 리뷰가 팀 확인이다.
+2. **개발 저장소 생성(모노레포)** — 새 저장소를 만들고 `.gitignore`에 `.env` · `*.pem` · `secrets/`를 가장 먼저 넣는다. Git 전략 「8」 설정(보호 규칙 · squash · 템플릿 · 라벨 · `.nvmrc` · JDK 21)을 한다.
+3. **모노레포 초기 구조** — 위 「개발 저장소」 트리대로 `frontend/`(데모 프론트 이전) · `backend/` · `contract/examples/`(CONTRACTS_API.md 예시 JSON) · `compose.yaml`(로컬 MySQL 8.x) · `.env.example`을 만든다.
+4. **Spring Boot 골격** — Java 21 · Gradle · MySQL 8.x로 만들고, Spring Boot 버전 · migration 도구 · 테스트 DB · 배포 플랫폼 · SPA 서빙 방식을 이때 정한다. 공통 에러 응답 · 보안 설정(세션 · CSRF · 401 JSON) · ID 문자열 변환 · 인가 서비스 틀 · 사무실 Entity를 먼저 넣는다(CONTRACTS.md 「6」 · 「2」).
+5. **공통 Entity · DTO · 인증 · 인가 기초** — CONTRACTS.md 「2」 Entity와 CONTRACTS_API.md 공통 타입 · Snapshot DTO 뼈대, 로그인 · `GET /api/me` · 사무실 접근 검사, 계약 테스트 틀(CONTRACTS.md 「9」)을 계약 PR로 낸다.
+6. **GitHub App 생성 · 연동** — 읽기 전용 권한(Metadata · Contents · Issues · Pull requests)으로 만들고 우리 조 조직에 설치한다. 설치 토큰 · 동기화(B2)를 붙인다.
+7. **GitHub 이슈 생성과 담당 배분** — 00-backlog.md 「이슈 백로그 (Must)」로 이슈를 만들며 담당자를 정한다. B12 · B13 · B14처럼 지금 미정인 묶음도 **병렬 기능 개발 전에는 담당자와 작업 경계를 지정**한다(BACKEND_ASSIGNMENTS.md).
+8. **병렬 개발 시작** — 계약을 바꿀 일이 생기면 CONTRACTS.md 「9」대로 계약 PR을 따로 낸다.
 
 ## 공용 컴포넌트
 
@@ -630,9 +640,8 @@ TODO: 대응 내용 없음 (삭제 여부 확인) — 서버 위치는 외부 �
 
 ## 아직 없는 것
 
-- **개발 저장소** — 새로 만들기로 했고 아직 만들지 않았다. 구성(한 저장소 / 두 저장소)은 결정 필요. 만든 뒤 Git 전략 「8」 설정을 한다.
-- **구현 때 정하는 기술** — Spring Boot 버전 · migration 도구 · 세션 저장소 세부 · SPA 서빙 방식 · 배포 플랫폼(위 「기술 스택」). Java 21 · Gradle · MySQL 8.x는 2026-11-01 추가 결정으로 확정했다.
-- **공통 계약 확정** — CONTRACTS.md는 초안이다. 1차 단계에서 팀이 확정한다(위 「착수 체크리스트」).
+- **개발 저장소** — 모노레포로 새로 만들기로 했고(2026-11-03 결정) 아직 만들지 않았다. 만든 뒤 Git 전략 「8」 설정을 한다.
+- **구현 때 정하는 기술** — Spring Boot 버전 · migration 도구 · 테스트 DB · 세션 저장소 세부 · SPA 서빙 방식 · 배포 플랫폼(위 「기술 스택」). Java 21 · Gradle · MySQL 8.x는 2026-11-01 추가 결정으로 확정했다.
 - **정의서 v0.1 원문** — 없을 가능성이 높다. Must 4건(FR-AUTH-02 · FR-GH-02 · FR-GH-04 · FR-MTG-02)은 팀 재정의로 대신했고 2026-11-01 추가 결정으로 채택했다(requirements-changes.md).
-- **미결 TBD** — 남은 [?]는 TBD-02(공개 범위)다(05-policy.md 서비스 정책). TBD-09는 2026-11-01에 다시 정했다. 그 밖의 결정 필요 항목은 PRD.md 「열린 질문」.
+- **미결 TBD** — 서비스 정책(05-policy.md SP)에 남은 [?]는 없다. TBD-02(공개 범위)는 2026-11-03에 확정된 본인 · 강사 정책으로 정리했고(원문은 원본 확인 필요), TBD-09는 2026-11-01에 다시 정했다. TBD-03 · 07 · 08은 원본 확인 필요. 그 밖의 결정 필요 항목은 PRD.md 「열린 질문」.
 - **제안 채택 여부** — 2026-10-28 · 2026-10-29 · 2026-10-30에 채택한 제안은 requirements-changes.md. 2026-11-01 결정은 새 ID 없이 기존 ID를 고쳤다.

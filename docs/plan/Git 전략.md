@@ -134,4 +134,4 @@ New issue를 누르면 템플릿 세 개 중 하나를 고릅니다(`.github/ISS
 | `.gitignore` | `.env`, `*.pem`, `secrets/` 추가(데모 코드에는 없음) |
 | Node 버전 | `.nvmrc`에 Node 24 LTS (프론트) |
 | JDK 버전 | 백엔드 JDK 버전 고정 — Java 21 (2026-11-01 추가 결정). 빌드 도구는 Gradle(Gradle Wrapper를 커밋한다) |
-| 저장소 구성 | 프론트 · 백엔드를 한 저장소에 둘지 나눌지는 결정 필요 — 나누면 이 표의 설정을 두 저장소에 모두 한다 |
+| 저장소 구성 | 프론트 · 백엔드를 **한 저장소(모노레포)**에 둔다 — `frontend/` · `backend/` · `contract/examples/` · `compose.yaml` · `.env.example`(2026-11-03 결정 — ARCHITECTURE.md 「개발 저장소」). 이 표의 설정은 그 저장소 하나에 한다. 계약(Java DTO · TypeScript 타입 · 예시 JSON)을 바꾸는 PR은 한 PR에서 함께 바꾼다(CONTRACTS.md 「9」) |

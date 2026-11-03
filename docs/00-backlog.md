@@ -166,6 +166,7 @@
 
 ### 참고 이력
 
+> (2026-11-03) 공통 계약 확정 결정 반영 — 결정 기록 「공통 계약 확정 결정 (2026-11-03)」(사용자 선택 Q1~Q6)을 옮겼다. CONTRACTS.md를 v1 확정으로 고치고 엔드포인트 상세 CONTRACTS_API.md를 새로 만들었다. 강사 지정 경로를 GitHub 사용자 ID로 맞추고, TBD-02를 기존 본인 · 강사 정책으로 정리했다. Must 62개 · 이슈 후보 63개 · 요구사항 ID는 바꾸지 않았다. 반영 대상: 00 · 03 · 05 · 06 · 07 · PRD · requirements-changes · ARCHITECTURE · CONTRACTS · CONTRACTS_API · BACKEND_ASSIGNMENTS · SCREEN_ASSIGNMENTS · PROJECT_COMMANDS · 코드 컨벤션 (BE) · Git 전략 · 결정 기록
 > (2026-11-01) 기술 스택 · 공간 모델 · 학습 흐름 결정 반영 — 결정 기록 「기술 스택 · 공간 모델 · 학습 흐름 결정 (2026-11-01)」을 옮겼다. 이슈 백로그에 구현 순서(P0 · P1 · P2) 열을 더했고 Must 범위 · IB 개수는 바꾸지 않았다. 새 문서 CONTRACTS.md(공통 계약 초안)를 만들었다. 반영 대상: 00 · 01 · 02 · 03 · 04 · 05 · 06 · 07 · PRD · requirements-changes · ARCHITECTURE · CONTRACTS · BACKEND_ASSIGNMENTS · SCREEN_ASSIGNMENTS · PROJECT_COMMANDS · 코드 컨벤션 (BE) · 환경 변수 가이드 · Git 전략 · 기획안 · `.claude/rules`
 > (2026-11-01 추가 결정) 결정 기록 「추가 결정 (2026-11-01, v3 검토 뒤)」을 옮겼다. IB-03 · 07 · 09 · 41의 착수 조건을 "착수 가능"으로 바꾸고 제목을 확정했다. 심사용 로그인 작업을 IB-69(FR-AUTH-01 — 새 요구사항 ID 아님)로 더했다 — Must 요구사항 범위는 그대로이고 이슈 후보는 63개가 됐다. CONTRACTS.md 「10」을 구현 기본값과 남은 결정으로 나눴고, ARCHITECTURE.md에 착수 체크리스트를 더했다. Java 21 · Gradle · MySQL 8.x를 확정했다. 반영 대상: 00 · 01 · 02 · 03 · 04 · 05 · 06 · 07 · PRD · requirements-changes · ARCHITECTURE · CONTRACTS · BACKEND_ASSIGNMENTS · SCREEN_ASSIGNMENTS · PROJECT_COMMANDS · 코드 컨벤션 (BE) · 환경 변수 가이드 · Git 전략 · 기획안 · `.claude/rules`
 > (2026-10-28) 01~07을 요약해 새로 썼다. 반영 대상: PRD
@@ -268,7 +269,7 @@
 
 | 마일스톤 | 기획안이 요구하는 것 | 필요한 IB | 막히는 곳 |
 | --- | --- | --- | --- |
-| 1~2일차 | TBD 9건 결정, 기존 코드 · DataSource 파악, 공통 계약(CONTRACTS.md) 확정 · 개발 저장소 · Spring 골격 (2026-11-01 결정) | IB-01 | 정의서 원문이 없으면 TBD-03 · 07 · 08 내용을 모른다. 팀 재정의 4건과 Java 21 · Gradle · MySQL 8.x는 2026-11-01 추가 결정으로 정했다. 남은 것은 저장소 구성 · 배포 플랫폼(골격 때) · 이슈 생성과 담당 배분 — ARCHITECTURE.md 「착수 체크리스트」 |
+| 1~2일차 | TBD 9건 결정, 기존 코드 · DataSource 파악, 공통 계약(CONTRACTS.md) 확정 · 개발 저장소 · Spring 골격 (2026-11-01 결정) | IB-01 | 정의서 원문이 없으면 TBD-03 · 07 · 08 내용을 모른다. 팀 재정의 4건과 Java 21 · Gradle · MySQL 8.x는 2026-11-01 추가 결정으로, 공통 계약 v1 · ID 형식 · 저장소 구성(모노레포)은 2026-11-03 결정으로 정했다. 남은 것은 개발 저장소 생성 · 배포 플랫폼(골격 때) · 이슈 생성과 담당 배분 — ARCHITECTURE.md 「착수 체크리스트」 |
 | 5일차 첫 연동 | 우리 조 레포 이슈가 사무실에 상자로 뜸 | IB-02 · 03 · 05 · 06 · 07 · 08 · 09 · 10 · 11 (+ BACKEND B3 어댑터) | 없음 — IB-07 · 09(FR-GH-02 · 04)는 2026-11-01 추가 결정으로 읽기 범위가 정해졌다 |
 | 7일차 1차 데모 | 요구사항 구역, 진행률, **PR 추천·비추천 평가** | IB-13\~18 · **IB-19\~21** | 없음 — IB-19\~21은 2026-10-28 채택으로 착수 가능. (평가는 PR 상태 · 위치를 바꾸지 않고 GitHub 머지 조건과 별개다 — Git 전략 「6」, 2026-10-29 결정) |
 | 10일차 기능 동결 | Must 전부 완료 | 착수 가능 63 (Must 62 + IB-69) | 없음. Must가 된 FR-GH-05 · FR-LRN-06과 FR-LRN-15\~20은 IB-51\~58로, 강사 대응 Must와 Must로 올린 FR-REP-07은 IB-59\~68로 더했다(2026-10-30 결정). 심사용 로그인(IB-69)은 강사 보안 심사 전에 끝나야 한다(2026-11-01 추가 결정) |

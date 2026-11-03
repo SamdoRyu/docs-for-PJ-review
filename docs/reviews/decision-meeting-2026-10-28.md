@@ -499,6 +499,26 @@ v3 문서(같은 날의 「기술 스택 · 공간 모델 · 학습 흐름 결�
 | 11 | 강사 수동 동기화 | 허용하지 않음 |
 | 12 | 전체 관리자(ROLE-03) | 지금 실제 구현에 필요한 최소 권한부터 정의 |
 
+## 공통 계약 확정 결정 (2026-11-03)
+
+공통 계약(CONTRACTS.md) 초안을 개발 착수용으로 확정하면서 사용자가 6가지를 골랐다(각각 A안). 문서에서는 **"2026-11-03 결정"**으로 표기한다. 기존 ID · 정책 번호 · Must 62개 · 앞선 결정은 그대로이고 새 요구사항 ID는 없다. 아래 선택을 구현 모양으로 옮긴 계약은 [CONTRACTS.md](../CONTRACTS.md) · [CONTRACTS_API.md](../CONTRACTS_API.md)에 있다 — 그중 정책에서 바로 나오지 않는 인터페이스 선택은 `[구현 기본값]`으로 표시했다.
+
+| # | 쟁점 | 결정 |
+| --- | --- | --- |
+| Q1 | Entity ID | JPA Entity 기본키는 `Long`(MySQL `BIGINT`), API의 내부 ID는 문자열로 통일한다. 경로 변수 · DTO도 문자열이고 서버가 검증해 `Long`으로 바꾼다. 내부 ID와 GitHub 식별자(이슈 · PR 번호, 사용자 · 레포 ID)는 따로 두고, JavaScript 안전 정수 범위를 넘을 수 있는 GitHub ID는 문자열로 낸다. 데모의 `t_123` 같은 접두사 ID는 서버 기본키로 쓰지 않는다. 프론트 `DataSource` · `WorkspaceSnapshot` · `SceneModel`도 이 규칙을 따른다 |
+| Q2 | 요구사항 식별 · 재동기화 | 요구사항은 DB 고유 ID를 유지하고, Markdown `##` 제목의 명시적 요구사항 ID(`FR-AUTH-01` 등)를 우선 매칭 키로, 없으면 같은 문서 안의 같은 제목으로 매칭한다. 모호하면 자동 연결하지 않고 데이터 보존을 우선한다. 사라지거나 식별할 수 없는 요구사항의 `RequirementLink`를 자동으로 지우지 않는다. 복잡한 버전 관리는 만들지 않는다 |
+| Q3 | Snapshot과 개인 데이터 | 3D 사무실 · 공통 HUD 데이터는 `GET /api/workspaces/{workspaceId}/snapshot`의 `WorkspaceSnapshot`으로 주고, 개인 학습 데이터(학습 타임라인 · 회고 리포트 · 기술 결정 카드)는 별도 API로 나눈다. 개인 데이터는 서버가 로그인 사용자와 사무실 권한을 검사한 뒤에만 준다. 팀에 공개되는 데이터(PR 평가 이유 등)는 기존 익명성 · 공개 범위 정책을 따른다. 전용 DTO를 쓰고, Snapshot은 데모 화면 모델을 이어받으며 3D 테마에 묶이지 않는다 |
+| Q4 | API · DTO 계약 수준 | Must 기능의 병렬 개발에 필요한 공통 인터페이스를 상세히 확정한다 — 경로 · 메서드 · 경로 변수 · 쿼리 · 요청 · 응답 DTO와 타입 · 필수 여부 · enum · 역할 · 소유권 검사 · 성공 · 실패 응답 · HTTP 상태 코드 · 페이지 · 정렬 · ID · 시각 표현. Controller 코드나 전체 구현을 뜻하지 않는다 |
+| Q5 | API 타입 명세 관리 | CONTRACTS.md를 논리 계약의 기준으로 쓰고, 백엔드는 Java DTO, 프론트는 TypeScript 타입으로 구현하며 계약 테스트로 정합성을 검증한다. 대표 요청 · 응답 JSON 예시를 문서에 둔다. 호환을 깨는 DTO 변경은 계약 PR이 먼저다. 데모 `DataSource` 구조를 최대한 재사용한다. OpenAPI 기반 TypeScript 자동 생성은 필수로 도입하지 않는다(Swagger UI 등은 나중에 필요하면 검토). 이번에는 테스트 범위와 기준만 문서화하고 테스트 코드는 개발 저장소에서 쓴다 |
+| Q6 | 개발 저장소 구성 | 프론트엔드와 백엔드를 **하나의 저장소(모노레포)**에서 관리한다 — `frontend/`(React + TypeScript + Vite) · `backend/`(Java 21 + Gradle + Spring Boot) · `compose.yaml` · `.env.example` · `.gitignore` · `README.md`, 필요하면 공통 문서 · 설정 폴더. DB는 MySQL 8.x. 로컬 개발은 React와 Spring Boot를 직접 실행하고 MySQL만 Docker Compose 컨테이너로 띄우는 구성을 기본으로 권장한다(Docker는 개발 환경 선택일 뿐 배포 플랫폼과 같다고 가정하지 않는다). `warehouseDemo_fork`의 프론트를 재사용하고 Hono 서버 · SQLite는 가져오지 않는다. 이 기획 저장소는 기획 · 설계 기록의 출처로 유지한다. 개발 저장소는 이번 결정으로 만들지 않았다 |
+
+**함께 정리한 것** (새 정책이 아니라 기존 결정의 적용):
+
+| # | 쟁점 | 정리 |
+| --- | --- | --- |
+| 1 | 강사 지정 API의 식별자 | 강사 허용 목록의 키가 GitHub 사용자 ID이므로(2026-11-01 추가 결정), 이전 초안의 `/instructors/{login}`을 `/instructors/{githubUserId}`로 맞추고 `InstructorAssignment`도 GitHub 사용자 ID를 저장한다. 로그인 이름은 표시용이다 |
+| 2 | TBD-02 공개 범위 | 원본 정의서의 TBD-02 문장은 여전히 없다(원본 확인 필요). 구현할 공개 범위는 이미 확정된 정책으로 통일한다 — 개인 지표(학습 타임라인 · 회고 리포트 · 기술 결정 카드 · 질문 · 답변)는 **본인과 강사만** 본다(P5 · NFR-06 · FR-REP-06 · 10 — 2026-10-30 결정). 다른 학생에게 넓히는 정책은 없다. 05 SP7의 [?]를 지웠다 |
+
 ## 반영 상태
 
 | 묶음 | 상태 |
@@ -509,3 +529,4 @@ v3 문서(같은 날의 「기술 스택 · 공간 모델 · 학습 흐름 결�
 | 강사 역할 결정 (2026-10-30) — 강사(ROLE-04) 추가, 습관 체크(FR-HAB) 삭제, 대상 범위 · 역할 판정 변경 | 반영함 — docs 전체(doc-editor), 기획안 본문 · 「변경 이력」, `.github/labels.yml`, `.claude/rules/code-quality.md`, `.claude/skills/review-pr` |
 | 기술 스택 · 공간 모델 · 학습 흐름 결정 (2026-11-01) | 반영함 — 00 · 01 · 02 · 03 · 04 · 05 · 06 · 07 · PRD · requirements-changes · ARCHITECTURE · CONTRACTS(신규) · BACKEND_ASSIGNMENTS · SCREEN_ASSIGNMENTS · PROJECT_COMMANDS, 개발 컨벤션(코드 컨벤션 (BE) · 환경 변수 가이드 · Git 전략), 기획안 본문 · 「변경 이력」, `.claude/rules/code-quality.md`. 미확정 항목은 각 문서에 `[결정 필요]`로 남김 |
 | 추가 결정 (2026-11-01, v3 검토 뒤) — 팀 재정의 4건 채택, GitHub 이동 · 공식 연결만, 강사 판정 · 허용 목록, 심사용 로그인, Demo Workspace 접근 · 운영 범위, Java 21 · Gradle · MySQL 8.x, 요구사항 종류 묶음, 다중 담당자 · 마감 권한, 담당 배분 시점, 구현 기본값 | 반영함 — 00 · 01 · 02 · 03 · 04 · 05 · 06 · 07 · PRD · requirements-changes · ARCHITECTURE · CONTRACTS · BACKEND_ASSIGNMENTS · SCREEN_ASSIGNMENTS · PROJECT_COMMANDS, 개발 컨벤션(코드 컨벤션 (BE) · 환경 변수 가이드 · Git 전략), 기획안 본문 · 「변경 이력」, `.claude/rules/code-quality.md` · `security.md` |
+| 공통 계약 확정 결정 (2026-11-03) — Q1 ID · Q2 요구사항 재동기화 · Q3 Snapshot / 개인 API · Q4 API 상세 · Q5 계약 테스트 · Q6 모노레포, 강사 지정 식별자, TBD-02 정리 | 반영함 — CONTRACTS(v1 확정) · CONTRACTS_API(신규) · 00 · 03 · 05 · 06 · 07 · PRD · requirements-changes · ARCHITECTURE · BACKEND_ASSIGNMENTS · SCREEN_ASSIGNMENTS · PROJECT_COMMANDS, 개발 컨벤션(코드 컨벤션 (BE) · Git 전략). 기획안 본문은 고치지 않았다(공개 범위 · 스택 문장이 이미 맞음) |
