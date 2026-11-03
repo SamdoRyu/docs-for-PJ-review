@@ -13,7 +13,7 @@
 > - **확정 (날짜)**: 팀이 결정 기록으로 정한 것
 > - **신규 예정**: v1을 위해 새로 만들 것. 경로는 권장안이고 아직 없다
 > - **`[제안]`**: 구현할 때 권장하는 설계. 팀 결정이 아니다
-> - **`[구현 기본값]`**: 합의된 기본값으로 시작하고 구현 중 바꿀 수 있는 값(2026-11-01 추가 결정). 보안 · 인증 · 권한 · 데이터 무결성에 닿는 값은 바꿀 때 계약 PR로 낸다. 목록은 CONTRACTS.md 「10」
+> - **`[구현 기본값]`**: 합의된 기본값으로 시작하고 구현 중 바꿀 수 있는 값(2026-11-01 추가 결정). 보안 · 인증 · 권한 · 데이터 무결성에 닿는 값은 바꿀 때 CONTRACTS.md 「9」 계약 변경 절차를 따른다. 목록은 CONTRACTS.md 「10」
 > - **결정 필요**: 팀이 정해야 하는 것. 모아서 PRD.md 「열린 질문」
 
 ## 저장소
@@ -187,7 +187,7 @@ warehouseDemo_fork/
 
 - 데모의 계약 테스트는 같은 시나리오를 mock과 API(TS 서버)에 함께 돌린다. API 쪽 서버가 Spring으로 바뀌므로, **같은 시나리오를 두 언어에서 따로 유지하면 어긋난다** — 구현 위험이다.
 - `[구현 기본값]` 계약 테스트는 **Spring 통합 테스트 + 프론트 핵심 E2E**로 한다(2026-11-01 추가 결정). 백엔드 계약(엔드포인트 · DTO · 권한 · 에러)은 Spring 통합 테스트가 맡고, 프론트는 mock DataSource로 화면 동작을, Spring 서버를 띄운 핵심 흐름은 E2E로 확인한다.
-- **Java DTO ↔ TypeScript 타입**(2026-11-03 결정 — Q5): 논리 계약은 CONTRACTS.md · CONTRACTS_API.md가 기준이고, 자동 생성(OpenAPI → TS)은 쓰지 않는다. 모노레포 루트 `contract/examples/`의 대표 요청 · 응답 JSON을 백엔드(JUnit — DTO로 읽고 다시 써서 비교)와 프론트(`tsc` — 타입 변수에 넣기)가 함께 읽어 어긋나면 실패한다. 범위와 통과 기준은 CONTRACTS.md 「9」 계약 테스트.
+- **Java DTO ↔ TypeScript 타입**(2026-11-03 결정 — Q5): 논리 계약은 CONTRACTS.md · CONTRACTS_API.md가 기준이고, 자동 생성(OpenAPI → TS)은 쓰지 않는다. 모노레포 루트 `contract/examples/`의 대표 요청 · 응답 JSON이 기준이다. 백엔드는 JUnit + Jackson으로 DTO와 왕복 비교하고 Spring 통합 테스트로 실제 응답 모양을 비교한다. 프론트는 `satisfies DTO`로 둔 TS 사본을 `tsc`로 검사하고, 사본과 공통 JSON을 값 비교 테스트로 묶는다(JSON을 바로 import하면 리터럴이 `string`으로 넓어져 유니언 타입 검사가 깨진다). 범위와 통과 기준은 CONTRACTS.md 「9」 계약 테스트.
 - 백엔드 규칙 테스트는 JUnit으로 Service 안의 순수 규칙을 검사한다. GitHub 어댑터 변환은 GitHub 응답 예시 데이터로 테스트하고 실제 GitHub를 부르지 않는다.
 
 ## 실행 구조
@@ -548,14 +548,16 @@ FR-FLOW-06 · P6("팀원 간 순위 · 비교와 사람별 합계 금지")와 �
 
 기획 전면 검토는 끝났다. 아래 순서로 개발에 들어간다.
 
-1. ~~**공통 계약 확정**~~ — 완료(2026-11-03 결정 — CONTRACTS.md v1 · CONTRACTS_API.md). ID 형식 · 저장소 구성도 이때 닫았다. 이 문서들을 `main`에 합치는 PR의 리뷰가 팀 확인이다.
+1. ~~**공통 계약 확정**~~ — 완료(2026-11-03 결정 — CONTRACTS.md v1 · CONTRACTS_API.md). ID 형식 · 저장소 구성도 이때 닫았다. 문서 담당자가 GitHub에 반영하고 기준 커밋을 팀에 공유한다 — 팀원 전원 리뷰는 착수 조건이 아니다(CONTRACTS.md 「9」).
 2. **개발 저장소 생성(모노레포)** — 새 저장소를 만들고 `.gitignore`에 `.env` · `*.pem` · `secrets/`를 가장 먼저 넣는다. Git 전략 「8」 설정(보호 규칙 · squash · 템플릿 · 라벨 · `.nvmrc` · JDK 21)을 한다.
 3. **모노레포 초기 구조** — 위 「개발 저장소」 트리대로 `frontend/`(데모 프론트 이전) · `backend/` · `contract/examples/`(CONTRACTS_API.md 예시 JSON) · `compose.yaml`(로컬 MySQL 8.x) · `.env.example`을 만든다.
 4. **Spring Boot 골격** — Java 21 · Gradle · MySQL 8.x로 만들고, Spring Boot 버전 · migration 도구 · 테스트 DB · 배포 플랫폼 · SPA 서빙 방식을 이때 정한다. 공통 에러 응답 · 보안 설정(세션 · CSRF · 401 JSON) · ID 문자열 변환 · 인가 서비스 틀 · 사무실 Entity를 먼저 넣는다(CONTRACTS.md 「6」 · 「2」).
-5. **공통 Entity · DTO · 인증 · 인가 기초** — CONTRACTS.md 「2」 Entity와 CONTRACTS_API.md 공통 타입 · Snapshot DTO 뼈대, 로그인 · `GET /api/me` · 사무실 접근 검사, 계약 테스트 틀(CONTRACTS.md 「9」)을 계약 PR로 낸다.
+5. **공통 Entity · DTO · 인증 · 인가 기초** — CONTRACTS.md 「2」 Entity와 CONTRACTS_API.md 공통 타입 · Snapshot DTO 뼈대, 로그인 · `GET /api/me` · 사무실 접근 검사, 계약 테스트 틀(CONTRACTS.md 「9」)을 먼저 만든다. 코드는 Git 전략대로 PR로 합치고, PR 본문에 기준 계약 커밋을 적는다.
 6. **GitHub App 생성 · 연동** — 읽기 전용 권한(Metadata · Contents · Issues · Pull requests)으로 만들고 우리 조 조직에 설치한다. 설치 토큰 · 동기화(B2)를 붙인다.
 7. **GitHub 이슈 생성과 담당 배분** — 00-backlog.md 「이슈 백로그 (Must)」로 이슈를 만들며 담당자를 정한다. B12 · B13 · B14처럼 지금 미정인 묶음도 **병렬 기능 개발 전에는 담당자와 작업 경계를 지정**한다(BACKEND_ASSIGNMENTS.md).
-8. **병렬 개발 시작** — 계약을 바꿀 일이 생기면 CONTRACTS.md 「9」대로 계약 PR을 따로 낸다.
+8. **병렬 개발 시작** — 모두 같은 계약 커밋을 기준으로 한다. 계약을 바꿀 일이 생기면 문서 담당자에게 요청하고, 담당자가 고친 뒤 새 커밋과 바뀐 절을 관련 담당자 · Claude Code 세션에 공유한다(CONTRACTS.md 「9」).
+
+디자인 테마는 팀원들과 따로 정한다. 지금의 사무실 테마는 기본 테마일 뿐 최종 디자인이 아니고, 테마 결정은 위 순서를 막지 않는다 — 테마가 바뀌어도 SceneModel · 도메인 로직은 그대로이고 ThemeLayout · 테마 컴포넌트만 바뀐다(「공간 역할과 테마」).
 
 ## 공용 컴포넌트
 

@@ -519,6 +519,19 @@ v3 문서(같은 날의 「기술 스택 · 공간 모델 · 학습 흐름 결�
 | 1 | 강사 지정 API의 식별자 | 강사 허용 목록의 키가 GitHub 사용자 ID이므로(2026-11-01 추가 결정), 이전 초안의 `/instructors/{login}`을 `/instructors/{githubUserId}`로 맞추고 `InstructorAssignment`도 GitHub 사용자 ID를 저장한다. 로그인 이름은 표시용이다 |
 | 2 | TBD-02 공개 범위 | 원본 정의서의 TBD-02 문장은 여전히 없다(원본 확인 필요). 구현할 공개 범위는 이미 확정된 정책으로 통일한다 — 개인 지표(학습 타임라인 · 회고 리포트 · 기술 결정 카드 · 질문 · 답변)는 **본인과 강사만** 본다(P5 · NFR-06 · FR-REP-06 · 10 — 2026-10-30 결정). 다른 학생에게 넓히는 정책은 없다. 05 SP7의 [?]를 지웠다 |
 
+### 문서 관리 방식 · 공통 계약 v1 보완 (2026-11-03, 같은 날 뒤)
+
+계약 v1 검토 뒤 같은 날 정했다. Q1~Q6과 확정 인터페이스(경로 · DTO · Entity)는 바꾸지 않았다.
+
+| # | 쟁점 | 결정 |
+| --- | --- | --- |
+| 1 | 문서 관리 방식 (사용자 확정) | 기획 문서의 최종 수정 권한과 GitHub 반영은 **문서 담당자 1명**이 관리하고, Claude Code는 그 지시로 문서를 고친다. 팀원은 GitHub의 최신 문서를 읽고 의견 · 수정 요청을 담당자에게 전하며, 담당자가 검토해 반영한다. 문서 변경마다 PR · 팀원 리뷰를 의무로 두지 않는다. 확정 계약 버전은 기획 저장소 커밋으로 공유하고, 계약이 바뀌면 관련 개발자 · Claude Code 세션에 새 커밋과 바뀐 절을 알린다. 병렬 개발은 같은 계약 커밋을 기준으로 한다. 개발 저장소의 코드 변경은 Git 전략(PR · 승인 1명)을 그대로 따른다. 담당자 이름은 팀이 정한다 — CONTRACTS.md 「9」 |
+| 2 | Q5의 "계약 PR이 먼저" | 위 방식에서는 "호환을 깨는 변경은 **계약 문서를 먼저 고쳐 공유한 뒤** 코드를 바꾼다"로 읽는다. Q5의 나머지(문서 기준 · Java DTO · TS 타입 · 계약 테스트 · 자동 생성 비필수)는 그대로다 |
+| 3 | Must 집계 표기 | 숫자 표기만 바로잡는다. Must 요구사항(03 중요도 Must)은 **61개**이고 IB-02\~33 · 40\~68과 1:1이다. 결정 작업 IB-01을 더한 Must 백로그가 **62건**, IB-69를 더한 백로그 전체가 **63건**이다. 이 기록의 앞선 "Must 62개"(「기술 스택 · 공간 모델 · 학습 흐름 결정」 11 · 「추가 결정」 머리말 · 10, 「공통 계약 확정 결정」 머리말)는 당시 표현대로 두고, Must 백로그 62건을 뜻한다. 요구사항 · ID · P0~P2 순서는 그대로다 — 00-backlog.md 「집계 기준」 |
+| 4 | TypeScript 계약 테스트 | 공통 JSON(`contract/examples/`)을 기준으로 유지한다. JSON을 직접 import하면 리터럴이 `string`으로 넓어져 유니언 타입 검사가 깨지므로, TS 쪽은 `satisfies DTO`로 둔 TS 사본으로 정적 검사하고 사본과 공통 JSON을 값 비교 테스트로 묶는다. 실제 응답은 Spring 통합 테스트가 예시와 모양을 비교한다 — CONTRACTS.md 「9」 계약 테스트 |
+| 5 | 심사용 강사의 공용 라이브러리 | 기존 규칙 유지 — 심사용 ROLE-04 계정은 조회만 하고 등록 · 수정은 `403 forbidden_role`. 일반 강사 권한 축소가 아니라 심사용 계정의 데이터 격리 규칙이다(P15). 계약 테스트에 거부 시나리오를 넣었다 |
+| 6 | 디자인 테마 | 이번에 정하지 않는다. 사무실은 기본 테마이고 최종 디자인이 아니며, 테마 결정은 개발 착수를 막지 않는다(SceneModel · ThemeLayout 분리 유지). 테마 문서는 팀 결정 뒤에 쓴다 |
+
 ## 반영 상태
 
 | 묶음 | 상태 |
@@ -530,3 +543,4 @@ v3 문서(같은 날의 「기술 스택 · 공간 모델 · 학습 흐름 결�
 | 기술 스택 · 공간 모델 · 학습 흐름 결정 (2026-11-01) | 반영함 — 00 · 01 · 02 · 03 · 04 · 05 · 06 · 07 · PRD · requirements-changes · ARCHITECTURE · CONTRACTS(신규) · BACKEND_ASSIGNMENTS · SCREEN_ASSIGNMENTS · PROJECT_COMMANDS, 개발 컨벤션(코드 컨벤션 (BE) · 환경 변수 가이드 · Git 전략), 기획안 본문 · 「변경 이력」, `.claude/rules/code-quality.md`. 미확정 항목은 각 문서에 `[결정 필요]`로 남김 |
 | 추가 결정 (2026-11-01, v3 검토 뒤) — 팀 재정의 4건 채택, GitHub 이동 · 공식 연결만, 강사 판정 · 허용 목록, 심사용 로그인, Demo Workspace 접근 · 운영 범위, Java 21 · Gradle · MySQL 8.x, 요구사항 종류 묶음, 다중 담당자 · 마감 권한, 담당 배분 시점, 구현 기본값 | 반영함 — 00 · 01 · 02 · 03 · 04 · 05 · 06 · 07 · PRD · requirements-changes · ARCHITECTURE · CONTRACTS · BACKEND_ASSIGNMENTS · SCREEN_ASSIGNMENTS · PROJECT_COMMANDS, 개발 컨벤션(코드 컨벤션 (BE) · 환경 변수 가이드 · Git 전략), 기획안 본문 · 「변경 이력」, `.claude/rules/code-quality.md` · `security.md` |
 | 공통 계약 확정 결정 (2026-11-03) — Q1 ID · Q2 요구사항 재동기화 · Q3 Snapshot / 개인 API · Q4 API 상세 · Q5 계약 테스트 · Q6 모노레포, 강사 지정 식별자, TBD-02 정리 | 반영함 — CONTRACTS(v1 확정) · CONTRACTS_API(신규) · 00 · 03 · 05 · 06 · 07 · PRD · requirements-changes · ARCHITECTURE · BACKEND_ASSIGNMENTS · SCREEN_ASSIGNMENTS · PROJECT_COMMANDS, 개발 컨벤션(코드 컨벤션 (BE) · Git 전략). 기획안 본문은 고치지 않았다(공개 범위 · 스택 문장이 이미 맞음) |
+| 문서 관리 방식 · 공통 계약 v1 보완 (2026-11-03, 같은 날 뒤) — 문서 담당자 방식, Must 집계 표기, TS 계약 테스트, 심사용 강사 라이브러리 권한, 테마 미확정 | 반영함 — CONTRACTS · CONTRACTS_API · 00 · PRD · ARCHITECTURE · BACKEND_ASSIGNMENTS · SCREEN_ASSIGNMENTS · `.claude/rules/code-quality.md`. 기획안 「변경 이력」의 "Must 62개"는 당시 표현으로 두었다 |

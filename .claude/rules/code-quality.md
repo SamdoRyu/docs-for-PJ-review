@@ -29,7 +29,7 @@
 
 **에러 응답**: 데모 모양 `{ "error": { "code": "...", "message": "..." } }`. code는 소문자 snake — 기존 `invalid` · `not_found` · `conflict` · `unavailable`, 신규 `unauthorized` · `forbidden_role` · `github_unauthorized` · `github_rate_limited`.
 
-**저장**: Spring Data JPA Entity(데모의 `(id, data JSON)` 방식은 쓰지 않음 — 2026-11-01 결정). Controller → Service(트랜잭션) → Repository, Entity를 응답으로 바로 내보내지 않는다. 사무실 단위 데이터는 항상 사무실 조건으로 조회한다. SSE 알림은 커밋 뒤. 공통 계약 변경은 `docs/CONTRACTS.md` 「9. 계약 변경 절차」대로 따로 낸다.
+**저장**: Spring Data JPA Entity(데모의 `(id, data JSON)` 방식은 쓰지 않음 — 2026-11-01 결정). Controller → Service(트랜잭션) → Repository, Entity를 응답으로 바로 내보내지 않는다. 사무실 단위 데이터는 항상 사무실 조건으로 조회한다. SSE 알림은 커밋 뒤. 공통 계약 변경은 `docs/CONTRACTS.md` 「9. 계약 변경 절차」를 따른다 — 계약 문서는 문서 담당자가 먼저 고쳐 기준 커밋을 공유하고, 코드는 그 커밋을 따른다. 계약 문서에 없는 계약을 코드에서 먼저 만들지 않는다.
 
 **기준값**: 팀 설정 화면에서 바꾸는 값(프로젝트 기간, 막힘 기준 시간)은 팀 설정에서 읽는다. 나머지 숫자는 상수 한 곳(백엔드 한 곳, 화면 계산용 프론트 한 곳)에 모은다.
 

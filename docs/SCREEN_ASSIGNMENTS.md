@@ -103,7 +103,7 @@ v1 화면 목록에 없는 기존 화면 — `src/ui/TeamView.tsx`(팀원별 업
 | 파일 | 왜 |
 | --- | --- |
 | 공용 컴포넌트(상단 바 · 상세 패널 · 도형 5종 · 정보 뷰(최근 변화 · 담당 · 막힘)) | 여러 화면이 쓴다. 수정은 **별도 PR** 로 분리하고 먼저 공유한다. 경로는 `src/ui/TopBar.tsx` · `src/ui/Detail.tsx` · `src/scene/TaskBox.tsx`(도형) · `src/scene/shared.tsx`(공용 도형 · 재질) · `src/scene/Overlays.tsx`(정보 뷰 틀) |
-| 계약 파일 — `src/data/types.ts` · `src/data/DataSource.ts` · `src/store.ts` · `src/office/layout.ts` · `src/data/selectors.ts` · `src/data/insights.ts`, 그리고 SceneModel(`src/scene/model/` — 신규) · ThemeLayout(`src/theme/` — 신규) | 화면 · 서버 · mock이 함께 기댄다. 데모의 `CLAUDE.md`도 앞의 파일들을 계약 파일로 묶어 둔다. 바꾸려면 [CONTRACTS.md](./CONTRACTS.md) 「9. 계약 변경 절차」대로 계약 PR을 따로 내고 B · C와 먼저 합의한다 |
+| 계약 파일 — `src/data/types.ts` · `src/data/DataSource.ts` · `src/store.ts` · `src/office/layout.ts` · `src/data/selectors.ts` · `src/data/insights.ts`, 그리고 SceneModel(`src/scene/model/` — 신규) · ThemeLayout(`src/theme/` — 신규) | 화면 · 서버 · mock이 함께 기댄다. 데모의 `CLAUDE.md`도 앞의 파일들을 계약 파일로 묶어 둔다. 계약에 닿는 변경은 [CONTRACTS.md](./CONTRACTS.md) 「9. 계약 변경 절차」대로 문서 담당자가 계약 문서를 먼저 고쳐 공유한 뒤에 하고, B · C와 먼저 합의한다 |
 | 기존 3D 데모의 3D 표현 코드(`src/scene/`) | 재사용 · 리팩터링한다. 새 모델링은 하지 않는다(기획안 「기능 동결 규칙」). 테마(사무실)에 묶인 좌표 · 모양은 ThemeLayout · 테마 컴포넌트에 두고, 도메인 로직이 테마를 모르게 한다(2026-11-01 결정) |
 | 의존성 목록 파일(`package.json` · `package-lock.json`) | 라이브러리 추가는 사전 합의(`.claude/rules/security.md`) |
 | `src/App.tsx` · `src/ui/Hud.tsx` · `src/ui/RightPanel.tsx` · `src/ui/uiState.ts` · `src/index.css` · `vite.config.ts` · `tsconfig*.json` | 전원이 공유하는 레이아웃 · 설정 |

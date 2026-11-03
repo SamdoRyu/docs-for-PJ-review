@@ -1,7 +1,7 @@
 # API 계약 — 오피스 v1
 
 > 문서: CONTRACTS_API.md · 상태: **v1 확정 (2026-11-03)** · 마지막 갱신: 2026-11-03
-> [CONTRACTS.md](CONTRACTS.md)의 상세편이다. 공통 규칙(ID · 시각 · 상태 코드 · 페이지 · 에러 · 검사 순서 · 익명성 · Snapshot 경계)은 CONTRACTS.md에 있고 여기서 다시 적지 않는다. 엔드포인트 · DTO는 **이 문서 한 곳**이 기준이다. 바꿀 때는 CONTRACTS.md 「9. 계약 변경 절차」.
+> [CONTRACTS.md](CONTRACTS.md)의 상세편이다. 공통 규칙(ID · 시각 · 상태 코드 · 페이지 · 에러 · 검사 순서 · 익명성 · Snapshot 경계)은 CONTRACTS.md에 있고 여기서 다시 적지 않는다. 엔드포인트 · DTO는 **이 문서 한 곳**이 기준이다. 바꿀 때는 CONTRACTS.md 「9. 계약 변경 절차」(문서 담당자가 고치고 커밋을 공유).
 > 근거: 2026-11-03 결정(Q1~Q6), 03 · 05 · 06 · 07. 이 문서는 새 기능 · 새 정책을 만들지 않는다 — 정책에서 바로 나오지 않는 인터페이스 선택에는 `[구현 기본값]`을 붙였다.
 
 ## 읽는 법
@@ -78,7 +78,7 @@
 | 17 | `GET /api/convention-library` | 로그인 | `listConventionLibrary` | FR-LIB-02 |
 | 17 | `POST /api/convention-library` · `PUT /api/convention-library/{itemId}` | GitHub 계정 강사 | `createConventionLibraryItem` · `updateConventionLibraryItem` | FR-LIB-01 |
 
-- 표에 없는 Should · Could 동작(연결 후보 승인 FR-REQ-03 등)은 착수할 때 계약 PR로 더한다. 응답 필드가 미리 있는 것(추천 리뷰어 FR-FLOW-04, 편중 FR-FLOW-03 · 07, 최근 변화 FR-FLOW-08)은 구현 전까지 빈 값이다.
+- 표에 없는 Should · Could 동작(연결 후보 승인 FR-REQ-03 등)은 착수할 때 계약 변경(CONTRACTS.md 「9」)으로 더한다. 응답 필드가 미리 있는 것(추천 리뷰어 FR-FLOW-04, 편중 FR-FLOW-03 · 07, 최근 변화 FR-FLOW-08)은 구현 전까지 빈 값이다.
 
 ## 1. 공통 타입
 
@@ -791,7 +791,7 @@ interface InboxItem {
 | 메서드 · 경로 | 요청 | 성공 | 역할 | 실패 |
 | --- | --- | --- | --- | --- |
 | `GET /api/convention-library` | — | `200 ConventionLibraryItemDto[]` — `target`, `name` 순 | 로그인 사용자 전부(심사용 포함) | — |
-| `POST /api/convention-library` | `ConventionLibraryItemRequest` | `201 ConventionLibraryItemDto` | GitHub 계정 강사(`isInstructor`이고 `accountType: 'github'`) | 그 밖 `403 forbidden_role`, 길이 · 대상 `400` |
+| `POST /api/convention-library` | `ConventionLibraryItemRequest` | `201 ConventionLibraryItemDto` | GitHub 계정 강사(`isInstructor`이고 `accountType: 'github'`) | 심사용 ROLE-04 계정 · 학생 · 그 밖 `403 forbidden_role`, 길이 · 대상 `400` |
 | `PUT /api/convention-library/{itemId}` | `ConventionLibraryItemRequest` | `200 ConventionLibraryItemDto` | 같음 (다른 강사가 만든 항목도 고칠 수 있다 — FR-LIB-01) | 같음 |
 
 ```ts
@@ -813,4 +813,5 @@ interface ConventionLibraryItemDto {
 }
 ```
 
+- 심사용 ROLE-04 계정은 조회만 한다 — 일반 강사 권한 축소가 아니라 심사용 계정의 데이터 격리 규칙이다(CONTRACTS.md 「6」 · P15).
 - 서버 전체에 하나이고 사무실 경로 밖이다. 지우기 API는 없다(FR-LIB-01은 등록 · 편집). 팀 규칙 검사와 연결하지 않는다(FR-LIB-02).
