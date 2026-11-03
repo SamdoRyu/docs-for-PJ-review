@@ -11,6 +11,14 @@
 - 머지는 GitHub 리뷰 승인 1명 이상을 받은 뒤 GitHub PR 화면에서 사람이 직접 한다. 앱의 추천·비추천 평가는 머지 조건이 아니다(평가 척도일 뿐).
 - 사용자의 명시적 요청 없이 merge · deploy하지 않는다.
 
+## AI 협업자 · 기여자 등록 금지 (필수)
+
+- Claude Code · AI 계정을 Collaborator · Organization/Team Member · Issue Assignee · CODEOWNERS · PR Reviewer로 지정하지 않는다. 담당자는 사람 팀원 4명뿐이다.
+- 커밋 Author · Committer에 AI 계정을 쓰지 않는다. `Co-authored-by: Claude` · `… <noreply@anthropic.com>` 같은 공동 작성자 트레일러와 "Generated with Claude Code" 문구를 커밋 메시지 · PR 본문에 넣지 않는다.
+- `git config user.name` · `user.email`을 바꾸지 않는다.
+- 리뷰 · 승인 · 최종 반영은 사람 팀원이 한다. AI가 사람을 사칭하거나 리뷰 · 승인을 대신하지 않는다.
+- 사용자의 명시적 요청 없이 commit · push와 Collaborator · CODEOWNERS · Assignee · Reviewer 설정 변경을 하지 않는다.
+
 ## Branch
 
 - 브랜치는 `main`과 작업 브랜치뿐이다. `develop` · 승격 · hotfix 브랜치는 없다.

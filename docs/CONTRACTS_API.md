@@ -1,5 +1,10 @@
 # API 계약 — 오피스 v1
 
+> **기준 위치가 바뀌었다 (2026-11-03).** 이 계약의 현재 기준은 개발 저장소
+> [SamdoRyu/GRAVIT `docs/CONTRACTS.md`](https://github.com/SamdoRyu/GRAVIT/blob/main/docs/CONTRACTS.md) ·
+> [`docs/CONTRACTS_API.md`](https://github.com/SamdoRyu/GRAVIT/blob/main/docs/CONTRACTS_API.md)이다.
+> 이 파일은 커밋 `796fc25`까지의 원본 이력으로만 남기고 더 고치지 않는다.
+
 > 문서: CONTRACTS_API.md · 상태: **v1 확정 (2026-11-03)** · 마지막 갱신: 2026-11-03
 > [CONTRACTS.md](CONTRACTS.md)의 상세편이다. 공통 규칙(ID · 시각 · 상태 코드 · 페이지 · 에러 · 검사 순서 · 익명성 · Snapshot 경계)은 CONTRACTS.md에 있고 여기서 다시 적지 않는다. 엔드포인트 · DTO는 **이 문서 한 곳**이 기준이다. 바꿀 때는 CONTRACTS.md 「9. 계약 변경 절차」(문서 담당자가 고치고 커밋을 공유).
 > 근거: 2026-11-03 결정(Q1~Q6), 03 · 05 · 06 · 07. 이 문서는 새 기능 · 새 정책을 만들지 않는다 — 정책에서 바로 나오지 않는 인터페이스 선택에는 `[구현 기본값]`을 붙였다.

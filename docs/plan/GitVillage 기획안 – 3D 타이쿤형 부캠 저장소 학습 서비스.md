@@ -414,6 +414,8 @@ GitHub 변경은 웹훅 없이 폴링으로 변경분만 가져오고(TBD-06: 5�
 
 ## 역할 분담
 
+> **2026-11-03 재배분 — 아래 표는 이전 배정이다.** 실제 배정: A 총괄 · 기획 · 백엔드 일부(도움 요청 서버), B 백엔드 전담, C 프론트 3D, D 프론트 HUD · 데이터. 묶음별 담당은 [BACKEND_ASSIGNMENTS.md](../BACKEND_ASSIGNMENTS.md) · [SCREEN_ASSIGNMENTS.md](../SCREEN_ASSIGNMENTS.md), Issue별 담당은 개발 저장소 GRAVIT Issue 본문이 기준이다.
+
 4명을 PM·기획, 연동 백엔드, 도메인 백엔드, 3D·프론트엔드로 나누고, 기존 3D 팀 오피스 코드는 1\~2일차에 4명이 함께 파악합니다.
 
 | 역할 | 담당 요구사항 | 주요 산출물 |

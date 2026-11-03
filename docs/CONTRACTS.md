@@ -1,5 +1,10 @@
 # 공통 계약 — 오피스 v1
 
+> **기준 위치가 바뀌었다 (2026-11-03).** 이 계약의 현재 기준은 개발 저장소
+> [SamdoRyu/GRAVIT `docs/CONTRACTS.md`](https://github.com/SamdoRyu/GRAVIT/blob/main/docs/CONTRACTS.md) ·
+> [`docs/CONTRACTS_API.md`](https://github.com/SamdoRyu/GRAVIT/blob/main/docs/CONTRACTS_API.md)이다.
+> 이 파일은 커밋 `796fc25`까지의 원본 이력으로만 남기고 더 고치지 않는다.
+
 > 문서: CONTRACTS.md · 상태: **v1 확정 (2026-11-03)** · 마지막 갱신: 2026-11-03
 > 이 문서를 읽는 에이전트에게: 여러 Claude Code 세션과 4명이 같은 계약으로 병렬 개발하려고 모아 둔 곳이다. 여기 없는 계약을 세션마다 따로 만들지 말고, 필요하면 문서 담당자에게 이 문서를 먼저 고쳐 달라고 요청한다(「9. 계약 변경 절차」). 작업 기준은 문서 담당자가 공지한 계약 커밋이다. 요구사항 · 정책의 기준은 03 · 05 · 06이고, 이 문서는 그것을 구현 모양으로 옮긴 것이다.
 > **엔드포인트별 경로 · 요청 · 응답 DTO · 역할 · 실패 코드 · JSON 예시는 [CONTRACTS_API.md](CONTRACTS_API.md) 한 곳에만 둔다.** 이 문서는 진입점이고 공통 규칙을 둔다. 같은 계약을 두 문서에 따로 적지 않는다.
