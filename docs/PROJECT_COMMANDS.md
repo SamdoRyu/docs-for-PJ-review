@@ -1,5 +1,7 @@
 # Project Commands
 
+> **2026-11-03 — 실제 명령의 기준은 개발 저장소 [GRAVIT README](https://github.com/SamdoRyu/GRAVIT/blob/main/README.md)다.** 이 문서는 기획 단계 기록이고, 다르면 GRAVIT README를 따른다.
+
 > **스택은 정했다(2026-11-01 결정)**: 프론트엔드는 데모와 같은 React · TypeScript · Three.js(R3F) · Vite이고, 백엔드는 Spring Boot(Spring MVC · Spring Data JPA · Spring Security)로 새로 만든다. 그래서 이 문서의 **프론트 명령은 데모 저장소 기준으로 그대로 재사용**하고, 데모의 Hono 서버 · SQLite 명령은 **참고용**이다(운영 백엔드가 아니다). Spring 쪽은 Java 21 · Gradle · MySQL 8.x로 정했다(2026-11-01 추가 결정). 명령은 개발 저장소를 만든 뒤 실제로 돌려 확인하고 채운다(ARCHITECTURE.md 「기술 스택」 · 「착수 체크리스트」).
 
 개발에 쓰는 명령 전부다. `.claude/rules/testing.md` 가 이 문서를 가리킨다.

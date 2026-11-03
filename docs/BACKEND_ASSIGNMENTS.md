@@ -35,8 +35,8 @@ MVP backend 구현 Issue 의 담당·상태 표다. 화면 구현은 [SCREEN_ASS
 | B4 | TODO | PR 상태 동기화 — GitHub 원본 상태(열림 · Draft · 머지 · 닫힘 · `headSha`)를 표시 상태로 (FR-OFF-02, FR-LRN-07) | TODO | B2 | B 백엔드 전담 | TODO | TODO |
 | B5 | TODO | 보안 · 동기화 비기능 — NFR-04, NFR-05, NFR-09, NFR-10 · 외부 공개 배포(HTTPS · 쿠키 · CSRF · SSE 권한) | TODO | B1, B2 | B 백엔드 전담 | TODO | TODO |
 | B6 | TODO | 요구사항 추적 — FR-REQ-01~07 | TODO | B2 | B 백엔드 전담 (이전 배정: C 도메인 백엔드) | TODO | TODO |
-| B7 | TODO | 진행·막힘 — FR-FLOW-01~08 (FR-FLOW-07 · 08은 2026-10-29 결정으로 채택) | TODO | B2 | B 백엔드 전담 (이전 배정: C 도메인 백엔드) | TODO | TODO |
-| B9 | TODO | PR 평가 · 평가 회차 · 회의실 안건 로직 — FR-LRN-01~14 (2026-10-28 채택) | TODO | B2, B4 | B 백엔드 전담 (이전 배정: C 도메인 백엔드) | TODO | TODO |
+| B7 | TODO | 진행·막힘 — FR-FLOW-01~08 (FR-FLOW-07 · 08은 2026-10-29 결정으로 채택) | TODO | B2 | B 백엔드 전담 (이전 배정: C 도메인 백엔드) · 검증 IB-25는 A | TODO | TODO |
+| B9 | TODO | PR 평가 · 평가 회차 · 회의실 안건 로직 — FR-LRN-01~14 (2026-10-28 채택) | TODO | B2, B4 | B 백엔드 전담 (이전 배정: C 도메인 백엔드) · 검증 IB-29는 A | TODO | TODO |
 | B10 | TODO | 활동 기록 — FR-ACT-01~04 (2026-10-28 추가 결정으로 채택) | TODO | B1 | B 백엔드 전담 (이전 배정: C 도메인 백엔드) | TODO | TODO |
 | B11 | TODO | 회고 리포트 · 기술 결정 카드 — FR-REP-01~06 (FR-REP-04 원본 확인 필요), FR-REP-07 · 10 | TODO | B2 (카드는 B9) | B 백엔드 전담 (이전 배정: C 도메인 백엔드) | TODO | TODO |
 | B12 | TODO | 회의·스탠드업 · 일정판 · 작업 마감 서버 — FR-MTG-01\~05, FR-PLAN-01\~04 (FR-MTG-02는 팀 재정의 — 2026-11-01 추가 결정으로 채택, FR-PLAN-04 원본 확인 필요) | TODO | B2 | B 백엔드 전담 (2026-11-03 지정. 스탠드업 IB-40 · 41은 A 이관 후보) | TODO | TODO |
