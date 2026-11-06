@@ -39,13 +39,13 @@ npm run dev          # 화면 :5173 — 브라우저 mock 데이터(?source= 없
 | 로그인 — FR-AUTH-01 (심사용 ID/PW 로그인 폼 포함 — IB-69, 2026-11-01 추가 결정) | TODO | 라우터 추가 — 주소 미정 (2026-10-28 결정) | TODO | TODO | D | 시작 전 |
 | 조직·레포 선택 — FR-GH-01 | TODO | 라우터 추가 — 주소 미정 (2026-10-28 결정) | TODO | TODO | D | 시작 전 |
 | 사무실 열기 (팀장) — FR-REQ-01, FR-PLAN-01 | TODO | 라우터 추가 — 주소 미정 (2026-10-28 결정) | TODO | TODO | D | 시작 전 |
-| 수집 동의 (팀원) — FR-ACT | TODO | 라우터 추가 — 주소 미정 (2026-10-28 결정) | TODO | TODO | D | 시작 전 |
+| 수집 동의 (팀원) — FR-ACT | TODO | 라우터 추가 — 주소 미정 (2026-10-28 결정) | TODO | TODO | A (2026-11-06 — 활동 기록 대화상자의 동의 화면, GRAVIT #173) | 시작 전 |
 | 3D 사무실 (메인) — FR-OFF-01 · 02 · 04~06, FR-REQ-02 · 04(구역 · 묶음 · 연결), FR-FLOW-02, FR-LRN-03 · 04 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | C | 시작 전 |
 | [제안] 2D 팀 보드 — 대응 요구사항 ID 없음 (기획안 "(제안)" · requirements-changes.md 추가 제안 후보 10) | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D (채택 전 착수 안 함) | 시작 전 |
 | 상단 바 — FR-PLAN-01, FR-FLOW-05, FR-GH-05, FR-REQ-05(진행률), FR-ACT 안내, FR-AUTH-07(강사 레포 드롭다운), 팀 설정 버튼 · 시연 데이터 표시(2026-11-01 결정) | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D | 시작 전 |
 | 상세 패널 — FR-OFF-05, FR-LRN-01 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D | 시작 전 |
 | 요구사항 패널 — FR-REQ-03~06 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D | 시작 전 |
-| 활동 기록 — FR-ACT-01~04 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D | 시작 전 |
+| 활동 기록 — FR-ACT-01~04 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | A(HUD · 데이터) · C(사무실 3D 메모지) (2026-11-06 — GRAVIT #173) | 시작 전 |
 | 스탠드업·회의 — FR-MTG-01~05, FR-LRN-05 · 12 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | C(회의 · 안건 · 회의실) · D(스탠드업) | 시작 전 |
 | 일정판 — FR-PLAN-02~04 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | C | 시작 전 |
 | 내 학습 타임라인 — FR-LRN-08 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | C | 시작 전 |
