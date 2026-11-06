@@ -96,7 +96,7 @@
 | FR-ACT-01 | ROLE-01 | GitHub에 남지 않는 활동을 내용, 걸린 시간, 유형(기획, 자료조사, 디자인, 발표 준비, 멘토 질문)으로 기록할 수 있어야 한다 | S6 · 근거: 기획안 「TeamPulse에서 가져온 기능」 · requirements-changes.md | 기능 | Should |
 | FR-ACT-02 | ROLE-01 | 활동 기록은 작성자 외 1명 이상이 확인해야 사무실과 리포트에 나타나야 한다 | S6 · 근거: 기획안 「TeamPulse에서 가져온 기능」 · requirements-changes.md | 기능 | Should |
 | FR-ACT-03 | ROLE-01 | 확인된 활동이 사무실에는 유형 아이콘이 붙은 납작한 메모지(기본 테마 표현)로, 회고 리포트에는 내 활동 유형 분포로 보여야 한다 | S6 · 근거: 기획안 「TeamPulse에서 가져온 기능」 · requirements-changes.md | 기능 | Should |
-| FR-ACT-04 | ROLE-01 | 매주 팀원별로 "고마웠던 점"과 "같이 개선할 점"을 한 줄씩 남길 수 있어야 한다. 점수는 없고 익명으로 받는 사람만 본다(TBD-12) | S6 · 근거: 기획안 「TeamPulse에서 가져온 기능」 · requirements-changes.md | 기능 | Could |
+| FR-ACT-04 | ROLE-01 | 매주 팀원별로 "고마웠던 점"과 "같이 개선할 점"을 한 줄씩 남길 수 있어야 한다. 점수는 없고 익명으로 받는 사람만 본다(TBD-12). [보류] v1에서 만들지 않는다(2026-11-06 범위 결정) | S6 · 근거: 기획안 「TeamPulse에서 가져온 기능」 · requirements-changes.md | 기능 | Could |
 | FR-LIB-01 | ROLE-04 | 강사는 컨벤션 라이브러리에 형식을 언제든 등록하고 편집할 수 있어야 한다. 형식은 컨벤션 5종(브랜치 이름 · 커밋 메시지 · PR 제목 · PR 본문 · 이슈 본문)과 이슈 · PR 템플릿이다 | — · 근거: decision-meeting-2026-10-28.md 「강사 역할 결정 (2026-10-30)」 · requirements-changes.md | 기능 | Must |
 | FR-LIB-02 | ROLE-01, ROLE-02 | 모든 조의 학생이 컨벤션 라이브러리를 참고용으로 볼 수 있어야 한다. 라이브러리는 서버 전체에 하나이고 읽기 전용이다. 팀 규칙 검사와 연결하지 않는다 | — · 근거: decision-meeting-2026-10-28.md 「강사 역할 결정 (2026-10-30)」 · requirements-changes.md | 기능 | Must |
 | NFR-01 | ROLE-02 | 팀장이 로그인부터 레포 선택, 명세 문서 경로·프로젝트 기간 입력까지 5분 안에 끝낼 수 있어야 한다 | S0 · 기획안 「사용자와 역할」 대표 시나리오 1 | 제약 | 원본 확인 필요 |

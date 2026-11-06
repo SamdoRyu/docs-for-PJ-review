@@ -533,6 +533,18 @@ v3 문서(같은 날의 「기술 스택 · 공간 모델 · 학습 흐름 결�
 | 5 | 심사용 강사의 공용 라이브러리 | 기존 규칙 유지 — 심사용 ROLE-04 계정은 조회만 하고 등록 · 수정은 `403 forbidden_role`. 일반 강사 권한 축소가 아니라 심사용 계정의 데이터 격리 규칙이다(P15). 계약 테스트에 거부 시나리오를 넣었다 |
 | 6 | 디자인 테마 | 이번에 정하지 않는다. 사무실은 기본 테마이고 최종 디자인이 아니며, 테마 결정은 개발 착수를 막지 않는다(SceneModel · ThemeLayout 분리 유지). 테마 문서는 팀 결정 뒤에 쓴다 |
 
+## 범위 결정 (2026-11-06)
+
+Must 백엔드가 끝난 뒤, 담당 Issue가 없던 계약 「14」 · 「15」(GRAVIT `docs/CONTRACTS_API.md`)의 범위를 문서 담당자가 정했다. 요구사항 중요도(03)는 바꾸지 않았다.
+
+| # | 쟁점 | 결정 |
+| --- | --- | --- |
+| 1 | 학습 타임라인(FR-LRN-08, Should) | A가 지금 백엔드를 만든다(GRAVIT #172). A의 Must 백엔드가 끝나 PRD 「채택 Should · Could」 행의 "Must가 끝났을 때만 착수"와 맞는다. `commit_after_meeting`은 사용자별 커밋을 읽는 어댑터가 생긴 뒤 채운다. 화면은 D에게 따로 요청한다 |
+| 2 | 활동 기록 · 확인 · 수집 동의(FR-ACT-01\~03, Should) | 백엔드는 A가 맡고, Must 화면이 끝난 뒤 타임라인 다음에 착수한다(GRAVIT #173). 화면 담당은 착수 때 정한다 |
+| 3 | 한 줄 동료 피드백(FR-ACT-04, Could) | v1에서 보류한다 — 만들지 않는다. 계약(CONTRACTS_API 「14」)과 `PeerFeedback` 테이블 · Entity는 그대로 둔다. 이 요구사항에 기대는 문서 부분은 `[보류]`로 표시했다(requirements-changes.md [제안] 표기 규칙) |
+
+이유: 지금 병목은 백엔드가 아니라 v1 화면이다(화면이 없는 API가 많다). Must인 FR-LRN-05 · 12 · 22의 "학습 타임라인과 회고 리포트에 들어간다"는 이미 만든 회고 리포트가 채운다.
+
 ## 반영 상태
 
 | 묶음 | 상태 |
@@ -545,3 +557,4 @@ v3 문서(같은 날의 「기술 스택 · 공간 모델 · 학습 흐름 결�
 | 추가 결정 (2026-11-01, v3 검토 뒤) — 팀 재정의 4건 채택, GitHub 이동 · 공식 연결만, 강사 판정 · 허용 목록, 심사용 로그인, Demo Workspace 접근 · 운영 범위, Java 21 · Gradle · MySQL 8.x, 요구사항 종류 묶음, 다중 담당자 · 마감 권한, 담당 배분 시점, 구현 기본값 | 반영함 — 00 · 01 · 02 · 03 · 04 · 05 · 06 · 07 · PRD · requirements-changes · ARCHITECTURE · CONTRACTS · BACKEND_ASSIGNMENTS · SCREEN_ASSIGNMENTS · PROJECT_COMMANDS, 개발 컨벤션(코드 컨벤션 (BE) · 환경 변수 가이드 · Git 전략), 기획안 본문 · 「변경 이력」, `.claude/rules/code-quality.md` · `security.md` |
 | 공통 계약 확정 결정 (2026-11-03) — Q1 ID · Q2 요구사항 재동기화 · Q3 Snapshot / 개인 API · Q4 API 상세 · Q5 계약 테스트 · Q6 모노레포, 강사 지정 식별자, TBD-02 정리 | 반영함 — CONTRACTS(v1 확정) · CONTRACTS_API(신규) · 00 · 03 · 05 · 06 · 07 · PRD · requirements-changes · ARCHITECTURE · BACKEND_ASSIGNMENTS · SCREEN_ASSIGNMENTS · PROJECT_COMMANDS, 개발 컨벤션(코드 컨벤션 (BE) · Git 전략). 기획안 본문은 고치지 않았다(공개 범위 · 스택 문장이 이미 맞음) |
 | 문서 관리 방식 · 공통 계약 v1 보완 (2026-11-03, 같은 날 뒤) — 문서 담당자 방식, Must 집계 표기, TS 계약 테스트, 심사용 강사 라이브러리 권한, 테마 미확정 | 반영함 — CONTRACTS · CONTRACTS_API · 00 · PRD · ARCHITECTURE · BACKEND_ASSIGNMENTS · SCREEN_ASSIGNMENTS · `.claude/rules/code-quality.md`. 기획안 「변경 이력」의 "Must 62개"는 당시 표현으로 두었다 |
+| 범위 결정 (2026-11-06) — 학습 타임라인 착수, 활동 기록 착수 순서, 한 줄 동료 피드백 v1 보류 | 반영함 — requirements-changes · 03 · 04 · 05 · 06 · 07 · PRD(FR-ACT-04 `[보류]` 표시) |
