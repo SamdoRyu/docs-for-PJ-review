@@ -2,7 +2,7 @@
 
 화면과 서버 코드를 만들기 전에 이 문서를 읽는다. **git 흐름(브랜치·커밋·PR·리뷰·머지)은 여기 없다 — `.claude/rules/git-workflow.md`(개발 컨벤션 > Git 전략)를 본다.**
 
-- 공통 계약(도메인 모델 · Entity 관계 · ID · DTO · 엔드포인트 · 에러 · 권한 · 어댑터 · DataSource · SceneModel · 계약 테스트) — v1 확정(2026-11-03): [CONTRACTS.md](./CONTRACTS.md), 엔드포인트별 상세: [CONTRACTS_API.md](./CONTRACTS_API.md)
+- 공통 계약(도메인 모델 · Entity 관계 · ID · DTO · 엔드포인트 · 에러 · 권한 · 어댑터 · DataSource · SceneModel · 계약 테스트) — v1 확정(2026-11-03): [CONTRACTS.md](./CONTRACTS.md), 엔드포인트별 상세: [CONTRACTS_API.md](./CONTRACTS_API.md). 2026-11-03부터 현행 기준은 GRAVIT [`docs/CONTRACTS.md`](https://github.com/SamdoRyu/GRAVIT/blob/main/docs/CONTRACTS.md) · [`docs/CONTRACTS_API.md`](https://github.com/SamdoRyu/GRAVIT/blob/main/docs/CONTRACTS_API.md)이고, 이 저장소의 두 파일은 이력이다
 - 누가 어느 화면을 맡는지: [SCREEN_ASSIGNMENTS.md](./SCREEN_ASSIGNMENTS.md)
 - 누가 어느 서버 기능을 맡는지: [BACKEND_ASSIGNMENTS.md](./BACKEND_ASSIGNMENTS.md)
 - 실행·검증 명령과 환경 변수: [PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md)
@@ -11,7 +11,8 @@
 >
 > - **현재 구현**: 데모 코드에 실제로 있는 것
 > - **확정 (날짜)**: 팀이 결정 기록으로 정한 것
-> - **신규 예정**: v1을 위해 새로 만들 것. 경로는 권장안이고 아직 없다
+> - **신규 예정**: v1을 위해 새로 만들 것(기획 당시 표기). 2026-11-07 현재 대부분 개발 저장소 GRAVIT에 만들었다 — 남은 것은 「아직 없는 것」
+> - **GRAVIT**: 개발 저장소 [`SamdoRyu/GRAVIT`](https://github.com/SamdoRyu/GRAVIT)(2026-11-03~)에 실제로 있는 것. 2026-11-07 확인 기준은 GRAVIT `main` @ a9e62f7
 > - **`[제안]`**: 구현할 때 권장하는 설계. 팀 결정이 아니다
 > - **`[구현 기본값]`**: 합의된 기본값으로 시작하고 구현 중 바꿀 수 있는 값(2026-11-01 추가 결정). 보안 · 인증 · 권한 · 데이터 무결성에 닿는 값은 바꿀 때 CONTRACTS.md 「9」 계약 변경 절차를 따른다. 목록은 CONTRACTS.md 「10」
 > - **결정 필요**: 팀이 정해야 하는 것. 모아서 PRD.md 「열린 질문」
@@ -22,7 +23,7 @@
 | --- | --- | --- |
 | `SamdoRyu/docs-for-PJ-review` (이 저장소) | 기획 · 설계 · 개발 규칙 문서, Issue · PR 템플릿 초안 | 앱 코드가 없다 |
 | `SamdoRyu/warehouseDemo_fork` | 기존 3D 데모 코드. **프론트엔드를 재사용할 원본**이다 — 3D 장면 · 카메라 · 선택 · 드래그 · 애니메이션 · HUD · Zustand · `DataSource` 개념 · 순수 계산 함수 · 프론트 테스트를 적극 재사용하고, 필요하면 대규모로 리팩터링한다(CON-05 — 2026-11-01 결정). Hono 서버 · SQLite는 동작과 API 설계만 참고한다 | 사용 · 수정 권한 확인됨(2026-11-01). **실제 개발은 새로 만들 개발 저장소에서 한다**(2026-10-28 결정). 레포 설정은 Git 전략 「8」 |
-| 개발 저장소 (아직 없음) | 프론트엔드(React) + 백엔드(Spring Boot) | **모노레포 — 한 저장소에 `frontend/` + `backend/`**(2026-11-03 결정 — Q6). 공통 계약 변경(Java DTO · TypeScript 타입 · 예시 JSON)을 한 PR에서 검토한다. 이 기획 저장소는 기획 · 설계 기록의 출처로 남는다. 구조는 아래 「개발 저장소」 |
+| `SamdoRyu/GRAVIT` (개발 저장소 — 2026-11-03 생성) | 프론트엔드(React) + 백엔드(Spring Boot) | **모노레포 — 한 저장소에 `frontend/` + `backend/`**(2026-11-03 결정 — Q6). 공통 계약 변경(Java DTO · TypeScript 타입 · 예시 JSON)을 한 PR에서 검토한다. 이 기획 저장소는 기획 · 설계 기록의 출처로 남는다. 구조는 아래 「개발 저장소」 |
 
 데모 저장소의 `docs/PLAN.md`는 과거 팀 관리 대시보드(관리자 1명 + 팀원 6~10명) 기획이다. 오피스 v1의 요구사항 기준으로 쓰지 않는다.
 
@@ -36,12 +37,12 @@
 | 3D | Three.js + React Three Fiber (데모는 drei도 씀) | 데모 장면 재사용 |
 | 상태 관리 | Zustand (데모 구조) | 데이터 사본 · 선택 · 드래그 · 낙관적 갱신 |
 | 백엔드 언어 · 빌드 | Java 21 · Gradle | 2026-11-01 추가 결정 |
-| 백엔드 | Spring Boot + Spring MVC | **단일 Spring Boot 애플리케이션의 모듈형 모놀리스**를 권장한다. 마이크로서비스 · CQRS · 이벤트 소싱은 전제하지 않는다. Spring Boot 버전은 골격을 만들 때 Java 21과 맞는 것으로 고른다 |
+| 백엔드 | Spring Boot + Spring MVC | **단일 Spring Boot 애플리케이션의 모듈형 모놀리스**를 권장한다. 마이크로서비스 · CQRS · 이벤트 소싱은 전제하지 않는다. Spring Boot 버전은 4.1.2(GRAVIT `backend/build.gradle`) |
 | 데이터 접근 | Spring Data JPA | Entity · 연관관계 · Repository · 페이징 · 정렬 |
-| DB | MySQL 8.x | 2026-11-01 추가 결정 — 팀이 부트캠프에서 MySQL Workbench로 실습했고, 요구사항(Entity 관계 · CRUD · 트랜잭션)에 충분하다. migration 도구 · 구체 설정은 구현 때 |
+| DB | MySQL 8.x | 2026-11-01 추가 결정 — 팀이 부트캠프에서 MySQL Workbench로 실습했고, 요구사항(Entity 관계 · CRUD · 트랜잭션)에 충분하다. GRAVIT 골격에서 MySQL 8.4(`mysql:8.4.13`) · Flyway로 정했다 |
 | 인증 · 인가 | Spring Security + 세션 기반 인증 | GitHub OAuth 로그인. 보안 심사용 ID/PW 로그인은 명시적으로 설정한 배포 환경에서만(2026-11-01 추가 결정 — 「인증과 권한」) |
 | GitHub 데이터 | GitHub App, 읽기 전용 | CON-02 |
-| 배포 | 외부 인터넷에서 접근할 수 있는 웹 애플리케이션 | SP11 (TBD-09 재결정). 배포 플랫폼은 Spring Boot 초기 프로젝트 구축 단계에서 확정한다(2026-11-01 추가 결정) |
+| 배포 | 외부 인터넷에서 접근할 수 있는 웹 애플리케이션 | SP11 (TBD-09 재결정). 배포 플랫폼은 Spring Boot 초기 프로젝트 구축 단계에서 확정한다(2026-11-01 추가 결정). 2026-11-07 현재: 배포 플랫폼은 아직 정하지 않았고 배포 설정도 없다 |
 | 운영에 쓰지 않는 것 | 데모의 Hono 서버 · `node:sqlite` 저장 | 동작 · API 설계만 참고, 코드 포팅을 전제하지 않음 |
 
 **구현 단계에서 정하는 것**. DB · JDK · 빌드 도구는 2026-11-01 추가 결정으로 위 표에 옮겼다(이전 권장안 "PostgreSQL 우선 검토"는 MySQL 8.x 확정으로 대신했다). 아래는 개발을 막지 않고 정할 시점이 정해진 항목이다. 권장안은 `[제안]`이다.
@@ -52,9 +53,9 @@
 | DB migration 도구 | Flyway(`backend/src/main/resources/db/migration/`) — JPA `ddl-auto`에 운영 스키마를 맡기지 않는다 | 정함 — 골격 |
 | 테스트 DB | MySQL 8.4 — 로컬은 `compose.yaml`, CI는 서비스 컨테이너(GRAVIT README) | 정함 — 골격 |
 | 세션 저장 위치 | `[구현 기본값]` 단일 서버의 기본 세션(서버 메모리). 서버를 늘리거나 재시작 때 세션 유지가 필요해지면 바꾼다 | 필요할 때 |
-| 로컬 개발 구성 | 2026-11-03 결정(권장 구성): React(Vite)와 Spring Boot는 로컬에서 직접 실행하고, MySQL 8.x만 저장소 루트의 `compose.yaml`(Docker Compose)로 띄운다. Docker는 개발 환경 선택일 뿐 배포 플랫폼과 같다고 가정하지 않는다 | 개발 저장소 만들 때 |
+| 로컬 개발 구성 | 2026-11-03 결정(권장 구성): React(Vite)와 Spring Boot는 로컬에서 직접 실행하고, MySQL 8.x만 저장소 루트의 `compose.yaml`(Docker Compose)로 띄운다. Docker는 개발 환경 선택일 뿐 배포 플랫폼과 같다고 가정하지 않는다 | 정함 — GRAVIT `compose.yaml`(MySQL만) |
 | SPA 서빙 방식 | `[제안]` Spring이 빌드 결과를 정적 파일로 서빙(같은 출처 — CORS 불필요) 또는 리버스 프록시 | 배포 플랫폼과 함께 |
-| 배포 플랫폼 | 특정 클라우드를 문서에서 정하지 않는다. HTTPS 인증서 · 도메인 · MySQL 8.x를 쓸 수 있는지 본다 | Spring Boot 초기 프로젝트 구축 단계 |
+| 배포 플랫폼 | 특정 클라우드를 문서에서 정하지 않는다. HTTPS 인증서 · 도메인 · MySQL 8.x를 쓸 수 있는지 본다 | Spring Boot 초기 프로젝트 구축 단계(2026-11-07 현재 미정 — 골격 단계에서 정하지 않았다) |
 
 ### 데모가 쓰는 스택 (프론트 재사용 기준 — 데모 `package.json` · `package-lock.json`)
 
@@ -80,23 +81,23 @@
 
 - 앱 코드는 전부 TypeScript(`.ts` · `.tsx`)다. JavaScript는 `scripts/check-bundle.mjs` 같은 스크립트에만 있고, HTML은 `index.html` 하나, CSS는 `src/index.css`와 `src/ui/*.css`다.
 - 서버 변경 알림은 SSE(직접 구현, 라이브러리 없음), 포매터는 없다(oxlint만).
-- **Node 버전**(프론트 개발 도구용): 데모에는 `engines`와 `.nvmrc`가 없다. 의존성 조건으로 보면 Node 22.12 이상이 필요하다(vite ≥22.12, concurrently ≥22). **Node 24 LTS로 통일한다**(2026-10-28 결정) — 개발 저장소에 `.nvmrc`를 추가한다(Git 전략 「8」).
+- **Node 버전**(프론트 개발 도구용): 데모에는 `engines`와 `.nvmrc`가 없다. 의존성 조건으로 보면 Node 22.12 이상이 필요하다(vite ≥22.12, concurrently ≥22). **Node 24 LTS로 통일한다**(2026-10-28 결정) — GRAVIT `.nvmrc` = 24(Git 전략 「8」).
 
-### 신규 예정 (선정 필요)
+### GitHub 연동 · 실시간 구현 방식 (기획 때 「신규 예정 (선정 필요)」 — GRAVIT에서 정함)
 
 | 구분 | 상태 |
 | --- | --- |
-| GitHub API 호출 방식(Spring의 HTTP 클라이언트로 직접 호출 또는 GitHub 클라이언트 라이브러리) | 선정 필요 |
-| GitHub App JWT 서명 · 설치 토큰 발급 | 선정 필요(라이브러리 또는 직접 구현) |
-| GitHub 로그인 | Spring Security OAuth2 Login으로 GitHub App의 사용자 인증(client id · secret)을 쓰는 것이 `[제안]` — 동작은 구현 전 확인 필요 |
-| 명세 문서(마크다운) 파싱 | 선정 필요(형식은 ## 제목만 — TBD-01, 2026-10-28 결정) |
-| 서버 → 브라우저 변경 알림 | `[제안]` Spring MVC의 SSE(`SseEmitter`). 데모 클라이언트(`src/data/api/sse.ts`)의 재연결 동작을 유지할 수 있는지 확인 필요 |
+| GitHub API 호출 방식(Spring의 HTTP 클라이언트로 직접 호출 또는 GitHub 클라이언트 라이브러리) | Spring `RestClient`로 직접 호출 — GitHub 클라이언트 라이브러리 없음(GRAVIT `github/GithubHttp.java`) |
+| GitHub App JWT 서명 · 설치 토큰 발급 | 직접 구현 — 새 의존성 없음(GRAVIT `github/app/GithubAppJwt.java` · `InstallationTokenProvider.java`) |
+| GitHub 로그인 | Spring Security OAuth2 Login(`oauth2Login`)으로 GitHub App의 사용자 인증(client id · secret)을 쓴다 — main 구현(GRAVIT #64, `common/security/SecurityConfig.java`) |
+| 명세 문서(마크다운) 파싱 | 라이브러리 없이 `##` 제목만 읽는다(형식은 ## 제목만 — TBD-01, 2026-10-28 결정 · GRAVIT `requirement/service/SpecHeadings.java`) |
+| 서버 → 브라우저 변경 알림 | Spring MVC의 SSE(`SseEmitter`) 사무실별 구독(GRAVIT `realtime/WorkspaceEventHub.java`). 클라이언트는 `frontend/src/data/api/sse.ts`(재연결 유지) |
 
 새 dependency는 필요성과 유지보수 상태를 확인하고 팀에 먼저 말한 뒤 추가한다(`.claude/rules/security.md`). 확정 스택 밖으로 프레임워크를 바꾸지 않는다.
 
 ## 폴더 구조
 
-### 현재 구현 (데모)
+### 데모 구조 (2026-10-28, 참고)
 
 ```text
 warehouseDemo_fork/
@@ -128,10 +129,10 @@ warehouseDemo_fork/
 └─ scripts/                       check-bundle.mjs(빌드 후 번들 검사) · data-smoke.ts
 ```
 
-### 개발 저장소 (신규 예정 — 모노레포는 2026-11-03 결정, 그 안의 패키지 경로는 `[제안]`)
+### 개발 저장소 — GRAVIT (모노레포는 2026-11-03 결정, 백엔드 패키지 15개는 아래와 같이 만들었다)
 
 ```text
-(개발 저장소 — 이름 예: gitvillage)
+GRAVIT/
 ├─ compose.yaml                   로컬 개발용 MySQL 8.x (권장 구성 — 배포 설정 아님)
 ├─ .env.example                   변수 이름만, 비밀 값 없음 (환경 변수 가이드)
 ├─ .gitignore                     .env · *.pem · secrets/ 를 가장 먼저
@@ -141,11 +142,13 @@ warehouseDemo_fork/
 │  └─ src/
 │     ├─ app/ · scene/ · ui/      데모 구조 유지
 │     ├─ scene/model/             SceneModel 계산 — 도메인 데이터 → 공간 역할 · 강조 (순수 함수)
-│     ├─ theme/office/            ThemeLayout 기본 테마(사무실) — layout.ts 좌표 · 드롭 영역을 옮겨 옴
-│     ├─ data/                    DataSource · types · mock · api (Spring API 클라이언트) · rules(화면 계산 · mock 규칙)
+│     ├─ theme/station/           ThemeLayout — 우주정거장(2026-11-04 확정) 좌표 · 드롭 영역 · 이동 경로
+│     ├─ data/                    DataSource · types · mock(mock/v1) · api(api/v1 — Spring v1 클라이언트, sse.ts) · rules(화면 계산 · mock 규칙)
+│     ├─ ui/entry/                진입 화면(로그인 · 사무실 열기). URL 라우터는 없다
 │     └─ store.ts
 └─ backend/                       Spring Boot 단일 애플리케이션 (모듈형 모놀리스)
-   └─ src/main/java/<base>/       패키지마다 controller · service · repository · domain(Entity) · dto
+   ├─ src/main/resources/db/migration/   Flyway V1~V4
+   └─ src/main/java/com/samdoryu/backend/   패키지마다 controller · service · repository · domain(Entity) · dto
       ├─ common/                  에러 응답 · 보안 설정 · UTC 시각 · 로그 마스킹
       ├─ auth/                    로그인(GitHub · 심사용) · 세션 · 역할 판정 · 승인된 강사 계정(서버 설정)
       ├─ workspace/               사무실(레포 등록 · 시연 사무실) · 팀 설정 · 강사 지정
@@ -170,7 +173,7 @@ warehouseDemo_fork/
 
 모듈 이름과 의존 방향은 코드 컨벤션(BE) 「모듈」 · NFR-08 그대로다.
 
-| 모듈 | 데모에서 해당하는 곳 | v1 위치 (신규 예정 · `[제안]`) |
+| 모듈 | 데모에서 해당하는 곳 | v1 위치 (GRAVIT) |
 | --- | --- | --- |
 | `core` (순수 규칙) | `src/data/rules/` — mock과 서버가 함께 쓰는 순수 규칙 | **도메인 규칙의 기준은 백엔드**다(막힘 · 진행률 · 평가 처리 · 카드 조립 · 강사 요청함 · 개인 지표 접근). 각 패키지 Service 안에서 외부 호출 없이 값만으로 판정하는 클래스로 둔다. 화면용 계산(SceneModel · 공간 역할 · 강조)과 mock용 규칙은 `frontend/src/` 에 둔다 |
 | `api` | `server/src/routes.ts` | 백엔드 각 패키지의 Controller |
@@ -181,18 +184,18 @@ warehouseDemo_fork/
 | `packs` | 없음(기준값은 `src/data/rules/constants.ts` · `src/data/meta.ts`에 상수로 있음) | 기준값 기본값 · 용어. 팀 설정 밖의 숫자는 백엔드 상수 한 곳 + 화면용 상수 한 곳 |
 | 인증 | 없음 | 백엔드 `auth` 패키지 — Spring Security 설정 · 세션 · 역할 판정(강사 지정은 요청마다 앱 DB에서 확인 — 2026-10-30 결정). OAuth 코드 교환 · 사용자 정보 · 레포 권한 조회처럼 GitHub를 부르는 일은 `github` 패키지를 거친다("GitHub API는 GitHub 어댑터에서만" 규칙 유지) |
 
-데모의 `CLAUDE.md`는 `src/data/types.ts` · `store.ts` · `layout.ts` · `selectors.ts` · `insights.ts`를 계약 파일로 보고 메인 세션에서만 바꾸게 한다. 팀 작업에서도 이 파일들과 [CONTRACTS.md](./CONTRACTS.md)가 가리키는 백엔드 공통 파일(에러 · 보안 설정 · 공통 DTO · Entity)은 「건드리기 전에 말해야 하는 곳」이다(SCREEN_ASSIGNMENTS.md · BACKEND_ASSIGNMENTS.md).
+데모의 `CLAUDE.md`는 `src/data/types.ts` · `store.ts` · `layout.ts` · `selectors.ts` · `insights.ts`를 계약 파일로 보고 메인 세션에서만 바꾸게 한다. 팀 작업에서도 이 파일들과 [CONTRACTS.md](./CONTRACTS.md)가 가리키는 백엔드 공통 파일(에러 · 보안 설정 · 공통 DTO · Entity)은 「건드리기 전에 말해야 하는 곳」이다(SCREEN_ASSIGNMENTS.md · BACKEND_ASSIGNMENTS.md). GRAVIT에서는 공유 파일을 `docs/` · `contract/examples/` · 백엔드 `common/` · `frontend/src/data/DataSource.ts` · `types.ts` · `.github/` · 빌드 설정으로 두고, 이슈가 요구할 때만 고친다(GRAVIT `CLAUDE.md` 「병렬 세션 작업 경계」 — 데모의 `layout.ts` · `insights.ts`는 GRAVIT에 없다).
 
 ### 테스트 경계 (`[제안]`)
 
 - 데모의 계약 테스트는 같은 시나리오를 mock과 API(TS 서버)에 함께 돌린다. API 쪽 서버가 Spring으로 바뀌므로, **같은 시나리오를 두 언어에서 따로 유지하면 어긋난다** — 구현 위험이다.
-- `[구현 기본값]` 계약 테스트는 **Spring 통합 테스트 + 프론트 핵심 E2E**로 한다(2026-11-01 추가 결정). 백엔드 계약(엔드포인트 · DTO · 권한 · 에러)은 Spring 통합 테스트가 맡고, 프론트는 mock DataSource로 화면 동작을, Spring 서버를 띄운 핵심 흐름은 E2E로 확인한다.
+- `[구현 기본값]` 계약 테스트는 **Spring 통합 테스트 + 프론트 핵심 E2E**로 한다(2026-11-01 추가 결정). 백엔드 계약(엔드포인트 · DTO · 권한 · 에러)은 Spring 통합 테스트가 맡고, 프론트는 mock DataSource로 화면 동작을, Spring 서버를 띄운 핵심 흐름은 E2E로 확인한다. (2026-11-07 현재: GRAVIT의 E2E(Playwright)는 mock 기준으로만 있고 CI에서 돌지 않는다 — 로컬 실행)
 - **Java DTO ↔ TypeScript 타입**(2026-11-03 결정 — Q5): 논리 계약은 CONTRACTS.md · CONTRACTS_API.md가 기준이고, 자동 생성(OpenAPI → TS)은 쓰지 않는다. 모노레포 루트 `contract/examples/`의 대표 요청 · 응답 JSON이 기준이다. 백엔드는 JUnit + Jackson으로 DTO와 왕복 비교하고 Spring 통합 테스트로 실제 응답 모양을 비교한다. 프론트는 `satisfies DTO`로 둔 TS 사본을 `tsc`로 검사하고, 사본과 공통 JSON을 값 비교 테스트로 묶는다(JSON을 바로 import하면 리터럴이 `string`으로 넓어져 유니언 타입 검사가 깨진다). 범위와 통과 기준은 CONTRACTS.md 「9」 계약 테스트.
 - 백엔드 규칙 테스트는 JUnit으로 Service 안의 순수 규칙을 검사한다. GitHub 어댑터 변환은 GitHub 응답 예시 데이터로 테스트하고 실제 GitHub를 부르지 않는다.
 
 ## 실행 구조
 
-### 현재 구현된 구조 (데모)
+### 데모 실행 구조 (참고)
 
 ```text
 브라우저 (Vite :5173)
@@ -208,7 +211,7 @@ warehouseDemo_fork/
 - 3D는 lazy 로딩이고 HUD가 먼저 뜬다. `npm run build` 뒤 `scripts/check-bundle.mjs`가 첫 HTML이 three · r3f 청크를 바로 부르면 빌드를 실패시킨다 — 코드상 NFR-02("상단 바와 패널이 3D보다 먼저")를 지키는 구조다.
 - 1024px 반응형 레이아웃이 있다(`src/ui/responsive.css`, E2E `11-responsive`) — 코드상 NFR-07과 맞는다.
 
-### v1 구조 (신규 예정)
+### v1 구조 (GRAVIT)
 
 ```text
 GitHub ──(설치 토큰으로 읽기만 · 폴링 · 웹훅 없음)──▶ Spring github 어댑터
@@ -225,6 +228,7 @@ GitHub ──(설치 토큰으로 읽기만 · 폴링 · 웹훅 없음)──▶
 시연 사무실 ── Seed 어댑터(가짜 데이터) ── 같은 저장 · 같은 API · 같은 접근 검사 · "시연 데이터" 표시
 ```
 
+- **화면 쪽 흐름**(GRAVIT): `DataSource`(기본 `mock/v1` — 서버 없이 브라우저 seed + localStorage, `?source=api`면 `api/v1` — Spring v1 API + SSE) → `store.ts`(Zustand) → SceneModel(`src/scene/model/`) → ThemeLayout(`src/theme/station/` — 우주정거장) → R3F 렌더링. 사무실 밖 화면은 진입 화면(`src/ui/entry/`)이고 URL 라우터는 없다.
 - **GitHub 폴링과 SSE는 다른 일이다.** 폴링은 서버가 GitHub의 변경을 가져오는 방법이고(CON-03, FR-GH-03), SSE는 앱 서버가 브라우저에 "바뀌었다"를 알리는 방법이다. 동기화 결과도 SSE로 알린다.
 - **SSE도 권한 검사를 거친다**(2026-11-01 결정). 구독은 사무실 단위이고, 연결할 때 세션과 그 사무실의 접근 권한을 검사한다. 사용자가 볼 수 없는 사무실의 변경은 보내지 않는다. `[제안]` 세션이 끝나면 연결을 닫고, 이벤트 본문에는 "무엇이 바뀌었나"만 담아 화면이 권한 검사를 거친 REST로 다시 읽게 한다(개인 지표가 이벤트로 새지 않게).
 - GitHub 웹훅은 쓰지 않는다(CON-03, 기획안 「이번 범위에서 제외」).
@@ -235,10 +239,10 @@ GitHub ──(설치 토큰으로 읽기만 · 폴링 · 웹훅 없음)──▶
 
 실제 코드에서 `DataSource`는 **브라우저 쪽 인터페이스**다. GitHub 토큰은 브라우저로 나갈 수 없으므로(NFR-04) GitHub 어댑터는 **서버 안**에 있다.
 
-| 층 | 현재 구현 | v1 |
+| 층 | 데모 | v1 (GRAVIT) |
 | --- | --- | --- |
-| 브라우저 `DataSource` (`src/data/DataSource.ts`) | `mock`(localStorage) · `api`(Hono 클라이언트). `?source=api` 쿼리로 고른다 | 이름과 교체 구조를 유지한다(CON-05). `api`는 Spring API 클라이언트로 바뀐다. 화면은 계속 이 인터페이스로만 데이터를 받는다 |
-| 서버 데이터 원천 | 없음 — 서버는 자기 DB만 안다 | 사무실 종류에 따라 고른다 — 실제 사무실은 GitHub 어댑터, 시연 사무실은 Seed 어댑터(2026-11-01 결정). `[제안]` 서버 전체 환경 변수(`DATA_SOURCE`)가 아니라 사무실의 종류 값으로 고른다 |
+| 브라우저 `DataSource` (`src/data/DataSource.ts`) | `mock`(localStorage) · `api`(Hono 클라이언트). `?source=api` 쿼리로 고른다 | 이름과 교체 구조를 유지한다(CON-05). `api`는 Spring v1 API 클라이언트(`src/data/api/v1/`)로 바꿨다(GRAVIT #8 · #102). 기본은 `mock/v1`, `?source=api`면 Spring. 화면은 계속 이 인터페이스로만 데이터를 받는다 |
+| 서버 데이터 원천 | 없음 — 서버는 자기 DB만 안다 | 사무실 종류에 따라 고른다 — 실제 사무실은 GitHub 어댑터, 시연 사무실은 Seed 어댑터(2026-11-01 결정). 서버 전체 환경 변수(`DATA_SOURCE`)는 두지 않고 사무실 종류(`github` · `demo`)로 고른다(GRAVIT `github/GithubReaderSelector.java`) |
 
 **정함**:
 
@@ -251,7 +255,7 @@ GitHub ──(설치 토큰으로 읽기만 · 폴링 · 웹훅 없음)──▶
 
 ### DataSource 인터페이스에서 바꿀 것
 
-현재 메서드(`src/data/DataSource.ts`): 읽기 `load` · `subscribe`, 쓰기 `createTask` · `updateTask` · `deleteTask` · `createMember` · `updateMember` · `deleteMember` · `startMeeting` · `endMeeting`, 선택 `setDemoMode` · `getDemoMode` · `reset`.
+데모 메서드(`src/data/DataSource.ts`): 읽기 `load` · `subscribe`, 쓰기 `createTask` · `updateTask` · `deleteTask` · `createMember` · `updateMember` · `deleteMember` · `startMeeting` · `endMeeting`, 선택 `setDemoMode` · `getDemoMode` · `reset`.
 
 | 책임 | 현재 | v1 방향 |
 | --- | --- | --- |
@@ -264,7 +268,7 @@ GitHub ──(설치 토큰으로 읽기만 · 폴링 · 웹훅 없음)──▶
 | 화면 표시 | `load` → 스토어 → 장면 · HUD, `subscribe`로 변경 반영 | 유지. 사무실 단위로 읽는다 |
 | 시연 | mock + 데모 봇 | 화면 개발은 mock. 발표 시연은 서버 Seed 사무실(2026-11-01 결정). 데모 봇은 `[제안]` Spring 서버로 옮기지 않는다 |
 
-이 인터페이스에 기대는 곳이 많아 변경 영향이 크다. 실제 TypeScript 인터페이스는 이번 문서 작업에서 바꾸지 않았다.
+이 인터페이스에 기대는 곳이 많아 변경 영향이 크다. 실제 TypeScript 인터페이스는 이 문서 작업에서 바꾸지 않았고, GRAVIT #8 · #102에서 v1 DataSource(`src/data/DataSource.ts` · `api/v1` · `mock/v1`)로 바꿨다. 아래 표는 그때의 이전 계획이다.
 
 | 파일 | 지금 기대는 것 | 바꿔야 하는 이유 |
 | --- | --- | --- |
@@ -339,20 +343,20 @@ GitHub App 권한을 Metadata · Contents · Issues · Pull requests 모두 **�
 
 ### 에러 응답 형식
 
-데모 모양 `{ "error": { "code", "message" } }`를 그대로 쓰고, code는 소문자 snake다(2026-10-28 결정 — 스택이 바뀌어도 유지). Spring에서는 공통 예외 처리(`[제안]` `@RestControllerAdvice` 한 곳)가 이 모양으로 바꾼다. 클라이언트 `src/data/api/index.ts`의 `toError`(`not_found`면 로컬에서 지우고 `unavailable`이면 SSE 재연결)와 `DataError` 타입이 이 모양에 기댄다.
+데모 모양 `{ "error": { "code", "message" } }`를 그대로 쓰고, code는 소문자 snake다(2026-10-28 결정 — 스택이 바뀌어도 유지). Spring에서는 공통 예외 처리 한 곳(GRAVIT `common/error/GlobalExceptionHandler.java`)이 이 모양으로 바꾼다. 클라이언트 `src/data/api/v1/index.ts`의 `toError`(`not_found`면 로컬에서 지우고 `unavailable`이면 SSE 재연결)와 `DataError` 타입이 이 모양에 기댄다.
 
 - 기존: `invalid`(400 · 요청 출처 검사 실패는 403) · `not_found`(404) · `conflict`(409) · `unavailable`(503)
 - 신규: `unauthorized` · `forbidden_role` · `github_unauthorized` · `github_rate_limited` — 표는 코드 컨벤션(BE) 「에러 응답」 · CONTRACTS.md
 
 ## 인증과 권한
 
-### 현재 구현 (데모)
+### 데모 (참고)
 
 - **로그인 · 세션 · 권한 검사가 없다.** 데모 `docs/API.md`도 "Local-only: no auth"라고 적는다.
 - 서버는 요청 위생 미들웨어(`server/src/routes.ts`)만 가진다 — `Host` 검사(DNS 리바인딩 방지), `Origin` 검사, 쓰기 요청의 `Content-Type: application/json` 필수. 기획안 「시스템 구조」의 "기존 서버의 요청 검사 규칙 유지"(NFR-05)는 이 미들웨어를 가리킨다.
 - `X-Actor: <memberId>` 헤더는 데모 봇이 "어느 팀원이 한 일인지"를 표시하는 값이다. **인증이 아니다.**
 
-### v1 (신규 예정 — Spring Security + 세션, 2026-11-01 결정)
+### v1 (GRAVIT — Spring Security + 세션, 2026-11-01 결정)
 
 GitHub 로그인과 레포 읽기는 **GitHub App 하나**로 처리한다. OAuth App은 비공개 레포를 읽으려면 쓰기까지 포함된 `repo` 권한이 필요해서 읽기 전용 최소 권한(NFR-04)을 지킬 수 없기 때문이다 — 개발 컨벤션 > 환경 변수 가이드.
 
@@ -360,15 +364,15 @@ GitHub 로그인과 레포 읽기는 **GitHub App 하나**로 처리한다. OAut
 
 | 단계 | 내용 | 상태 |
 | --- | --- | --- |
-| 로그인 | GitHub App의 사용자 인증(`GITHUB_APP_CLIENT_ID` · `GITHUB_APP_CLIENT_SECRET`)으로 "누가 들어왔는지"를 정한다. `[제안]` Spring Security OAuth2 Login. 팀원과 강사 모두 GitHub로 로그인한다. 보안 심사용 ID/PW 로그인은 아래 「보안 심사용 로그인」 | 신규 예정 |
-| 세션 | 서버 세션(HttpSession)과 세션 쿠키. 세션은 30분~1시간 뒤 만료된다(2026-10-28 결정). `[구현 기본값]` 단일 서버의 기본 세션으로 시작한다. 로그인할 때 세션 ID를 새로 발급하고, 로그아웃하면 세션을 끝낸다 | 신규 예정 |
-| 쿠키 · HTTPS | 외부 배포는 HTTPS로만 받는다. 세션 쿠키는 `HttpOnly` · `Secure` · `SameSite` | 신규 예정 |
-| CSRF | Spring Security의 CSRF 방어를 켠다. `[제안]` SPA는 쿠키로 받은 CSRF 토큰을 요청 헤더에 담아 보낸다. SSE · 조회 요청은 대상이 아니다 | 신규 예정 |
-| 출처 검사 (NFR-05) | 데모 미들웨어의 목적(다른 출처의 요청 차단)을 Spring에서 다시 지킨다 — 허용 출처는 `APP_ORIGIN`. SPA를 같은 출처로 서빙하면 CORS를 열지 않는다 | 신규 예정 |
-| 역할 판정 | 팀 레포의 GitHub 권한과 앱의 강사 지정에서 정한다 — admin = 레포 관리자(ROLE-02), 서버 설정 허용 목록에 있고 레포 관리자가 앱 팀 설정에서 그 사무실에 지정한 사람 = 강사(ROLE-04), 그 밖의 레포 콜라보레이터 전원(read 포함) = 참여자(ROLE-01), `MASTER_ADMIN_GITHUB_LOGIN` = 전체 관리자(ROLE-03) · P1. 허용 목록의 계정은 ROLE-01 · 02로 판정하지 않는다(아래 「강사 계정」). GitHub 권한은 로그인할 때만 확인해 세션에 두고(레포마다), 강사 지정 여부는 요청마다 앱 DB에서 확인한다(2026-10-30 결정). 어느 자격 증명으로 권한을 조회하는지는 B1 구현 때 정한다 | 신규 예정 |
-| 요청마다 권한 검사 | API에서 요청마다 ① 로그인 ② 그 사무실에 접근할 수 있는지(현재 GitHub 자격, 강사 지정, 시연 사무실 접근 대상 중 하나 — 없으면 `not_found`로 존재를 숨긴다 · `[구현 기본값]`) ③ 그 동작을 할 수 있는 역할인지 확인한다(FR-AUTH-04). 버튼을 숨긴 것은 권한 확인이 아니다. `[제안]` 사무실 접근과 역할 판정은 인가 서비스 한 곳에 두고, 컨트롤러 메서드마다 그 서비스로 검사한다(Spring Security 메서드 보안 등). 강사의 허용되지 않은 쓰기는 `forbidden_role`(FR-AUTH-08 · P13) | 신규 예정 |
-| 실시간 갱신 권한 | SSE 연결도 세션 · 사무실 접근을 검사한다 — 「v1 구조」 | 신규 예정 |
-| 설치 토큰 | `GITHUB_APP_ID`와 키 파일(`GITHUB_APP_PRIVATE_KEY_PATH`)로 설치 토큰을 받아 레포를 동기화한다. 토큰은 서버 메모리에서만 쓰고 만료 전에 다시 발급한다. DB 저장 여부는 결정 필요(권장: 저장하지 않음). GitHub 어댑터 안에서만 쓰고 브라우저로 내보내지 않는다(NFR-04) | 신규 예정 |
+| 로그인 | GitHub App의 사용자 인증(`GITHUB_APP_CLIENT_ID` · `GITHUB_APP_CLIENT_SECRET`)으로 "누가 들어왔는지"를 정한다. Spring Security OAuth2 Login(`oauth2Login`). 팀원과 강사 모두 GitHub로 로그인한다. 보안 심사용 ID/PW 로그인은 아래 「보안 심사용 로그인」 | main 구현(GRAVIT #64 · 심사용 #63) |
+| 세션 | 서버 세션(HttpSession)과 세션 쿠키. 세션은 30분~1시간 뒤 만료된다(2026-10-28 결정). `[구현 기본값]` 단일 서버의 기본 세션으로 시작한다. 로그인할 때 세션 ID를 새로 발급하고, 로그아웃하면 세션을 끝낸다. GRAVIT은 마지막 요청 뒤 60분에 만료(`application.yaml` `timeout: 60m`) | main 구현(GRAVIT #6) |
+| 쿠키 · HTTPS | 외부 배포는 HTTPS로만 받는다. 세션 쿠키는 `HttpOnly` · `Secure` · `SameSite` | main 구현(GRAVIT #6 — `HttpOnly` · `SameSite=Lax`). `Secure`는 HTTPS 배포 때 켠다 — 배포는 아직 미정 |
+| CSRF | Spring Security의 CSRF 방어를 켠다. SPA는 쿠키 `XSRF-TOKEN`으로 받은 CSRF 토큰을 헤더 `X-XSRF-TOKEN`에 담아 보낸다. SSE · 조회 요청은 대상이 아니다 | main 구현(GRAVIT #6) |
+| 출처 검사 (NFR-05) | 데모 미들웨어의 목적(다른 출처의 요청 차단)을 Spring에서 다시 지킨다 — 허용 출처는 `APP_ORIGIN`. SPA를 같은 출처로 서빙하면 CORS를 열지 않는다 | main 구현(GRAVIT #6) |
+| 역할 판정 | 팀 레포의 GitHub 권한과 앱의 강사 지정에서 정한다 — admin = 레포 관리자(ROLE-02), 서버 설정 허용 목록에 있고 레포 관리자가 앱 팀 설정에서 그 사무실에 지정한 사람 = 강사(ROLE-04), 그 밖의 레포 콜라보레이터 전원(read 포함) = 참여자(ROLE-01), `MASTER_ADMIN_GITHUB_LOGIN` = 전체 관리자(ROLE-03) · P1. 허용 목록의 계정은 ROLE-01 · 02로 판정하지 않는다(아래 「강사 계정」). GitHub 권한은 로그인할 때만 확인해 세션에 두고(레포마다), 강사 지정 여부는 요청마다 앱 DB에서 확인한다(2026-10-30 결정). 권한은 로그인 때 받은 GitHub 사용자 토큰으로 조회하고, 그 토큰은 세션에만 둔다(GRAVIT `github/GithubUserToken.java`) | main 구현(GRAVIT #65 · #66) |
+| 요청마다 권한 검사 | API에서 요청마다 ① 로그인 ② 그 사무실에 접근할 수 있는지(현재 GitHub 자격, 강사 지정, 시연 사무실 접근 대상 중 하나 — 없으면 `not_found`로 존재를 숨긴다 · `[구현 기본값]`) ③ 그 동작을 할 수 있는 역할인지 확인한다(FR-AUTH-04). 버튼을 숨긴 것은 권한 확인이 아니다. `[제안]` 사무실 접근과 역할 판정은 인가 서비스 한 곳에 두고, 컨트롤러 메서드마다 그 서비스로 검사한다(Spring Security 메서드 보안 등). 강사의 허용되지 않은 쓰기는 `forbidden_role`(FR-AUTH-08 · P13) | main 구현(GRAVIT #6 · #67) |
+| 실시간 갱신 권한 | SSE 연결도 세션 · 사무실 접근을 검사한다 — 「v1 구조」 | main 구현(GRAVIT `realtime/`) |
+| 설치 토큰 | `GITHUB_APP_ID`와 키 파일(`GITHUB_APP_PRIVATE_KEY_PATH`)로 설치 토큰을 받아 레포를 동기화한다. 토큰은 서버 메모리에서만 쓰고 만료 전에 다시 발급한다. DB에는 저장하지 않는다 — 설치마다 메모리에 두고 만료 5분 전에 다시 받는다(GRAVIT `github/app/InstallationTokenProvider.java`). GitHub 어댑터 안에서만 쓰고 브라우저로 내보내지 않는다(NFR-04) | main 구현 |
 
 **강사 계정** (2026-11-01 결정 · 2026-11-01 추가 결정):
 
@@ -392,17 +396,17 @@ GitHub 로그인과 레포 읽기는 **GitHub App 하나**로 처리한다. OAut
 - GitHub App 권한은 Metadata, Contents, Issues, Pull requests를 모두 **읽기 전용**으로 둔다.
 - 앱은 조마다 조직에 설치한다. 레포 등록은 학생 기준 자기 조 조직 안의 레포만 받는다(P2). 강사는 자신이 강사로 지정된 모든 조의 사무실을 본다(FR-AUTH-07).
 - 토큰 · 쿠키 · 이메일을 로그에 남기지 않는다. 일부를 가린 값도 남기지 않는다(NFR-04 · GRAVIT CONTRACTS.md 「6」).
-- 키 파일(`*.pem`)은 `./secrets/` 에만 둔다. **데모 저장소의 `.gitignore`에는 `.env` · `*.pem` · `secrets/`가 아직 없다** — 개발 저장소에서 먼저 추가한다(환경 변수 가이드).
+- 키 파일(`*.pem`)은 `./secrets/` 에만 둔다. 데모 저장소의 `.gitignore`에는 이 항목들이 없었다. GRAVIT `.gitignore`에는 `.env` · `.env.*` · `secrets/` · `*.pem`이 있다(환경 변수 가이드).
 
 **보안 심사용 로그인** (2026-11-01 추가 결정 — FR-AUTH-01에 연결, 새 ID 아님, P15):
 
 - 목적: 강사님이 본인 GitHub 계정 없이 인증 · 인가 · 권한 상승 · IDOR 등을 점검한다.
 - 계정: 실제 GitHub 계정이 아닌 앱 내부 계정(`ReviewAccount`). 권장 구성은 ROLE-01 2개 · ROLE-02 1개 · ROLE-04 1개.
 - 범위: **시연 사무실(Demo Workspace)에만** 접근한다. 실제 레포의 데이터에 접근하지 않고 GitHub 권한을 가진 것으로 취급하지 않는다. 시연 사무실은 Seed 데이터라 GitHub를 부르지 않는다.
-- 처리: Spring Security 안에서 처리한다 — `[제안]` 폼 로그인 + `PasswordEncoder`. 별도 인증 서버 · JWT는 만들지 않는다. 로그인 뒤에는 GitHub 로그인과 **같은 세션 · CSRF · 인가 · 리소스 접근 검사**를 받는다. 테스트 계정이라는 이유로 검사를 건너뛰지 않는다.
-- 비밀 값: 비밀번호는 안전한 해시로만 저장하고, 비밀번호 · 토큰을 저장소에 커밋하지 않는다. 계정을 넣는 방식(서버 설정 · 배포 때 시드)은 구현 때 정한다.
+- 처리: Spring Security 안에서 처리한다 — 폼 로그인(`formLogin`) + `PasswordEncoder`(GRAVIT #63). 별도 인증 서버 · JWT는 만들지 않는다. 로그인 뒤에는 GitHub 로그인과 **같은 세션 · CSRF · 인가 · 리소스 접근 검사**를 받는다. 테스트 계정이라는 이유로 검사를 건너뛰지 않는다.
+- 비밀 값: 비밀번호는 안전한 해시로만 저장하고, 비밀번호 · 토큰을 저장소에 커밋하지 않는다. 계정은 서버 설정 `REVIEW_ACCOUNTS`(아이디 · 역할 · Seed 팀원 · bcrypt 해시)로 넣는다(GRAVIT `.env.example`).
 - 켜기 · 끄기: 명시적으로 설정한 배포 환경에서만 켜진다(기본은 꺼짐 — 환경 변수 가이드). 꺼지면 로그인 경로도 없다. 심사가 끝나면 끄거나 계정을 쓸 수 없게 한다.
-- `[제안]` 반복 실패 제한은 구현 때 검토한다.
+- 반복 실패 제한을 넣었다(GRAVIT #165 — `auth/security/ReviewLoginThrottle.java`).
 
 **시연 사무실 접근** (2026-11-01 추가 결정 · P2): 명시적으로 등록한 대상만 들어간다 — 우리 조의 실제 GitHub 계정, 그 시연 사무실에 지정된 강사 계정, 발급한 심사용 계정. GitHub로 로그인만 한 일반 사용자는 들어갈 수 없다(`not_found`). 우리 조 계정의 역할은 `[구현 기본값]` 우리 조 실제 사무실의 역할을 따른다.
 
@@ -411,7 +415,7 @@ GitHub 로그인과 레포 읽기는 **GitHub App 하나**로 처리한다. OAut
 ## 저장소 (JPA)
 
 - **현재 구현 (데모, 참고만)**: `server/src/db.ts`가 `node:sqlite`로 `server/data/office.db`를 열고, 테이블마다 `(id TEXT PRIMARY KEY, data TEXT)`로 엔티티 전체를 JSON 문자열로 저장한다. 쓰기는 `repo.ts`의 `mutate()` 트랜잭션, 커밋 뒤 SSE 알림. 2026-10-28에는 이 방식을 이어 쓰기로 했지만, **2026-11-01 결정으로 Spring Data JPA로 바꿔 이 방식은 쓰지 않는다.**
-- **v1 (신규 예정)**: 06-data.md 「저장 항목」을 JPA Entity로 만든다. Entity · 연관관계 · ID 정책 · 무결성 제약은 CONTRACTS.md 「2」 · 「3」(v1 확정 — 2026-11-03).
+- **v1 (GRAVIT — Flyway `V1`~`V4`)**: 06-data.md 「저장 항목」을 JPA Entity로 만든다. Entity · 연관관계 · ID 정책 · 무결성 제약은 CONTRACTS.md 「2」 · 「3」(v1 확정 — 2026-11-03).
   - 기본키는 `Long`(MySQL `BIGINT`)이고 API에서는 문자열로 낸다. GitHub 이슈 · PR 번호와 사용자 · 레포 ID는 다른 칸에 둔다(2026-11-03 결정 — Q1).
   - DB는 MySQL 8.x다(2026-11-01 추가 결정).
   - 사무실 단위 항목은 모두 사무실(Workspace)에 속한다. 조회는 항상 사무실 조건을 포함한다 — 다른 조 데이터가 섞이지 않게 하는 핵심이다.
@@ -426,17 +430,19 @@ GitHub 로그인과 레포 읽기는 **GitHub App 하나**로 처리한다. OAut
 
 **확정 (2026-11-01 결정)**: 비즈니스 로직과 시각적 테마를 분리한다. 사무실(책상 · 선반 · 회의실)은 기능을 표현하는 기본 테마일 뿐이고, 앞으로 아기자기한 3D 마을 · 캐주얼 로우폴리 공간 등으로 바뀔 수 있다. 기존 게임의 에셋 · 캐릭터는 복제하지 않는다. 테마가 바뀌어도 팀원 표시, 이슈 · PR 표시, 상태별 공간 배치, 요구사항 연결, 회의 안건, 도움 요청, 진행 상태, 학습 타임라인, 기술 결정 카드, 강사 피드백은 그대로다.
 
-### 공간 역할 ↔ 기본 테마 표현
+**테마 확정 (2026-11-04 — GRAVIT #76 · #77 · #81)**: v1 테마는 **우주정거장** 하나다. 확정 시안은 GRAVIT `frontend/public/station/`(디자인 참조용 — 원본은 고치지 않는다)이고, 다중 테마 엔진은 만들지 않는다. 보이는 모양은 시안을, 데이터 · 상태값 · 권한은 공통 계약을 따른다.
 
-| 공간 역할 | 들어가는 것 | v1 기본 테마(사무실) 표현 | 다른 테마 예 (참고) |
+### 공간 역할 ↔ v1 테마 표현
+
+| 공간 역할 | 들어가는 것 | v1 테마(우주정거장) 표현 — GRAVIT `src/theme/station/` | 다른 테마 예 (참고 — 데모의 사무실 포함) |
 | --- | --- | --- | --- |
-| 작업 공간 (팀원마다) | 팀원 아바타, 담당자 있는 열린 이슈 | 책상 + 아바타 | 집 · 작업대 |
-| 대기 | 담당자 없는 열린 이슈 | 백로그 선반 | 창고 |
-| 검토 | 열린 PR | 검토 영역 | 우체통 · 검사대 |
-| 완료 | 닫힌 이슈 · 머지된 PR | 완료 선반 | 진열장 |
-| 회의 | 회의 안건(`AgendaItem`)의 표현 | 회의실 테이블 | 광장 · 모닥불 |
-| 게시 | 도움 요청 · 회의 결정 기록 · 강사 피드백 · 배운 점 공유 | 게시판 오브젝트 (내용은 HUD) | 마을 게시판 |
-| 요구사항 영역 | 요구사항(판 또는 대기 칸) | 바닥 구역 | 밭 · 구획 |
+| 작업 공간 (팀원마다) | 팀원 아바타, 담당자 있는 열린 이슈 | 작업 포드 + 아바타(최대 8 — `deskIndex` 0~7) | 사무실 책상(데모) · 집 · 작업대 |
+| 대기 | 담당자 없는 열린 이슈 | C 화물 도킹 베이 | 백로그 선반(데모) · 창고 |
+| 검토 | 열린 PR | E 스캐너 터널 | 검토 영역(데모) · 우체통 · 검사대 |
+| 완료 | 닫힌 이슈 · 머지된 PR | G 아카이브 화물칸 | 완료 선반(데모) · 진열장 |
+| 회의 | 회의 안건(`AgendaItem`)의 표현 | A 지휘 브리지의 회의 탁자 | 회의실 테이블(데모) · 광장 · 모닥불 |
+| 게시 | 도움 요청 · 회의 결정 기록 · 강사 피드백 · 배운 점 공유 | B 통신 허브의 게시 선반 (내용은 HUD) | 게시판(데모) · 마을 게시판 |
+| 요구사항 영역 | 요구사항(판 또는 대기 칸) | 요구사항 데크의 판 · 대기 칸(시안에 없어 정거장 안에 더함) | 바닥 구역 · 밭 · 구획 |
 
 도형 종류(이슈 상자 · PR 삼각기둥 · 도움 요청 구 · 배운 점 공유 팔면체 · 기타 메모지)도 기본 테마의 표현이다. 요구는 "종류를 구분해 보인다"이다.
 
@@ -455,14 +461,14 @@ ThemeLayout (테마 하나 = 구현 하나)    공간 역할 → 기준 좌표(a
 R3F 렌더러 (테마 컴포넌트)            실제 3D 모델 · 재질 · 애니메이션
 ```
 
-- **처음에는 테마 하나(사무실)만 구현한다.** 테마 엔진 · 테마 선택 화면 · 런타임 테마 교체는 만들지 않는다(2026-11-01 결정). 목표는 "테마를 바꿀 때 도메인 로직을 고치지 않는다"까지다.
-- 데모와의 차이: 데모는 `src/scene/slots.ts`가 위치 계산 로직을 가지면서도 `Furniture.tsx`(`BACKLOG_CENTER_X` · `BACKLOG_LEVELS` · `DONE_TOP` · `TABLE_TOP_Y`)와 `Desks.tsx`(`DESK_TOP_Y` · `deskLocalToWorld`)에서 상수를 가져온다. 그래서 위치 로직이 가구 컴포넌트에 묶여 있다.
+- **테마는 하나(우주정거장 — 2026-11-04 확정)만 구현한다.** 테마 엔진 · 테마 선택 화면 · 런타임 테마 교체는 만들지 않는다(2026-11-01 결정). 목표는 "테마를 바꿀 때 도메인 로직을 고치지 않는다"까지다.
+- (데모 기준 — GRAVIT에서는 SceneModel `src/scene/model/buildSceneModel.ts` · ThemeLayout `src/theme/station/stationLayout.ts`로 나눴다) 데모와의 차이: 데모는 `src/scene/slots.ts`가 위치 계산 로직을 가지면서도 `Furniture.tsx`(`BACKLOG_CENTER_X` · `BACKLOG_LEVELS` · `DONE_TOP` · `TABLE_TOP_Y`)와 `Desks.tsx`(`DESK_TOP_Y` · `deskLocalToWorld`)에서 상수를 가져온다. 그래서 위치 로직이 가구 컴포넌트에 묶여 있다.
   - `dropTarget.ts`도 책상 · 선반 · 회의 테이블 좌표를 직접 갖고 있다.
-  - `[제안]` 공간 역할 계산은 SceneModel로, 좌표 · 드롭 영역은 ThemeLayout으로 옮긴다.
+  - 공간 역할 계산은 SceneModel로, 좌표 · 드롭 영역은 ThemeLayout으로 옮긴다(GRAVIT에서 옮겼다).
   - 드롭 결과는 "어느 공간 역할에 놓였나"로만 해석한다 — 요구사항 영역이면 연결, 회의면 안건 만들기, 그 밖은 제자리로.
 - 테마를 바꿀 때 드는 일:
   - 색 · 조명 · 재질만 바꾸기: `theme.ts` 팔레트 · 재질 캐시
-  - 가구 · 아바타 모양 바꾸기: 테마 컴포넌트를 교체한다. 외부 3D 모델을 쓰면 에셋 준비 · 라이선스 · 용량 확인이 새로 필요하다(데모는 코드로 만든 기본 도형뿐이다)
+  - 가구 · 아바타 모양 바꾸기: 테마 컴포넌트를 교체한다. 외부 3D 모델을 쓰면 에셋 준비 · 라이선스 · 용량 확인이 새로 필요하다(데모는 코드로 만든 기본 도형뿐이다). GRAVIT 아바타는 시안의 스페이 GLB를 쓰고, 시안 밖 새 에셋은 만들지 않는다
   - 공간 배치 바꾸기: ThemeLayout(`layout.ts` · `paths.ts` 이동 경로 · 드롭 영역)
   - 상호작용 방식 바꾸기: 카메라 · 드래그 방식. 이건 기획 결정이 필요하다
 
@@ -502,7 +508,7 @@ R3F 렌더러 (테마 컴포넌트)            실제 3D 모델 · 재질 · 애
 | 기능 | 기존 파일 | 판정 | 필요한 수정 | 관련 요구사항 |
 | --- | --- | --- | --- | --- |
 | 사무실 공간 · 벽 · 바닥 · 조명 | `src/scene/Room.tsx` · `Lighting.tsx` · `Furniture.tsx` · `src/office/layout.ts` | 재사용 | 기본 테마(사무실) 컴포넌트로 둔다. `layout.ts`의 좌표는 ThemeLayout의 공간 역할 기준 좌표로 옮기고, 요구사항 영역(구역 · 묶음)을 놓을 자리를 더한다 | FR-OFF-01 |
-| 책상 · 아바타 | `Desks.tsx` · `Avatar.tsx` · `Avatars.tsx` | 수정 · 확장 | 책상은 10개 고정(`MAX_MEMBERS = 10`)이라 4인 팀에 충분하다. 팀원 → 책상 배정은 GitHub 콜라보레이터 기준으로 자동 배정. 아바타는 기본 작업 공간, 회의 같은 앱 이벤트에 따라 이동(2026-11-01 결정 — `paths.ts` 이동 경로 재사용). 직접 조작은 Must 아님. 강사는 책상 · 아바타가 없다. GitHub 프로필 사진 표시(FR-OFF-06) 신규. 머리 위 신호 다이아 · "업무량 140%" 태그는 사람별 비교라 제거 대상 | FR-OFF-01 · 06, FR-FLOW-06 |
+| 책상 · 아바타 | `Desks.tsx` · `Avatar.tsx` · `Avatars.tsx` | 수정 · 확장 | 데모의 책상은 10개 고정(`MAX_MEMBERS = 10`)이었다. v1 작업 포드는 최대 8개다(`deskIndex` 0~7 — 2026-11-04 결정, GRAVIT CONTRACTS.md 「10」). 0~3은 늘 그리고, 4~7은 그 자리를 쓰는 팀원이 있을 때만 그린다. 자리가 없는 팀원은 3D에 없고 HUD에만 보인다. 팀원 → 책상 배정은 GitHub 콜라보레이터 기준으로 자동 배정. 아바타는 기본 작업 공간, 회의 같은 앱 이벤트에 따라 이동(2026-11-01 결정 — `paths.ts` 이동 경로 재사용). 직접 조작은 Must 아님. 강사는 책상 · 아바타가 없다. GitHub 프로필 사진 표시(FR-OFF-06) 신규. 머리 위 신호 다이아 · "업무량 140%" 태그는 사람별 비교라 제거 대상 | FR-OFF-01 · 06, FR-FLOW-06 |
 | 작업 상자 | `TaskBox.tsx` · `TaskBoxes.tsx` · `TaskTooltip.tsx` | 수정 · 확장 | 둥근 상자 한 종류뿐이다. 높이 = 포인트(`estimate`)는 뺀다. 색은 `priority:*` 라벨에서, 라벨이 없으면 중립(2026-11-01 결정 · P6) | FR-OFF-02 · 04 |
 | PR 도형(삼각기둥) | 없음 | 신규 | `shared.tsx`의 기본 도형 패턴으로 만든다. 새 3D 모델링은 하지 않는다 | FR-OFF-02, FR-LRN-03 |
 | 안건 도형 5종(상자 · 삼각기둥 · 구 · 팔면체 · 납작한 메모) | 없음 — 상자 1종만 있다 | 신규 | 이슈 상자를 빼면 4종이 새 도형이다(기본 테마 표현). 도형 5종이 이미 있다고 가정하지 않는다 | FR-OFF-02, FR-LRN-10 |
@@ -544,8 +550,8 @@ FR-FLOW-06 · P6("팀원 간 순위 · 비교와 사람별 합계 금지")와 �
 
 | 단계 | 목표 | 주로 바뀌는 곳 | 선행 | 규모 메모 |
 | --- | --- | --- | --- | --- |
-| 1차 공통 계약 · 골격 (1~2일차) | 데모 실행은 확인됨(2026-11-01). 공통 계약 확정(2026-11-03 — CONTRACTS.md v1), 개발 저장소(모노레포) 생성, Spring Boot 골격(Java 21 · Gradle · MySQL 8.x — 공통 에러 · 보안 설정 · ID 변환 · 사무실 Entity), 배포 플랫폼 확정, 프론트 데모 이전 | 문서 · 공통 파일. 4명이 함께 | 없음 — 스택 · DB(2026-11-01 추가 결정), 계약 · 저장소 구성(2026-11-03 결정) 확정 | 여러 Claude Code 세션이 서로 다른 계약을 만들지 않도록 이 단계를 먼저 끝낸다 — 아래 「착수 체크리스트」 |
-| 2차 GitHub 이슈를 사무실에 (5일차 첫 목표) | GitHub 로그인 · 세션, 설치 토큰으로 이슈 · PR 읽기, 앱 모델로 변환 · 저장, `DataSource(api)`를 Spring에 연결, 상태에 따른 위치(SceneModel · ThemeLayout) | 백엔드 `auth` · `github` · `sync` · `workspace`, 프론트 `types.ts` · `slots.ts` → SceneModel · `store.ts` | 1차, GitHub App 생성 (FR-GH-02 · 04는 2026-11-01 추가 결정으로 채택) | 가장 큰 단계. 로그인 없이 설치 토큰만으로 먼저 이슈를 띄우고 로그인을 나중에 붙이는 순서도 가능하다 — 결정 필요 |
+| 1차 공통 계약 · 골격 (1~2일차) | 데모 실행은 확인됨(2026-11-01). 공통 계약 확정(2026-11-03 — CONTRACTS.md v1), 개발 저장소(모노레포) 생성, Spring Boot 골격(Java 21 · Gradle · MySQL 8.x — 공통 에러 · 보안 설정 · ID 변환 · 사무실 Entity), 배포 플랫폼 확정, 프론트 데모 이전. (2026-11-07 현재: 배포 플랫폼 확정을 뺀 나머지 완료 — GRAVIT #3 · #5 · #6 · #7 · #8. 배포 플랫폼은 미정) | 문서 · 공통 파일. 4명이 함께 | 없음 — 스택 · DB(2026-11-01 추가 결정), 계약 · 저장소 구성(2026-11-03 결정) 확정 | 여러 Claude Code 세션이 서로 다른 계약을 만들지 않도록 이 단계를 먼저 끝낸다 — 아래 「착수 체크리스트」 |
+| 2차 GitHub 이슈를 사무실에 (5일차 첫 목표) | GitHub 로그인 · 세션, 설치 토큰으로 이슈 · PR 읽기, 앱 모델로 변환 · 저장, `DataSource(api)`를 Spring에 연결, 상태에 따른 위치(SceneModel · ThemeLayout) | 백엔드 `auth` · `github` · `sync` · `workspace`, 프론트 `types.ts` · `slots.ts` → SceneModel · `store.ts` | 1차, GitHub App 생성 (FR-GH-02 · 04는 2026-11-01 추가 결정으로 채택) | 가장 큰 단계. 로그인 없이 설치 토큰만으로 먼저 이슈를 띄우고 로그인을 나중에 붙이는 순서도 가능하다 — 결정 필요. (2026-11-07 현재: 로그인 · 레포 연결 · 폴링 동기화 main 구현 — GRAVIT #64 · #68 · #70. #69 이슈 · PR 읽어 저장은 실제 통합 확인 대기로 열림) |
 | 3차 기획 핵심 확장 | 요구사항 구역 · 묶음과 진행률, PR 시각화 · 평가 · 회차, 회의실 안건 · 결정 기록, 도움 요청, 강사 대응, 회고 리포트, 시연 사무실 · 심사용 로그인(IB-69) | 백엔드 도메인 패키지, 프론트 장면 도형 · 회의 화면 · 새 패널 | 2차, 명세 문서 형식(TBD-01 — ## 제목만) | 7일차 데모의 PR 평가(FR-LRN-01~03)는 일정에 든다 |
 
 ### 착수 체크리스트 (1차 단계 — 2026-11-01 추가 결정)
@@ -553,42 +559,42 @@ FR-FLOW-06 · P6("팀원 간 순위 · 비교와 사람별 합계 금지")와 �
 기획 전면 검토는 끝났다. 아래 순서로 개발에 들어간다.
 
 1. ~~**공통 계약 확정**~~ — 완료(2026-11-03 결정 — CONTRACTS.md v1 · CONTRACTS_API.md). ID 형식 · 저장소 구성도 이때 닫았다. 문서 담당자가 GitHub에 반영하고 기준 커밋을 팀에 공유한다 — 팀원 전원 리뷰는 착수 조건이 아니다(CONTRACTS.md 「9」).
-2. **개발 저장소 생성(모노레포)** — 새 저장소를 만들고 `.gitignore`에 `.env` · `*.pem` · `secrets/`를 가장 먼저 넣는다. Git 전략 「8」 설정(보호 규칙 · squash · 템플릿 · 라벨 · `.nvmrc` · JDK 21)을 한다.
-3. **모노레포 초기 구조** — 위 「개발 저장소」 트리대로 `frontend/`(데모 프론트 이전) · `backend/` · `contract/examples/`(CONTRACTS_API.md 예시 JSON) · `compose.yaml`(로컬 MySQL 8.x) · `.env.example`을 만든다.
-4. **Spring Boot 골격** — Java 21 · Gradle · MySQL 8.x로 만들고, Spring Boot 버전 · migration 도구 · 테스트 DB · 배포 플랫폼 · SPA 서빙 방식을 이때 정한다. 공통 에러 응답 · 보안 설정(세션 · CSRF · 401 JSON) · ID 문자열 변환 · 인가 서비스 틀 · 사무실 Entity를 먼저 넣는다(CONTRACTS.md 「6」 · 「2」).
-5. **공통 Entity · DTO · 인증 · 인가 기초** — CONTRACTS.md 「2」 Entity와 CONTRACTS_API.md 공통 타입 · Snapshot DTO 뼈대, 로그인 · `GET /api/me` · 사무실 접근 검사, 계약 테스트 틀(CONTRACTS.md 「9」)을 먼저 만든다. 코드는 Git 전략대로 PR로 합치고, PR 본문에 기준 계약 커밋을 적는다.
-6. **GitHub App 생성 · 연동** — 읽기 전용 권한(Metadata · Contents · Issues · Pull requests)으로 만들고 우리 조 조직에 설치한다. 설치 토큰 · 동기화(B2)를 붙인다.
-7. **GitHub 이슈 생성과 담당 배분** — 00-backlog.md 「이슈 백로그 (Must)」로 이슈를 만들며 담당자를 정한다. B12 · B13 · B14처럼 지금 미정인 묶음도 **병렬 기능 개발 전에는 담당자와 작업 경계를 지정**한다(BACKEND_ASSIGNMENTS.md).
-8. **병렬 개발 시작** — 모두 같은 계약 커밋을 기준으로 한다. 계약을 바꿀 일이 생기면 문서 담당자에게 요청하고, 담당자가 고친 뒤 새 커밋과 바뀐 절을 관련 담당자 · Claude Code 세션에 공유한다(CONTRACTS.md 「9」).
+2. ~~**개발 저장소 생성(모노레포)**~~ — 완료(GRAVIT 2026-11-03). Git 전략 「8」 설정 중 라벨 · `main` 보호 · squash는 GRAVIT #5, `.gitignore` · `.nvmrc`(24) · 이슈 · PR 템플릿은 GRAVIT에 있다. 원래 계획: 새 저장소를 만들고 `.gitignore`에 `.env` · `*.pem` · `secrets/`를 가장 먼저 넣는다. Git 전략 「8」 설정(보호 규칙 · squash · 템플릿 · 라벨 · `.nvmrc` · JDK 21)을 한다.
+3. ~~**모노레포 초기 구조**~~ — 완료(GRAVIT README 「디렉터리 구조」). 원래 계획: 위 「개발 저장소」 트리대로 `frontend/`(데모 프론트 이전) · `backend/` · `contract/examples/`(CONTRACTS_API.md 예시 JSON) · `compose.yaml`(로컬 MySQL 8.x) · `.env.example`을 만든다.
+4. ~~**Spring Boot 골격**~~ — 완료(GRAVIT #6 — Spring Boot 4.1.2 · Flyway · 테스트 DB MySQL 8.4). 배포 플랫폼 · SPA 서빙 방식은 아직 미정. 원래 계획: Java 21 · Gradle · MySQL 8.x로 만들고, Spring Boot 버전 · migration 도구 · 테스트 DB · 배포 플랫폼 · SPA 서빙 방식을 이때 정한다. 공통 에러 응답 · 보안 설정(세션 · CSRF · 401 JSON) · ID 문자열 변환 · 인가 서비스 틀 · 사무실 Entity를 먼저 넣는다(CONTRACTS.md 「6」 · 「2」).
+5. ~~**공통 Entity · DTO · 인증 · 인가 기초**~~ — 완료(GRAVIT #6 · #7 · #8, 로그인 #64). 원래 계획: CONTRACTS.md 「2」 Entity와 CONTRACTS_API.md 공통 타입 · Snapshot DTO 뼈대, 로그인 · `GET /api/me` · 사무실 접근 검사, 계약 테스트 틀(CONTRACTS.md 「9」)을 먼저 만든다. 코드는 Git 전략대로 PR로 합치고, PR 본문에 기준 계약 커밋을 적는다.
+6. **GitHub App 생성 · 연동** — 연동 코드 main 구현(GRAVIT #68 · #70 · #71). #69(이슈 · PR 읽어 저장)는 실제 통합 확인 대기로 열림, GitHub App 설정 안내 문서는 #237(PR 진행 중). 원래 계획: 읽기 전용 권한(Metadata · Contents · Issues · Pull requests)으로 만들고 우리 조 조직에 설치한다. 설치 토큰 · 동기화(B2)를 붙인다.
+7. ~~**GitHub 이슈 생성과 담당 배분**~~ — 완료(GRAVIT 이슈 #9~#71 생성, 담당은 이슈 Assignee가 기준). 원래 계획: 00-backlog.md 「이슈 백로그 (Must)」로 이슈를 만들며 담당자를 정한다. B12 · B13 · B14처럼 지금 미정인 묶음도 **병렬 기능 개발 전에는 담당자와 작업 경계를 지정**한다(BACKEND_ASSIGNMENTS.md).
+8. **병렬 개발 시작** — 진행 중(2026-11-07). 원래 계획: 모두 같은 계약 커밋을 기준으로 한다. 계약을 바꿀 일이 생기면 문서 담당자에게 요청하고, 담당자가 고친 뒤 새 커밋과 바뀐 절을 관련 담당자 · Claude Code 세션에 공유한다(CONTRACTS.md 「9」).
 
-디자인 테마는 팀원들과 따로 정한다. 지금의 사무실 테마는 기본 테마일 뿐 최종 디자인이 아니고, 테마 결정은 위 순서를 막지 않는다 — 테마가 바뀌어도 SceneModel · 도메인 로직은 그대로이고 ThemeLayout · 테마 컴포넌트만 바뀐다(「공간 역할과 테마」).
+디자인 테마는 팀원들과 따로 정한다. 지금의 사무실 테마는 기본 테마일 뿐 최종 디자인이 아니고, 테마 결정은 위 순서를 막지 않는다(2026-11-01 기준). → 2026-11-04에 **우주정거장으로 확정**했다(GRAVIT #76 · #77). 테마가 바뀌어도 SceneModel · 도메인 로직은 그대로이고 ThemeLayout · 테마 컴포넌트만 바뀐다(「공간 역할과 테마」).
 
 ## 공용 컴포넌트
 
-여러 화면이 쓰는 화면 조각이다. 3D 표현은 기존 데모의 표현을 재사용하고 새 모델링은 하지 않는다(기획안 「기능 동결 규칙」). 기존 경로는 데모 기준이다.
+여러 화면이 쓰는 화면 조각이다. 3D 표현은 기존 데모의 표현을 재사용하고 새 모델링은 하지 않는다(기획안 「기능 동결 규칙」). 테마 확정(2026-11-04) 뒤에는 확정 시안(GRAVIT `frontend/public/station/`)과 스페이 GLB 아바타를 쓰고, 시안 밖 새 에셋은 만들지 않는다. 아래 기존 경로는 데모 기준이다.
 
 ### 상단 바
 
-기존 `src/ui/TopBar.tsx`. 레포 드롭다운, D-day, 요구사항 진행률, 열린 PR 수, 평균 리뷰 대기, 동기화 상태, "기록되지 않은 기여는 반영되지 않습니다" 안내, 팀 설정 버튼(레포 관리자만 수정 — 2026-11-01 결정), 시연 사무실이면 "시연 데이터" 표시 — 07-screens.md 「상단 바」. 지금은 KPI 칩 · 균형 칩 · 회의 버튼 · 오버레이 전환이 있고, 레포 선택 · D-day · 동기화 상태 · 설정 버튼은 없다(신규). 3D보다 먼저 뜬다(NFR-02 — 이미 lazy 로딩).
+기존 `src/ui/TopBar.tsx`. 레포 드롭다운, D-day, 요구사항 진행률, 열린 PR 수, 평균 리뷰 대기, 동기화 상태, "기록되지 않은 기여는 반영되지 않습니다" 안내, 팀 설정 버튼(레포 관리자만 수정 — 2026-11-01 결정), 시연 사무실이면 "시연 데이터" 표시 — 07-screens.md 「상단 바」. 데모에는 KPI 칩 · 균형 칩 · 회의 버튼 · 오버레이 전환이 있었고, 레포 선택 · D-day · 동기화 상태 · 설정 버튼은 없었다(신규). GRAVIT에는 `src/ui/TopBar.tsx` · `SyncStatus.tsx` · `PeriodDialog.tsx`가 있다. 3D보다 먼저 뜬다(NFR-02 — 이미 lazy 로딩).
 
 ### 상세 패널
 
-기존 `src/ui/Detail.tsx`(`RightPanel.tsx`의 서랍). 도형 · 아바타를 선택하면 제목, 담당자, 연결 PR, 리뷰 상태, 우선순위, 마감, 현재 회차의 추천·비추천과 이유, 평가 버튼, GitHub PR 화면 링크를 보여 준다 — 07-screens.md 「상세 패널」 · FR-OFF-05.
+데모의 `src/ui/Detail.tsx` → GRAVIT `src/ui/OfficeDetail.tsx`(`RightPanel.tsx`의 서랍). 도형 · 아바타를 선택하면 제목, 담당자, 연결 PR, 리뷰 상태, 우선순위, 마감, 현재 회차의 추천·비추천과 이유, 평가 버튼, GitHub PR 화면 링크를 보여 준다 — 07-screens.md 「상세 패널」 · FR-OFF-05.
 
 ### 도형 5종 (기본 테마 표현)
 
-이슈는 정육면체 상자, PR은 삼각기둥, 도움 요청은 구, 배운 점 공유는 팔면체(보석 모양), 기타는 납작한 메모지다. 2D 팀 보드 아이콘은 ■ ▲ ● ◆ 모서리 접힌 메모로 1:1 대응한다. 도형은 종류만 나타내고, 상태는 도형을 바꾸지 않고 배지 · 테두리 · 크기로 표시한다(기획안 「안건 도형과 상태 표시」). **지금 있는 것은 상자(`src/scene/TaskBox.tsx`) 하나뿐이다.** 공유 도형 · 재질 캐시는 `src/scene/shared.tsx`에 있다. 테마가 바뀌면 모양은 바뀔 수 있고, "종류를 구분해 보인다"는 요구만 남는다.
+이슈는 정육면체 상자, PR은 삼각기둥, 도움 요청은 구, 배운 점 공유는 팔면체(보석 모양), 기타는 납작한 메모지다. 2D 팀 보드 아이콘은 ■ ▲ ● ◆ 모서리 접힌 메모로 1:1 대응한다. 도형은 종류만 나타내고, 상태는 도형을 바꾸지 않고 배지 · 테두리 · 크기로 표시한다(기획안 「안건 도형과 상태 표시」). 데모에는 상자 하나뿐이었다. GRAVIT은 5종(상자 · 삼각기둥 · 구 · 팔면체 · 메모지)을 `src/scene/TaskBox.tsx`에서 시안 모양으로 그린다. 공유 도형 · 재질 캐시는 `src/scene/shared.tsx`에 있다. 테마가 바뀌면 모양은 바뀔 수 있고, "종류를 구분해 보인다"는 요구만 남는다.
 
 ### 정보 뷰
 
-최근 변화 · 담당 · 막힘 뷰 세 가지를 같은 사무실 위에 겹쳐 보여 준다(2026-10-29 결정). 최근 변화 뷰(FR-FLOW-08)는 가장 최근 스탠드업 날 이후 상태가 바뀐 도형을 밝게, 그대로인 도형을 흐리게 보인다. 담당 뷰는 몰린 사람 책상과 담당자 없는 도형을, 막힘 뷰는 막힌 도형 · 아바타를 강조한다. 담당 · 막힘 표시에는 이유 문구와 숫자 비교가 없다. 요구사항 진행률 · 빈 구역은 상단 바와 요구사항 패널, 추천 리뷰어는 상세 패널, 마감 · 뒤처짐은 일정판에서 본다. 일정상 밀리면 패널 목록으로 대신한다(기획안 「정보 뷰」 · 「기능 동결 규칙」). 기존 오버레이 전환(`TopBar.tsx` `OverlaySwitch`, `store.ts`의 `overlay`, `src/scene/Overlays.tsx`)을 틀로 쓴다.
+최근 변화 · 담당 · 막힘 뷰 세 가지를 같은 사무실 위에 겹쳐 보여 준다(2026-10-29 결정). 최근 변화 뷰(FR-FLOW-08)는 가장 최근 스탠드업 날 이후 상태가 바뀐 도형을 밝게, 그대로인 도형을 흐리게 보인다. 담당 뷰는 몰린 사람 책상과 담당자 없는 도형을, 막힘 뷰는 막힌 도형 · 아바타를 강조한다. 담당 · 막힘 표시에는 이유 문구와 숫자 비교가 없다. 요구사항 진행률 · 빈 구역은 상단 바와 요구사항 패널, 추천 리뷰어는 상세 패널, 마감 · 뒤처짐은 일정판에서 본다. 일정상 밀리면 패널 목록으로 대신한다(기획안 「정보 뷰」 · 「기능 동결 규칙」). 기존 오버레이 전환(`TopBar.tsx` `OverlaySwitch`, `store.ts`의 `overlay`, `src/scene/Overlays.tsx`)을 틀로 쓴다. (2026-11-07 현재: 데모의 오버레이 전환과 `Overlays.tsx`는 GRAVIT에 없다)
 
 ## 디자인 토큰
 
-기존 값은 세 곳에 있다. v1에서 쓸 토큰은 이 파일들을 기준으로 정리한다. 테마는 확정이 아니므로(2026-11-01 결정) 3D 색 · 재질은 테마 쪽에, HUD 토큰은 HUD 쪽에 둔다.
+기존 값은 세 곳에 있다. v1에서 쓸 토큰은 이 파일들을 기준으로 정리한다. 테마는 확정이 아니므로(2026-11-01 결정) 3D 색 · 재질은 테마 쪽에, HUD 토큰은 HUD 쪽에 둔다. 2026-11-04에 우주정거장으로 확정한 뒤 GRAVIT의 3D 색 · 재질은 `src/theme/station/`(`crewPalette.ts` 등)에 있다.
 
 - `src/theme.ts` `PALETTE` — 3D 색(배경 · 바닥 · 벽 · 가구 · 강조색 `accent` · 선택 · 드롭 가능 · 지연 강조). 공간은 흰색 계열이고 색은 데이터에만 쓴다는 원칙이 주석에 있다.
-- `src/data/meta.ts` — 상태 · 우선순위 · 접속 상태 라벨과 색, 팀원 색 목록 `MEMBER_COLORS`, 업무량 등급 `WORKLOAD_LEVELS`(사람별 비교라 제거 대상).
+- `src/data/meta.ts`(데모 — GRAVIT에 없음) — 상태 · 우선순위 · 접속 상태 라벨과 색, 팀원 색 목록 `MEMBER_COLORS`, 업무량 등급 `WORKLOAD_LEVELS`(사람별 비교라 제거 대상).
 - `src/index.css`의 CSS 변수와 `src/ui/*.css` — HUD 색 · 레이아웃.
 
 ### 색
@@ -642,12 +648,13 @@ v1은 **외부 인터넷에서 접속하는 웹 서비스**이고(SP11 · 2026-1
 
 ## 함수 리전
 
-TODO: 대응 내용 없음 (삭제 여부 확인) — 서버 위치는 외부 인터넷 배포로 정했다(SP11 · 2026-11-01 결정 — TBD-09 "팀원 컴퓨터 한 대"를 대신함). 배포 플랫폼은 Spring Boot 초기 프로젝트 구축 단계에서 정하고(2026-11-01 추가 결정), 정해지면 쓴다.
+TODO: 대응 내용 없음 (삭제 여부 확인) — 서버 위치는 외부 인터넷 배포로 정했다(SP11 · 2026-11-01 결정 — TBD-09 "팀원 컴퓨터 한 대"를 대신함). 배포 플랫폼은 Spring Boot 초기 프로젝트 구축 단계에서 정하고(2026-11-01 추가 결정), 정해지면 쓴다. 2026-11-07 현재 미정이다.
 
 ## 아직 없는 것
 
-- **개발 저장소** — 모노레포로 새로 만들기로 했고(2026-11-03 결정) 아직 만들지 않았다. 만든 뒤 Git 전략 「8」 설정을 한다.
-- **구현 때 정하는 기술** — Spring Boot 버전 · migration 도구 · 테스트 DB · 세션 저장소 세부 · SPA 서빙 방식 · 배포 플랫폼(위 「기술 스택」). Java 21 · Gradle · MySQL 8.x는 2026-11-01 추가 결정으로 확정했다.
+- ~~**개발 저장소**~~ — GRAVIT(2026-11-03 모노레포)로 만들었고 Git 전략 「8」 설정도 했다(GRAVIT #5).
+- **배포** — 2026-11-07 현재 배포 플랫폼은 정하지 않았고 배포 설정이 없다(GRAVIT README 「아직 없는 것」).
+- **구현 때 정하는 기술** — 세션 저장소 세부 · SPA 서빙 방식 · 배포 플랫폼(위 「기술 스택」). Java 21 · Gradle · MySQL 8.x는 2026-11-01 추가 결정으로 확정했고, Spring Boot 4.1.2 · Flyway · 테스트 DB(MySQL 8.4)는 GRAVIT 골격에서 정했다.
 - **정의서 v0.1 원문** — 없을 가능성이 높다. Must 4건(FR-AUTH-02 · FR-GH-02 · FR-GH-04 · FR-MTG-02)은 팀 재정의로 대신했고 2026-11-01 추가 결정으로 채택했다(requirements-changes.md).
 - **미결 TBD** — 서비스 정책(05-policy.md SP)에 남은 [?]는 없다. TBD-02(공개 범위)는 2026-11-03에 확정된 본인 · 강사 정책으로 정리했고(원문은 원본 확인 필요), TBD-09는 2026-11-01에 다시 정했다. TBD-03 · 07 · 08은 원본 확인 필요. 그 밖의 결정 필요 항목은 PRD.md 「열린 질문」.
 - **제안 채택 여부** — 2026-10-28 · 2026-10-29 · 2026-10-30에 채택한 제안은 requirements-changes.md. 2026-11-01 결정은 새 ID 없이 기존 ID를 고쳤다.

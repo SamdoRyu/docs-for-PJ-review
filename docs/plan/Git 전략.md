@@ -1,8 +1,8 @@
 # Git 전략
 
-> 문서 상태: 2026-10-28 결정 회의 · 2026-10-30 강사 역할 결정 반영. `main` 하나에 작업 브랜치만 두는 가벼운 흐름  
+> 문서 상태: 2026-10-28 결정 회의 · 2026-10-30 강사 역할 결정 반영 · 2026-11-07 GRAVIT 설정 현황 반영. `main` 하나에 작업 브랜치만 두는 가벼운 흐름  
 > 적용 대상: 프로젝트 전체 팀원  
-> 적용 시점: 개발 레포를 만들고 「8. GitHub 설정」을 마친 뒤
+> 적용 시점: 개발 레포를 만들고 「8. GitHub 설정」을 마친 뒤 — 적용 중(개발 레포 `SamdoRyu/GRAVIT` 2026-11-03, 「8」 설정은 GRAVIT #5에서 마침)
 
 ## 1. 한눈에 보기
 
@@ -91,6 +91,7 @@ New issue를 누르면 템플릿 세 개 중 하나를 고릅니다(`.github/ISS
 | --- | --- |
 | 무엇을 · 왜 | 2\~4줄 |
 | 관련 Issue · 요구사항 | `Closes #N`, 이슈에 적은 요구사항 ID |
+| 기준 공통 계약 커밋 | 계약 문서(`docs/CONTRACTS*.md`)를 마지막으로 바꾼 GRAVIT 커밋 SHA (2026-11-03 결정 — GRAVIT `.github/PULL_REQUEST_TEMPLATE.md`) |
 | 고민한 점 | 검토한 대안과 고른 이유. 없으면 "없음". 회고 리포트의 기술 결정 카드(FR-REP-07)로 옮겨집니다 |
 | 검증 | 실제로 해 본 것. 못 한 것은 못 했다고 |
 | UI 변경 · 영향 범위 | 해당할 때만 |
@@ -101,12 +102,12 @@ New issue를 누르면 템플릿 세 개 중 하나를 고릅니다(`.github/ISS
 
 | 머지 조건 | 머지하는 곳 | 의견이 갈리면 |
 | --- | --- | --- |
-| GitHub 리뷰 승인 1명 이상 + (실제 단계가 있으면) CI 통과 | **GitHub PR 화면에서 직접** squash merge | 회의실 안건으로 올려 다룸 |
+| GitHub 리뷰 승인 1명 이상 + (실제 단계가 있으면) CI 통과 — GRAVIT은 필수 status check 2개(`frontend (lint · contract · build)` · `backend (test · bootJar)`) | **GitHub PR 화면에서 직접** squash merge | 회의실 안건으로 올려 다룸 |
 
 - **앱의 PR 추천 · 비추천 평가는 머지 조건이 아닙니다.** 팀원끼리 보는 평가 척도이고, 앱은 GitHub PR 화면 링크만 줍니다.
 - 리뷰 요청을 받으면 24시간 안에 첫 의견을 남깁니다. 앱의 리뷰 대기 막힘 기준(48시간)보다 짧게 잡은 팀 약속입니다.
 - GitHub 리뷰에서 변경 요청(Request changes)을 할 때는 이유를 한 줄 남깁니다.
-- CI가 placeholder(`echo`)인 동안 CI 초록 표시는 검증으로 세지 않습니다. 리뷰어가 「검증」 칸을 봅니다.
+- CI가 placeholder(`echo`)인 동안 CI 초록 표시는 검증으로 세지 않습니다. 리뷰어가 「검증」 칸을 봅니다. (2026-11-07: GRAVIT CI는 실제 단계를 돈다. 그래도 CI는 lint · 계약 테스트 · 빌드 · Spring 테스트까지만 보고 E2E · 화면 동작은 보지 않으니 「검증」 칸을 계속 봅니다)
 
 ## 7. 라벨
 
@@ -120,7 +121,7 @@ New issue를 누르면 템플릿 세 개 중 하나를 고릅니다(`.github/ISS
 
 ## 8. GitHub 설정
 
-**개발 레포는 새로 만듭니다**(데모 fork `SamdoRyu/warehouseDemo_fork`를 그대로 쓰지 않음). 이 문서 레포(`SamdoRyu/docs-for-PJ-review`)의 설정이 개발 레포에 있다고 가정하지 않습니다. 레포를 만든 뒤 아래를 합니다.
+**개발 레포는 새로 만듭니다**(데모 fork `SamdoRyu/warehouseDemo_fork`를 그대로 쓰지 않음). 이 문서 레포(`SamdoRyu/docs-for-PJ-review`)의 설정이 개발 레포에 있다고 가정하지 않습니다. 레포를 만든 뒤 아래를 합니다. (2026-11-07: 개발 레포 `SamdoRyu/GRAVIT`에 아래 설정을 마쳤다 — GRAVIT #5, GRAVIT README 「main 보호 설정」)
 
 | 설정 | 할 일 |
 | --- | --- |
@@ -130,8 +131,8 @@ New issue를 누르면 템플릿 세 개 중 하나를 고릅니다(`.github/ISS
 | 머지 후 브랜치 자동 삭제 | 켜기 |
 | `.github/` | 이 문서 레포의 `ISSUE_TEMPLATE/`, `PULL_REQUEST_TEMPLATE.md`, `labels.yml`을 옮긴다 |
 | 라벨 | `labels.yml`대로 만들고, 기본 라벨은 `bug`만 남김 |
-| CI | 프론트는 `npm run lint`, `npm run build`, `npm run test:contract`, 백엔드는 Spring 테스트 · 빌드 명령(빌드 도구가 정해지면 — 2026-11-01 결정으로 백엔드는 Spring Boot)으로 채우고 필수 status check로 등록(`docs/PROJECT_COMMANDS.md`) |
-| `.gitignore` | `.env`, `*.pem`, `secrets/` 추가(데모 코드에는 없음) |
-| Node 버전 | `.nvmrc`에 Node 24 LTS (프론트) |
+| CI | 프론트는 `npm run lint`, `npm run build`, `npm run test:contract`, 백엔드는 Spring 테스트 · 빌드 명령(빌드 도구가 정해지면 — 2026-11-01 결정으로 백엔드는 Spring Boot)으로 채우고 필수 status check로 등록(`docs/PROJECT_COMMANDS.md`). GRAVIT: 프론트 `npm ci` · `lint` · `test:contract` · `build`, 백엔드 `./gradlew test bootJar`(MySQL 8.4.13 서비스 컨테이너) — `.github/workflows/ci.yml` |
+| `.gitignore` | `.env`, `*.pem`, `secrets/` 추가(데모 코드에는 없음) — GRAVIT `.gitignore`에 있음 |
+| Node 버전 | `.nvmrc`에 Node 24 LTS (프론트) — GRAVIT `.nvmrc` = 24 |
 | JDK 버전 | 백엔드 JDK 버전 고정 — Java 21 (2026-11-01 추가 결정). 빌드 도구는 Gradle(Gradle Wrapper를 커밋한다) |
 | 저장소 구성 | 프론트 · 백엔드를 **한 저장소(모노레포)**에 둔다 — `frontend/` · `backend/` · `contract/examples/` · `compose.yaml` · `.env.example`(2026-11-03 결정 — ARCHITECTURE.md 「개발 저장소」). 이 표의 설정은 그 저장소 하나에 한다. 계약(Java DTO · TypeScript 타입 · 예시 JSON)을 바꾸는 PR은 한 PR에서 함께 바꾼다(CONTRACTS.md 「9」) |

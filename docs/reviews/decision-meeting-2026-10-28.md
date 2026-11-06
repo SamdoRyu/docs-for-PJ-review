@@ -531,7 +531,34 @@ v3 문서(같은 날의 「기술 스택 · 공간 모델 · 학습 흐름 결�
 | 3 | Must 집계 표기 | 숫자 표기만 바로잡는다. Must 요구사항(03 중요도 Must)은 **61개**이고 IB-02\~33 · 40\~68과 1:1이다. 결정 작업 IB-01을 더한 Must 백로그가 **62건**, IB-69를 더한 백로그 전체가 **63건**이다. 이 기록의 앞선 "Must 62개"(「기술 스택 · 공간 모델 · 학습 흐름 결정」 11 · 「추가 결정」 머리말 · 10, 「공통 계약 확정 결정」 머리말)는 당시 표현대로 두고, Must 백로그 62건을 뜻한다. 요구사항 · ID · P0~P2 순서는 그대로다 — 00-backlog.md 「집계 기준」 |
 | 4 | TypeScript 계약 테스트 | 공통 JSON(`contract/examples/`)을 기준으로 유지한다. JSON을 직접 import하면 리터럴이 `string`으로 넓어져 유니언 타입 검사가 깨지므로, TS 쪽은 `satisfies DTO`로 둔 TS 사본으로 정적 검사하고 사본과 공통 JSON을 값 비교 테스트로 묶는다. 실제 응답은 Spring 통합 테스트가 예시와 모양을 비교한다 — CONTRACTS.md 「9」 계약 테스트 |
 | 5 | 심사용 강사의 공용 라이브러리 | 기존 규칙 유지 — 심사용 ROLE-04 계정은 조회만 하고 등록 · 수정은 `403 forbidden_role`. 일반 강사 권한 축소가 아니라 심사용 계정의 데이터 격리 규칙이다(P15). 계약 테스트에 거부 시나리오를 넣었다 |
-| 6 | 디자인 테마 | 이번에 정하지 않는다. 사무실은 기본 테마이고 최종 디자인이 아니며, 테마 결정은 개발 착수를 막지 않는다(SceneModel · ThemeLayout 분리 유지). 테마 문서는 팀 결정 뒤에 쓴다 |
+| 6 | 디자인 테마 | 이번에 정하지 않는다. 사무실은 기본 테마이고 최종 디자인이 아니며, 테마 결정은 개발 착수를 막지 않는다(SceneModel · ThemeLayout 분리 유지). 테마 문서는 팀 결정 뒤에 쓴다 — 2026-11-04에 정했다(아래 「디자인 테마 확정 · 작업 포드 8개 (2026-11-04)」) |
+
+## 디자인 테마 확정 · 작업 포드 8개 (2026-11-04)
+
+위 「문서 관리 방식 · 공통 계약 v1 보완」 6(디자인 테마 — 이번에 정하지 않는다)을 닫는다. 확정 디자인 정적 데모를 GRAVIT에 반입했고(#76 · PR #77), 문서 담당자가 개발 규칙(`CLAUDE.md` · `.claude/rules/`) · README · 계약 문서에 반영했다(#81 · PR #82). 요구사항 중요도(03)는 바뀌지 않았다. 이 절은 GRAVIT에서 이미 정하고 반영한 것을 2026-11-07에 옮겨 적은 기록이다 — 새로 정한 것은 없다.
+
+| # | 쟁점 | 결정 |
+| --- | --- | --- |
+| 1 | 디자인 테마 | v1 테마는 **우주정거장** 하나다. 확정 시안은 GRAVIT `frontend/public/station/`(정적 데모, three r150)이고 원본 파일은 고치지 않는다. 다중 테마 엔진은 만들지 않는다. 최종 화면은 기존 React · R3F 구조에 다시 구현하고(C는 SceneModel · ThemeLayout · R3F, D는 HUD · DataSource · store), SceneModel · 도메인 로직은 테마를 모른다 |
+| 2 | 시안과 계약이 다를 때 | 보이는 모양은 시안, 데이터 · 동작 · API · 권한 · 상태값은 공통 계약을 따른다. 예: PR 평가는 클린/스멜이 아니라 `recommend` / `not_recommend`(두 쪽 다 이유 필수 · 작성자 평가 불가 · 평가자 표시 금지), 안건 후보는 48시간 도움 요청뿐(앱이 찾은 이슈 후보는 만들지 않는다) |
+| 3 | 작업 포드 수 (계약 변경) | 작업 포드는 최대 8개 — `deskIndex` 0\~7(이전 계약 0\~9). 0\~3(시안의 K · L · P · C 포드)은 앉은 팀원이 없어도 늘 그리고, 4\~7은 그 자리를 쓰는 지금 팀원이 있을 때만 그린다. GRAVIT `docs/CONTRACTS.md` 「2」 `Member` · 「3」 · 「10」, 서버는 새 마이그레이션 `V4__desk_index_eight_pods`(PR #96) |
+| 4 | 자리가 없는 팀원 | 8자리가 다 찼을 때 들어온 팀원은 `deskIndex`가 비어 3D에 포드 · 아바타가 없고 HUD에만 보인다. 팀원 권한(평가 · 안건 · 도움 요청 등)은 같다. 그 사람이 대표 담당자인 이슈는 `backlog` |
+| 5 | 시안에만 있거나 시안에 없는 것 | 머지 준비 선반 F는 장식이다(별도 공간 역할 없음 — PR 위치는 CONTRACTS.md 「3」). 요구사항 구역은 시안에 없지만 Must라 정거장 안에 만든다. 아바타는 스페이 GLB, 라코(강사) GLB는 보관만 한다. 시안 밖 새 3D 에셋 · 전체 재디자인은 하지 않는다 |
+| 6 | 남은 것 | 빈 자리가 생겼을 때 자리 없는 팀원을 자동 배정할지는 #81에 "남은 결정"으로 적혀 있다(이 기록에서 정하지 않음). 기준 계약 커밋은 #83 · PR #85로 갱신했다 |
+
+이유(#81 「목표」): 확정 시안이 들어왔는데 개발 규칙 · README · 계약에 "디자인 테마 미확정"이 남아 있어, C · D가 같은 기준으로 구현하도록 테마와 포드 수를 문서에 못 박았다.
+
+## 백엔드 재배분 (2026-11-04 · 2026-11-05)
+
+B의 부하를 나누려고 백엔드 담당을 두 번 옮겼고, 두 번 모두 B가 합의했다(GRAVIT #36 코멘트 — 1차, #35 코멘트 — 2차). GRAVIT 역할 문서(`CLAUDE.md` · `README.md` · `docs/README.md` 「역할」 · `.github/CODEOWNERS`)에는 #107 · PR #108로 반영했다. 요구사항 · IB · 계약 본문은 바뀌지 않는다. 이 절은 이미 정하고 반영한 것을 2026-11-07에 옮겨 적은 기록이다 — 새로 정한 것은 없다.
+
+| # | 쟁점 | 결정 |
+| --- | --- | --- |
+| 1 | 1차 (2026-11-04) | 회의실 안건(GRAVIT #36 · #37 · #32 · #33 — IB-42 · 43 · 32 · 33)을 B에서 A로 옮긴다 |
+| 2 | 2차 (2026-11-05) | 스탠드업(#35 · #34 — IB-41 · 40), 회의 결정 확장(#27 · #57 — IB-27 · 63), 회고 리포트(#40\~#43 — IB-46\~49)와 Snapshot 조립(`GET W/snapshot` — #103)을 A로 옮긴다 |
+| 3 | A의 백엔드 범위 | `help`(도움 요청) · `meeting`(회의 · 안건 · 스탠드업) · `report`의 회고 리포트 · Snapshot 조립. B가 만든 Entity(`AgendaItem` · `Meeting` · `Standup` 등)에는 A가 메서드를 더하고, 스키마 변경은 새 마이그레이션 + B 리뷰로 한다 |
+| 4 | B의 백엔드 범위 | 그 밖의 서버 패키지 · `common` · Security. 같은 `report` 패키지의 결정 카드(#62 · #44 · #59)는 B다 |
+| 5 | 기준 | Issue별 담당은 GitHub Issue Assignee가 기준이다. 계약 본문(CONTRACTS.md 「9」 등)의 옛 역할 문자는 계약 버전을 지키려고 고치지 않는다 — 읽는 법은 GRAVIT `docs/README.md` 「역할」 |
 
 ## 범위 결정 (2026-11-06)
 
@@ -595,6 +622,8 @@ C가 도움 요청 3D(GRAVIT #205) 2단계를 만들며 확인을 요청했고, 
 | 추가 결정 (2026-11-01, v3 검토 뒤) — 팀 재정의 4건 채택, GitHub 이동 · 공식 연결만, 강사 판정 · 허용 목록, 심사용 로그인, Demo Workspace 접근 · 운영 범위, Java 21 · Gradle · MySQL 8.x, 요구사항 종류 묶음, 다중 담당자 · 마감 권한, 담당 배분 시점, 구현 기본값 | 반영함 — 00 · 01 · 02 · 03 · 04 · 05 · 06 · 07 · PRD · requirements-changes · ARCHITECTURE · CONTRACTS · BACKEND_ASSIGNMENTS · SCREEN_ASSIGNMENTS · PROJECT_COMMANDS, 개발 컨벤션(코드 컨벤션 (BE) · 환경 변수 가이드 · Git 전략), 기획안 본문 · 「변경 이력」, `.claude/rules/code-quality.md` · `security.md` |
 | 공통 계약 확정 결정 (2026-11-03) — Q1 ID · Q2 요구사항 재동기화 · Q3 Snapshot / 개인 API · Q4 API 상세 · Q5 계약 테스트 · Q6 모노레포, 강사 지정 식별자, TBD-02 정리 | 반영함 — CONTRACTS(v1 확정) · CONTRACTS_API(신규) · 00 · 03 · 05 · 06 · 07 · PRD · requirements-changes · ARCHITECTURE · BACKEND_ASSIGNMENTS · SCREEN_ASSIGNMENTS · PROJECT_COMMANDS, 개발 컨벤션(코드 컨벤션 (BE) · Git 전략). 기획안 본문은 고치지 않았다(공개 범위 · 스택 문장이 이미 맞음) |
 | 문서 관리 방식 · 공통 계약 v1 보완 (2026-11-03, 같은 날 뒤) — 문서 담당자 방식, Must 집계 표기, TS 계약 테스트, 심사용 강사 라이브러리 권한, 테마 미확정 | 반영함 — CONTRACTS · CONTRACTS_API · 00 · PRD · ARCHITECTURE · BACKEND_ASSIGNMENTS · SCREEN_ASSIGNMENTS · `.claude/rules/code-quality.md`. 기획안 「변경 이력」의 "Must 62개"는 당시 표현으로 두었다 |
+| 디자인 테마 확정 · 작업 포드 8개 (2026-11-04) — 우주정거장 단일 테마, 시안 · 계약 우선순위, `deskIndex` 0\~7, 자리 없는 팀원 | GRAVIT에서 반영함 — `CLAUDE.md` · `.claude/rules/` · README · `docs/CONTRACTS.md` · `CONTRACTS_API.md`(#81 · PR #82), 기준 계약 커밋(#83 · PR #85), `V4__desk_index_eight_pods`(PR #96). 기획 문서는 2026-11-07에 이 결정 기록 · 03 · 04 · 05 · 07 · PRD · 기획안 머리에 옮김 |
+| 백엔드 재배분 (2026-11-04 · 2026-11-05) — 회의 · 안건 · 스탠드업 · 회의 결정 확장 · 회고 리포트 · Snapshot 조립을 A로 | GRAVIT에서 반영함 — `CLAUDE.md` · `README.md` · `docs/README.md` · `.github/CODEOWNERS`(#107 · PR #108), 이슈 Assignee. 기획 문서는 2026-11-07에 이 결정 기록 · 00 · PRD에 옮김 |
 | 범위 결정 (2026-11-06) — 학습 타임라인 착수, 활동 기록 착수 순서, 한 줄 동료 피드백 v1 보류 | 반영함 — requirements-changes · 03 · 04 · 05 · 06 · 07 · PRD(FR-ACT-04 `[보류]` 표시) |
 | 요구사항 구역 표시 변경 (2026-11-06) — 종류별 묶음 → 판 5\~10장 + 대기 칸 | 반영함 — requirements-changes · 03 · 04 · 06 · 07 · ARCHITECTURE · PROJECT_COMMANDS, GRAVIT `docs/CONTRACTS.md`(#14 docs PR) |
 | 통신 허브 게시판 배지 (2026-11-06) — `help:N` · `candidate:k` | 반영함 — 06 · ARCHITECTURE, GRAVIT `docs/CONTRACTS.md`(#205 docs PR) |

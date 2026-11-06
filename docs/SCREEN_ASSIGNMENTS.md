@@ -7,13 +7,13 @@
 - git 흐름(브랜치·커밋·PR·머지): `.claude/rules/git-workflow.md`
 - **backend 구현 담당·상태: [BACKEND_ASSIGNMENTS.md](./BACKEND_ASSIGNMENTS.md)** ← 로그인 · GitHub 동기화 · 평가 처리 · 막힘 계산 · 저장은 이 문서가 아니라 저기다
 
-이 문서는 **화면 구현 담당 문서**다. 화면은 실제 4명 재배분(2026-11-03)에 따라 프론트 두 명이 나눠 맡는다(기획안 「역할 분담」의 "D 한 명"은 이전 배정).
+이 문서는 **화면 구현 담당 문서**다. 화면은 실제 4명 재배분(2026-11-03)에 따라 프론트 두 명이 나눠 맡는다(기획안 「역할 분담」의 "D 한 명"은 이전 배정). 실제 화면 Task 담당은 GRAVIT Issue Assignee가 기준이고, 2026-11-07 현재 값은 아래 「담당 표」에 옮겼다 — 위 역할 나눔과 다른 화면이 있다(A · B도 화면 Task를 맡았다).
 
-- **C 프론트 3D** — 3D 사무실(장면 · SceneModel · ThemeLayout · 도형 · 드래그 · 회의실), 회의 · 안건 대화상자, 일정판, 내 학습 타임라인 · 회고 리포트 · 기술 결정 카드. 파일: `frontend/src/scene/**` · `src/office/` · `src/scene/model/` · `src/theme/` · `src/ui/MeetingDialogs.tsx` · `src/ui/WeekView.tsx` · 리포트 화면 신규 파일
+- **C 프론트 3D** — 3D 사무실(장면 · SceneModel · ThemeLayout · 도형 · 드래그 · 회의실), 회의 · 안건 대화상자, 일정판, 내 학습 타임라인 · 회고 리포트 · 기술 결정 카드. 파일: `frontend/src/scene/**` · `src/scene/model/`(SceneModel) · `src/theme/station/`(ThemeLayout — 우주정거장. 데모의 `src/office/`는 GRAVIT에서 지웠다) · `src/ui/MeetingDialogs.tsx` · `src/ui/WeekView.tsx` · 리포트 화면 신규 파일
 - **D 프론트 HUD · 데이터** — `DataSource` · 화면 타입 · api/mock · `store`, 앱 셸 · 라우터, 로그인 · 조직·레포 선택 · 사무실 열기, 상단 바 · 상세 패널 · 요구사항 패널, 도움 요청 게시판, 스탠드업, 강사 화면(팀 설정 · 강사 요청함 · 컨벤션 라이브러리). 파일: `frontend/src/data/**` · `src/store.ts` · `src/App.tsx` · `src/ui/`(위 C 파일 제외)
 - C는 데이터를 store 셀렉터와 DataSource 메서드로만 받고, 드래그 결과는 D가 소유한 store 액션을 부른다. 같은 기능의 3D 표현(C)과 HUD 패널(D)은 GRAVIT Issue의 협업 칸으로 나눈다. 사람 계정 지정은 GRAVIT Issue에서 사람 팀원 4명 중에서만 한다.
 
-화면 목록과 각 화면에 보이는 것은 [07-screens.md](./07-screens.md) 「화면 목록」이 기준이다. TODO: 디자인 원본(파일 · 링크)이 아직 없다 — 07-screens.md 「디자인」의 [?].
+화면 목록과 각 화면에 보이는 것은 [07-screens.md](./07-screens.md) 「화면 목록」이 기준이다. 디자인 원본은 확정 시안 GRAVIT [`frontend/public/station/`](https://github.com/SamdoRyu/GRAVIT/blob/main/frontend/public/station/README.md)이다(우주정거장 테마 확정 2026-11-04 — GRAVIT #76 · #77 · #81, 단일 테마). `npm run dev` 뒤 `http://localhost:5173/station/index.html`에서 시안 화면 4개(`#/` · `#/blocked` · `#/meeting` · `#/pr/21`)를 본다. 보이는 모양은 시안, 데이터 · 동작 · 권한은 계약을 따른다(아래 「알려진 문서 ↔ 디자인 차이」).
 
 ## 시작하기 전에
 
@@ -24,36 +24,37 @@ git pull --ff-only origin main
 ```
 
 ```bash
-npm install
+cd frontend
+npm ci
 npm run dev          # 화면 :5173 — 브라우저 mock 데이터(?source= 없음)
 ```
 
-명령의 뜻과 선행 조건은 [PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md). 화면 작업은 GitHub 없이 한다 — 브라우저 mock(`?source=` 없음) 또는 Spring 서버 데이터(`?source=api`, 환경 변수 가이드 「환경별 설정」). 위 명령은 기존 데모 저장소 기준이다. 개발 저장소는 모노레포라(2026-11-03 결정) 화면 명령은 `frontend/`에서 돌리고, Spring 서버 데이터가 필요하면 루트에서 로컬 MySQL(`compose.yaml`)을 띄운 뒤 `backend/`에서 Spring을 따로 실행한다 — 확인된 명령은 개발 저장소를 만든 뒤 PROJECT_COMMANDS.md에 쓴다. 데모의 `npm run dev:all`은 Hono 서버를 같이 띄우므로 v1 서버 데이터 확인에는 쓰지 않는다.
+명령의 뜻과 선행 조건은 [PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md), 확인된 명령은 GRAVIT [README](https://github.com/SamdoRyu/GRAVIT/blob/main/README.md) 「처음 실행하기」 · 「빌드 · 테스트 명령」이다. 화면 작업은 GitHub 없이 한다 — 브라우저 mock(`?source=` 없음) 또는 Spring 서버 데이터(`?source=api`, 환경 변수 가이드 「환경별 설정」). 개발 저장소는 모노레포라(2026-11-03 결정) 화면 명령은 `frontend/`에서 돌리고, Spring 서버 데이터가 필요하면 루트에서 `docker compose up -d --wait`(로컬 MySQL) → `backend/`에서 `.\gradlew.bat bootRun`(`:8080`) → 브라우저 `/?source=api`. 데모의 `npm run dev:all`(Hono 서버)은 GRAVIT에 없다.
 
 ## 담당 표
 
-**담당 칸은 역할로 채웠다(2026-11-03).** 사람 이름 · GitHub 계정과 이슈 번호는 GRAVIT Issue에서 정하고, 이 표와 Issue 본문이 어긋나면 Issue 본문이 최신이다.
+**담당 칸은 역할로 채웠다(2026-11-03).** 사람 이름 · GitHub 계정과 이슈 번호는 GRAVIT Issue에서 정하고, 이 표와 Issue 본문이 어긋나면 Issue 본문이 최신이다. **2026-11-07에 디자인 줄 · 묶음 · 이슈 · 담당 · 상태 칸을 GRAVIT Issue 번호 · Assignee · 상태로 다시 채웠다** — Assignee 계정과 역할 문자의 대응은 GRAVIT [`docs/README.md`](https://github.com/SamdoRyu/GRAVIT/blob/main/docs/README.md) 「역할」. 상태는 main 구현 / PR 진행 중 / 부분 구현 / 미구현 / v1 보류로 적고, 열린 이슈는 머지 PR이 있어도 실제 통합 확인 전이다. 2026-11-03 배정과 다른 담당은 괄호에 이전 배정을 남겼다.
 
 | 화면 | 디자인 줄 | route | 묶음 | 이슈 | 담당 | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
-| 로그인 — FR-AUTH-01 (심사용 ID/PW 로그인 폼 포함 — IB-69, 2026-11-01 추가 결정) | TODO | 라우터 추가 — 주소 미정 (2026-10-28 결정) | TODO | TODO | D | 시작 전 |
-| 조직·레포 선택 — FR-GH-01 | TODO | 라우터 추가 — 주소 미정 (2026-10-28 결정) | TODO | TODO | D | 시작 전 |
-| 사무실 열기 (팀장) — FR-REQ-01, FR-PLAN-01 | TODO | 라우터 추가 — 주소 미정 (2026-10-28 결정) | TODO | TODO | D | 시작 전 |
-| 수집 동의 (팀원) — FR-ACT | TODO | 라우터 추가 — 주소 미정 (2026-10-28 결정) | TODO | TODO | A (2026-11-06 — 활동 기록 대화상자의 동의 화면, GRAVIT #173) | 시작 전 |
-| 3D 사무실 (메인) — FR-OFF-01 · 02 · 04~06, FR-REQ-02 · 04(구역 · 묶음 · 연결), FR-FLOW-02, FR-LRN-03 · 04 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | C | 시작 전 |
-| [제안] 2D 팀 보드 — 대응 요구사항 ID 없음 (기획안 "(제안)" · requirements-changes.md 추가 제안 후보 10) | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D (채택 전 착수 안 함) | 시작 전 |
-| 상단 바 — FR-PLAN-01, FR-FLOW-05, FR-GH-05, FR-REQ-05(진행률), FR-ACT 안내, FR-AUTH-07(강사 레포 드롭다운), 팀 설정 버튼 · 시연 데이터 표시(2026-11-01 결정) | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D | 시작 전 |
-| 상세 패널 — FR-OFF-05, FR-LRN-01 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D | 시작 전 |
-| 요구사항 패널 — FR-REQ-03~06 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | D | 시작 전 |
-| 활동 기록 — FR-ACT-01~04 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | A(HUD · 데이터) · C(사무실 3D 메모지) (2026-11-06 — GRAVIT #173) | 시작 전 |
-| 스탠드업·회의 — FR-MTG-01~05, FR-LRN-05 · 12 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | C(회의 · 안건 · 회의실) · D(스탠드업) | 시작 전 |
-| 일정판 — FR-PLAN-02~04 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | C | 시작 전 |
-| 내 학습 타임라인 — FR-LRN-08 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | C | 시작 전 |
-| 회고 리포트 — FR-REP-01~06, FR-REP-07, FR-ACT-03 | TODO | 라우터 없음 — 결정 필요 | TODO | TODO | C | 시작 전 |
-| 강사 요청함 — FR-LRN-21~23, FR-REP-11 | TODO | 라우터 없음 — 별도 화면이 아니라 강사 권한으로 연 화면의 사이드바 또는 헤더 요소(어느 쪽인지는 디자인 때 정함 · 2026-10-30 결정) | TODO | TODO | D (2026-11-03 지정) | 시작 전 |
-| 컨벤션 라이브러리 — FR-LIB-01 · 02 | TODO | 라우터 없음 — 사무실 안에서 여는 패널 (2026-10-30 결정) | TODO | TODO | D (2026-11-03 지정) | 시작 전 |
+| 로그인 — FR-AUTH-01 (심사용 ID/PW 로그인 폼 포함 — IB-69, 2026-11-01 추가 결정) | 시안 없음 — #166 디자인(`src/ui/entry/LoginScreen.tsx`) | 라우터 추가 — 주소 미정 (2026-10-28 결정) | — | #64 · #63 · #165 · #166 닫힘, Bug #236 열림 | D (#166) | main 구현 · #236 PR #241 진행 중 |
+| 조직·레포 선택 — FR-GH-01 | 시안 없음 — #166 디자인(`src/ui/entry/EntryScreen.tsx` · `OpenWorkspace.tsx`) | 라우터 추가 — 주소 미정 (2026-10-28 결정) | — | #68 · #166 닫힘, Bug #238 열림 | D (#166) | main 구현 · #238 PR #244 진행 중 |
+| 사무실 열기 (팀장) — FR-REQ-01, FR-PLAN-01 | 시안 없음 — `src/ui/entry/OpenWorkspace.tsx` | 라우터 추가 — 주소 미정 (2026-10-28 결정) | — | #68 · #13 · #38 닫힘 | D (#13) | main 구현 |
+| 수집 동의 (팀원) — FR-ACT | 시안 없음 | 라우터 추가 — 주소 미정 (2026-10-28 결정) | — | #173 열림 | A (2026-11-06 — 활동 기록 대화상자의 동의 화면, GRAVIT #173) | PR #247 진행 중 (서버는 main 구현) |
+| 3D 사무실 (메인) — FR-OFF-01 · 02 · 04~06, FR-REQ-02 · 04(구역 · 묶음 · 연결), FR-FLOW-02, FR-LRN-03 · 04 | 시안 `#/` · `#/blocked` — `src/scene/` · `src/theme/station/` | 라우터 없음 — 결정 필요 | — | #10 · #15 \~ #17 · #21 · #23 · #26 · #30 · #31 · #205 · #102 · #183 닫힘, #11 열림 | C (v1 전환 #102는 D, 게시판 도움 요청 HUD #183은 A) | main 구현 · #11 실제 통합 확인 대기 |
+| [제안] 2D 팀 보드 — 대응 요구사항 ID 없음 (기획안 "(제안)" · requirements-changes.md 추가 제안 후보 10) | — | 라우터 없음 — 결정 필요 | — | 없음 ([제안] — 채택 전) | D (채택 전 착수 안 함) | 미구현 |
+| 상단 바 — FR-PLAN-01, FR-FLOW-05, FR-GH-05, FR-REQ-05(진행률), FR-ACT 안내, FR-AUTH-07(강사 레포 드롭다운), 팀 설정 버튼 · 시연 데이터 표시(2026-11-01 결정) | 시안 `#/` 상단바 — `src/ui/TopBar.tsx` · `SyncStatus.tsx` | 라우터 없음 — 결정 필요 | — | #45 · #38 · #223 닫힘, #24 · #234 · #248 열림 | D (D-day #38은 A · D, 팀 설정의 강사 지정 #223은 B, 수동 동기화 #234는 A) | 부분 구현 — #24 서버 `averageReviewWaitHours` 항상 null · #234 PR #239 진행 중 · #248 PR 없음 |
+| 상세 패널 — FR-OFF-05, FR-LRN-01 | 시안 `#/pr/21`(클린/스멜 대신 추천/비추천) — `src/ui/OfficeDetail.tsx` · `Evaluation.tsx` | 라우터 없음 — 결정 필요 | — | #12 · #28 닫힘, Bug #235 열림 | D (#12 · #28) | main 구현 · #235 PR #240 진행 중 |
+| 요구사항 패널 — FR-REQ-03~06 | 시안 없음 — `src/ui/RequirementBoard.tsx` · `RequirementWaiting.tsx` | 라우터 없음 — 결정 필요 | — | #197 닫힘 | D (#197은 Assignee 없음) | main 구현 |
+| 활동 기록 — FR-ACT-01~04 | 시안 없음 | 라우터 없음 — 결정 필요 | — | #173 열림 | A(HUD · 데이터) · C(사무실 3D 메모지) (2026-11-06 — GRAVIT #173) | PR #247 진행 중(HUD · 수집 동의) · 3D 메모지 미구현 · 동료 피드백 FR-ACT-04 v1 보류 |
+| 스탠드업·회의 — FR-MTG-01~05, FR-LRN-05 · 12 | 시안 `#/meeting` — `src/ui/MeetingDialogs.tsx` · `StandupBoard.tsx` · `DecisionBoard.tsx` | 라우터 없음 — 결정 필요 | — | #190 · #212 닫힘, #34 열림 | C(회의 · 안건 · 회의실 3D) · A(스탠드업 화면 #190) · B(결정 기록 화면 #212) — 2026-11-03 배정은 C · D(스탠드업) | main 구현 · #34 스탠드업 `commit` 미리 채움 부분 구현 |
+| 일정판 — FR-PLAN-02~04 | 시안 없음 — `src/ui/WeekView.tsx` | 라우터 없음 — 결정 필요 | — | #39 닫힘 | A · C (#39 — 2026-11-03 배정은 C) | main 구현 |
+| 내 학습 타임라인 — FR-LRN-08 | 시안 없음 — `src/ui/RetroBoard.tsx` | 라우터 없음 — 결정 필요 | — | #172 · #209 닫힘 | B (화면 #209, 서버 #172는 A — 2026-11-03 배정은 C) | main 구현 (`commit_after_meeting` 항목만 부분 구현) |
+| 회고 리포트 — FR-REP-01~06, FR-REP-07, FR-ACT-03 | 시안 없음 — `src/ui/RetroBoard.tsx` · `DecisionCards.tsx` | 라우터 없음 — 결정 필요 | — | #40 \~ #43 · #209 · #218 닫힘 | B (리포트 화면 #209) · A (기술 결정 카드 화면 #218) — 2026-11-03 배정은 C | main 구현 |
+| 강사 요청함 — FR-LRN-21~23, FR-REP-11 | 시안 없음 — `src/ui/InstructorInbox.tsx` | 라우터 없음 — 별도 화면이 아니라 강사 권한으로 연 화면의 사이드바 또는 헤더 요소(어느 쪽인지는 디자인 때 정함 · 2026-10-30 결정). 2026-11-07 현재: 사무실 고르기 화면과 상단 바 더보기 두 곳(#224) | — | #58 · #224 닫힘 | B (#224 — 2026-11-03 배정은 D) | main 구현 (mock에는 강사 계정이 없어 `?source=api`에서만 동작) |
+| 컨벤션 라이브러리 — FR-LIB-01 · 02 | 시안 없음 — `src/ui/ConventionLibraryDialog.tsx` | 라우터 없음 — 사무실 안에서 여는 패널 (2026-10-30 결정). 2026-11-07 현재: 상단 바 더보기의 대화상자(#225) | — | #60 · #61 · #225 닫힘 | A (#225 — 2026-11-03 배정은 D) | main 구현 (강사 쓰기는 `?source=api`에서만) |
 
-**묶음**: TODO — 팀 회의에서 정한다.
+**묶음**: 정한 묶음이 없다 — 화면 작업은 GRAVIT Issue 단위로 진행했다(2026-11-07 현재). 묶음 칸은 `—`로 둔다.
 
 **route**: 기존 데모에는 URL 라우터가 없다. 한 페이지 위에 3D 장면과 HUD(상단 바 · 오른쪽 패널 탭 · 대화상자)를 겹쳐 쓰고, 주소에는 `?source=api`만 있다. 로그인 · 조직·레포 선택처럼 사무실 밖 화면은 주소별 화면으로 나누고 라우터를 추가한다(2026-10-28 결정). 주소 이름과 디자인은 더 토론한다(07-screens.md는 URL을 정하지 않는다).
 
@@ -86,7 +87,7 @@ v1 화면 목록에 없는 기존 화면 — `src/ui/TeamView.tsx`(팀원별 업
 
 화면에 붙은 요구사항 ID는 기획안 「화면 구성」 표의 "관련 요구사항" 열을 바탕으로 07-screens.md 「화면 목록」과 맞췄다. [제안]이 붙은 화면 · 요소(2D 팀 보드)는 requirements-changes.md에서 아직 후보인 것에 기대므로 채택 전에는 착수하지 않는다. 수집 동의 · 활동 기록 · 상단 바 안내 · 활동 유형 분포(FR-ACT)와 3D 사무실의 평가 · 회의실 · 게시판 도움 요청(FR-LRN-15~20 포함)은 2026-10-28에 채택했다(07-screens.md).
 
-**담당 쏠림**: 화면은 16개다 — 상단 바 · 상세 패널처럼 별도 화면이 아닌 요소 · 패널도 한 줄로 센다. 내 습관 체크를 지우고 강사 요청함(사이드바 · 헤더 요소) · 컨벤션 라이브러리(사무실 안 패널)를 더했다(2026-10-30 결정). 2026-11-03 재배분으로 C가 5개(3D 사무실 · 회의 쪽 · 일정판 · 내 학습 타임라인 · 회고 리포트), D가 11개(스탠드업 포함, 2D 팀 보드는 [제안]이라 착수 안 함)를 맡는다. C는 3D 사무실 하나의 범위가 가장 크고, D는 백엔드 Issue마다 붙는 화면 협업이 많다. 아래 문장들은 이전 배정(D 한 명 — 기획안 「역할 분담」) 기준의 분석이다. 데모를 참고해도 쏠림은 크게 줄지 않는다 — D의 14개 중 데모에 비슷한 화면이 있는 것은 5개(3D 사무실 · 상단 바 · 상세 패널 · 스탠드업·회의 · 일정판)이고 나머지 9개는 신규다(그중 2D 팀 보드 1개는 [제안]이라 지금 착수하지 않음 → 착수할 신규 8개). 게다가 가장 큰 3D 사무실은 데모에 비슷한 화면이 있지만 구현 범위가 넓다. 로그인 · 조직·레포 선택처럼 B1 · B2와 붙어 있는 화면, 스탠드업 · 일정판처럼 B12와 붙어 있는 화면을 어떻게 나눌지 포함해 역할 조정은 팀이 정한다.
+**담당 쏠림 (2026-11-03 배정 기준 — 실제 Assignee는 위 담당 표)**: 화면은 16개다 — 상단 바 · 상세 패널처럼 별도 화면이 아닌 요소 · 패널도 한 줄로 센다. 내 습관 체크를 지우고 강사 요청함(사이드바 · 헤더 요소) · 컨벤션 라이브러리(사무실 안 패널)를 더했다(2026-10-30 결정). 2026-11-03 재배분으로 C가 5개(3D 사무실 · 회의 쪽 · 일정판 · 내 학습 타임라인 · 회고 리포트), D가 11개(스탠드업 포함, 2D 팀 보드는 [제안]이라 착수 안 함)를 맡는다. C는 3D 사무실 하나의 범위가 가장 크고, D는 백엔드 Issue마다 붙는 화면 협업이 많다. 아래 문장들은 이전 배정(D 한 명 — 기획안 「역할 분담」) 기준의 분석이다. 데모를 참고해도 쏠림은 크게 줄지 않는다 — D의 14개 중 데모에 비슷한 화면이 있는 것은 5개(3D 사무실 · 상단 바 · 상세 패널 · 스탠드업·회의 · 일정판)이고 나머지 9개는 신규다(그중 2D 팀 보드 1개는 [제안]이라 지금 착수하지 않음 → 착수할 신규 8개). 게다가 가장 큰 3D 사무실은 데모에 비슷한 화면이 있지만 구현 범위가 넓다. 로그인 · 조직·레포 선택처럼 B1 · B2와 붙어 있는 화면, 스탠드업 · 일정판처럼 B12와 붙어 있는 화면을 어떻게 나눌지 포함해 역할 조정은 팀이 정한다.
 
 ### 시작 순서
 
@@ -100,15 +101,15 @@ v1 화면 목록에 없는 기존 화면 — `src/ui/TeamView.tsx`(팀원별 업
 
 ### 마음껏 건드려도 되는 곳
 
-기존 데모는 화면별 폴더가 없고 `src/ui/`(HUD) · `src/scene/`(3D)에 파일을 나란히 둔다. 새 화면은 자기 파일(예: `src/ui/<화면이름>.tsx`)과 그 화면 전용 CSS에서 작업한다. 화면별 폴더를 만들지는 결정 필요 — 폴더 구조 전면 변경은 하지 않는다.
+기존 데모는 화면별 폴더가 없고 `src/ui/`(HUD) · `src/scene/`(3D)에 파일을 나란히 둔다. 새 화면은 자기 파일(예: `src/ui/<화면이름>.tsx`)과 그 화면 전용 CSS에서 작업한다. 화면별 폴더는 만들지 않았다(2026-11-07 현재 — 화면 파일은 `src/ui/`에 나란히 두고, 진입 화면만 `src/ui/entry/` 폴더다). 폴더 구조 전면 변경은 하지 않는다.
 
 ### 건드리기 전에 말해야 하는 곳
 
 | 파일 | 왜 |
 | --- | --- |
-| 공용 컴포넌트(상단 바 · 상세 패널 · 도형 5종 · 정보 뷰(최근 변화 · 담당 · 막힘)) | 여러 화면이 쓴다. 수정은 **별도 PR** 로 분리하고 먼저 공유한다. 경로는 `src/ui/TopBar.tsx` · `src/ui/Detail.tsx` · `src/scene/TaskBox.tsx`(도형) · `src/scene/shared.tsx`(공용 도형 · 재질) · `src/scene/Overlays.tsx`(정보 뷰 틀) |
-| 계약 파일 — `src/data/types.ts` · `src/data/DataSource.ts` · `src/store.ts` · `src/office/layout.ts` · `src/data/selectors.ts` · `src/data/insights.ts`, 그리고 SceneModel(`src/scene/model/` — 신규) · ThemeLayout(`src/theme/` — 신규) | 화면 · 서버 · mock이 함께 기댄다. 데모의 `CLAUDE.md`도 앞의 파일들을 계약 파일로 묶어 둔다. 계약에 닿는 변경은 계약 문서(2026-11-03부터 GRAVIT `docs/CONTRACTS*.md`가 기준)를 문서 담당자가 먼저 고쳐 공유한 뒤에 하고, 백엔드(A · B)와 먼저 합의한다. 데이터 파일은 D, SceneModel · ThemeLayout은 C가 소유한다 |
-| 기존 3D 데모의 3D 표현 코드(`src/scene/`) | 재사용 · 리팩터링한다. 새 모델링은 하지 않는다(기획안 「기능 동결 규칙」). 테마(사무실)에 묶인 좌표 · 모양은 ThemeLayout · 테마 컴포넌트에 두고, 도메인 로직이 테마를 모르게 한다(2026-11-01 결정) |
+| 공용 컴포넌트(상단 바 · 상세 패널 · 도형 5종 · 정보 뷰(최근 변화 · 담당 · 막힘)) | 여러 화면이 쓴다. 수정은 **별도 PR** 로 분리하고 먼저 공유한다. 경로는 `src/ui/TopBar.tsx` · `src/ui/OfficeDetail.tsx`(데모의 `Detail.tsx`) · `src/scene/TaskBox.tsx`(도형) · `src/scene/shared.tsx`(공용 도형 · 재질). 정보 뷰 틀이던 데모의 `src/scene/Overlays.tsx`는 GRAVIT에서 지웠다 |
+| 계약 파일 — `src/data/types.ts` · `src/data/DataSource.ts` · `src/store.ts` · `src/data/selectors.ts`, 그리고 SceneModel(`src/scene/model/`) · ThemeLayout(`src/theme/station/`). 데모의 `src/office/layout.ts` · `src/data/insights.ts`는 GRAVIT에서 지웠다 | 화면 · 서버 · mock이 함께 기댄다. 데모의 `CLAUDE.md`도 앞의 파일들을 계약 파일로 묶어 둔다. 계약에 닿는 변경은 계약 문서(2026-11-03부터 GRAVIT `docs/CONTRACTS*.md`가 기준)를 문서 담당자가 먼저 고쳐 공유한 뒤에 하고, 백엔드(A · B)와 먼저 합의한다. 데이터 파일은 D, SceneModel · ThemeLayout은 C가 소유한다 |
+| 기존 3D 데모의 3D 표현 코드(`src/scene/`) | 재사용 · 리팩터링한다. 새 모델링은 하지 않는다(기획안 「기능 동결 규칙」 — 확정 시안의 정거장 · 스페이 GLB 아바타를 R3F로 옮기는 것은 범위 안이고, 시안 밖 새 에셋은 만들지 않는다). 테마(2026-11-04부터 우주정거장 — 단일 테마)에 묶인 좌표 · 모양은 ThemeLayout · 테마 컴포넌트에 두고, 도메인 로직이 테마를 모르게 한다(2026-11-01 결정) |
 | 의존성 목록 파일(`package.json` · `package-lock.json`) | 라이브러리 추가는 사전 합의(`.claude/rules/security.md`) |
 | `src/App.tsx` · `src/ui/Hud.tsx` · `src/ui/RightPanel.tsx` · `src/ui/uiState.ts` · `src/index.css` · `vite.config.ts` · `tsconfig*.json` | 전원이 공유하는 레이아웃 · 설정 |
 
@@ -141,8 +142,8 @@ PR base 는 `main` 이다. PR 에는 `Closes #<이슈번호>` 와 "관련 요구
 - [ ] 팀원 간 · 조 간 순위 · 비교 화면이 없고, 개인 지표(학습 타임라인 · 회고 리포트 · 기술 결정 카드)는 본인과 강사에게만 보인다 (FR-FLOW-06 · NFR-06 · 2026-10-30 결정)
 - [ ] 막힘 표시는 막혔다는 사실만 보이고 이유 문구가 없다 (FR-FLOW-02 · 2026-10-29 결정)
 - [ ] 위치 계산이 테마 좌표에 묶이지 않는다 — 요구사항 연결 · 회의 안건이 원본 도형의 위치를 바꾸지 않는다 (05 「상태값」 · 2026-11-01 결정)
-- [ ] `npm run lint` · `npm run build`(타입 검사 · 3D lazy 번들 검사 포함) · `npm run test:contract`(mock 쪽)를 돌린 결과를 PR 「검증」에 적는다. 3D를 바꿨으면 `npm run test:e2e`도 돌린다(Chrome 필요). 개발 저장소의 명령이 정해지면 PROJECT_COMMANDS.md를 따른다
+- [ ] `npm run lint` · `npm run build`(타입 검사 · 3D lazy 번들 검사 포함) · `npm run test:contract`(mock 쪽)를 돌린 결과를 PR 「검증」에 적는다. 3D를 바꿨으면 `npm run test:e2e`도 돌린다(Chrome 필요). 명령은 GRAVIT README 「빌드 · 테스트 명령」을 따른다 — CI는 lint · test:contract · build를 돌리고, E2E는 로컬에서만(mock 기준) 돈다
 
 ## 알려진 문서 ↔ 디자인 차이
 
-TODO: 대응 내용 없음 (삭제 여부 확인) — 디자인 원본이 아직 없다.
+시안(GRAVIT `frontend/public/station/`)과 계약이 다르면 계약대로 한다(GRAVIT `CLAUDE.md` 「디자인 테마」 — 2026-11-04): PR 평가는 시안의 클린/스멜이 아니라 `recommend`/`not_recommend`(두 쪽 다 이유 필수 · 작성자 평가 불가 · 평가자 표시 금지), 안건 후보는 48시간 도움 요청뿐(시안의 "앱이 찾은 후보" 없음), 머지 준비 선반 F는 장식, 요구사항 구역은 시안에 없지만 Must라 정거장 안에 만든다(요구사항 데크 판). 작업 포드는 최대 8개(`deskIndex` 0 \~ 7 — 0 \~ 3은 항상, 4 \~ 7은 쓰는 팀원이 있을 때만)이고 자리가 없는 팀원은 3D에 없다. 시안의 JS · `data.js` 목업은 계약이 아니다.
