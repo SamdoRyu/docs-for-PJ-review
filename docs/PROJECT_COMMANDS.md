@@ -44,7 +44,7 @@ npm run dev                   # 화면(Vite :5173) — 기본은 브라우저 mo
 - `npm run test:contract`: v1 mock · API 클라이언트 · 계약 예시 JSON(`examples.test.ts`) · SceneModel · 화면 규칙 테스트(`frontend/tests/contract/`).
 - `npm run test:e2e`: Playwright E2E — mock 기준만. 테스트가 Vite `:5180`을 직접 띄우고 Chrome이 필요하다. CI에서 돌지 않는다. 시나리오는 `01` · `05`~`25`(데모의 `02` · `03` · `04`는 뺐다).
 - `npx tsx scripts/data-smoke.ts`: GRAVIT에 없다(`frontend/scripts/`는 `check-bundle.mjs`뿐).
-- 빌드 결과를 Spring이 서빙할지는 아직 미정이다(배포 플랫폼 미정).
+- 배포하지 않으므로 빌드 결과를 Spring이 서빙하는 설정은 만들지 않는다(SP11 · 2026-11-09 결정).
 
 | 명령 | 실제로 하는 일 | 선행 조건 · 의존 | v1에서 |
 | --- | --- | --- | --- |
@@ -117,7 +117,7 @@ Flyway — Spring Boot가 시작할 때 자동 적용한다. 이미 적용된 �
 
 ### production 을 바꾸기 전 — backup / rollback
 
-TODO: 대응 내용 없음 (삭제 여부 확인) — 서버는 외부 인터넷에서 접근할 수 있게 배포한다(SP11 · 2026-11-01 결정 — TBD-09 "팀원 컴퓨터 한 대"를 대신함). 배포 대상과 DB가 정해지면 절차를 쓴다.
+배포하지 않는다(SP11 · 2026-11-09 결정 — 2026-11-01 "외부 인터넷 배포"를 대신함). 개발 · 리허설 · 발표 시연은 로컬 실행만 쓴다 — 순서는 GRAVIT `README.md` 「처음 실행하기」.
 
 #### 보호 장치
 
