@@ -25,10 +25,10 @@ docker compose up -d --wait   # 로컬 MySQL (저장소 루트)
 .\gradlew.bat bootRun         # Spring :8080 (MySQL 필요)
 # 터미널 2 — frontend/
 npm ci
-npm run dev                   # 화면(Vite :5173) — 기본은 브라우저 mock 데이터
+npm run dev                   # 화면(Vite :5173) — 기본은 Spring API, mock은 ?source=mock
 ```
 
-→ 화면 `http://localhost:5173` (브라우저 mock 데이터 — 백엔드 없이 동작). `/?source=api`면 Spring v1 API(`src/data/api/v1/`)를 쓴다 — Spring이 떠 있어야 하고 로그인한다. (GRAVIT README의 "지금 `?source=api`는 동작하지 않습니다" 문장은 낡았다 — GRAVIT #245)
+→ 화면 `http://localhost:5173` (Spring v1 API `src/data/api/v1/` — Spring이 떠 있어야 하고 로그인한다. GRAVIT #341로 기본이 바뀌었다). `/?source=mock`이면 브라우저 mock 데이터 — 백엔드 없이 동작한다. (GRAVIT README의 "지금 `?source=api`는 동작하지 않습니다" 문장은 낡았다 — GRAVIT #245)
 
 - **Node 24 LTS**로 통일한다(2026-10-28 결정) — GRAVIT `.nvmrc` = 24. 의존성 조건으로 보면 Node 22.12 이상이 필요하다(vite).
 - 화면 작업은 GitHub 없이 한다(브라우저 mock 또는 Spring 서버 데이터). 연동 작업과 시범 운영만 실제 GitHub App을 쓴다.
@@ -198,7 +198,7 @@ PR 에 "테스트 완료"라고만 적지 않는다. 실제로 한 것만 적고
 | 하고 싶은 것 | 방법 |
 | --- | --- |
 | 데모 API가 떠 있는지 | `curl http://127.0.0.1:8787/api/health` → `{"ok":true,"version":1}` |
-| 서버 데이터로 화면 보기 | `http://localhost:5173/?source=api` |
+| 서버 데이터로 화면 보기 | `http://localhost:5173/` (mock은 `/?source=mock`) |
 | 처음 상태로 (mock) | 화면 메뉴 「데이터 초기화」 |
 
 ## 검증에 쓰는 것

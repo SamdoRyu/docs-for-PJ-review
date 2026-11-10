@@ -245,7 +245,7 @@
 | NFR-05 | 구현 | Origin 검사 · CSRF(`XSRF-TOKEN` → `X-XSRF-TOKEN`, 실패는 403 `invalid`), 세션 60분 · HttpOnly · SameSite=Lax |
 | NFR-06 | 구현 | 회고 리포트 · 기술 결정 카드는 본인과 지정된 강사만 |
 | NFR-07 | 구현 | 반응형 · 터치(E2E mock) |
-| NFR-08 | 구현 | 서버 Seed 시연 사무실 + 브라우저 mock(기본 mock, `?source=api`면 서버) |
+| NFR-08 | 구현 | 서버 Seed 시연 사무실 + 브라우저 mock(기본은 서버, `?source=mock`이면 브라우저 mock — GRAVIT #341) |
 | NFR-09 | 구현 | 동기화 실패 시 롤백 · 사유 기록 · 마지막 데이터 유지 |
 | NFR-10 | 부분 구현 | 폴링은 변경분만 읽는다. 수동 동기화 · 사무실 열기는 전체를 다시 읽고, 콜라보레이터는 매번 전체 |
 | CON-01 | 구현 | GitHub 읽기만, 팀 작성 방식 변경 없음 |

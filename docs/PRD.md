@@ -251,7 +251,7 @@
 
 1. 저장소 루트에서 `.env`를 채우고 `docker compose up -d --wait`로 MySQL을 띄운다. 심사용 시연을 하려면 `REVIEW_LOGIN_ENABLED=true`와 `REVIEW_ACCOUNTS`(레포 관리자 · 참여자 · 강사 계정)를 넣는다. 실제 GitHub 사무실을 보여 주려면 GitHub App 값을 넣는다(키 경로는 절대 경로).
 2. `backend/`에서 `gradlew bootRun`(`:8080`), `frontend/`에서 `npm run dev`(`:5173`).
-3. 브라우저로 `http://localhost:5173/?source=api`를 연다(`127.0.0.1`은 쓰지 않는다). 서버 없이 화면만 보이려면 `http://localhost:5173/`(브라우저 mock — 강사 계정이 없어 강사 흐름은 빠진다).
+3. 브라우저로 `http://localhost:5173/`를 연다(`127.0.0.1`은 쓰지 않는다 — 기본이 서버 API다, GRAVIT #341). 서버 없이 화면만 보이려면 `http://localhost:5173/?source=mock`(브라우저 mock — 강사 계정이 없어 강사 흐름은 빠진다).
 
 **순서 (약 10\~15분)**
 

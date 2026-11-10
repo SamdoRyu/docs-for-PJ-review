@@ -26,7 +26,7 @@ git pull --ff-only origin main
 ```bash
 cd frontend
 npm ci
-npm run dev          # 화면 :5173 — 브라우저 mock 데이터(?source= 없음)
+npm run dev          # 화면 :5173 — 기본은 Spring API, 브라우저 mock은 ?source=mock
 ```
 
 명령의 뜻과 선행 조건은 [PROJECT_COMMANDS.md](./PROJECT_COMMANDS.md), 확인된 명령은 GRAVIT [README](https://github.com/SamdoRyu/GRAVIT/blob/main/README.md) 「처음 실행하기」 · 「빌드 · 테스트 명령」이다. 화면 작업은 GitHub 없이 한다 — 브라우저 mock(`?source=` 없음) 또는 Spring 서버 데이터(`?source=api`, 환경 변수 가이드 「환경별 설정」). 개발 저장소는 모노레포라(2026-11-03 결정) 화면 명령은 `frontend/`에서 돌리고, Spring 서버 데이터가 필요하면 루트에서 `docker compose up -d --wait`(로컬 MySQL) → `backend/`에서 `.\gradlew.bat bootRun`(`:8080`) → 브라우저 `/?source=api`. 데모의 `npm run dev:all`(Hono 서버)은 GRAVIT에 없다.

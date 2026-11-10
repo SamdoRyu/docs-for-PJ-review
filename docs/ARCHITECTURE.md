@@ -103,7 +103,7 @@
 warehouseDemo_fork/
 ├─ index.html · vite.config.ts · tsconfig*.json · .oxlintrc.json · playwright.config.ts
 ├─ src/
-│  ├─ main.tsx · App.tsx          앱 시작. ?source=api 로 DataSource 를 고른다
+│  ├─ main.tsx · App.tsx          앱 시작. 기본은 API, ?source=mock 이면 mock DataSource
 │  ├─ app/                        SceneCanvas(Canvas) · SceneBoundary(3D 오류 경계)
 │  ├─ scene/                      3D 장면 — OfficeScene, TaskBox(es), slots, Avatar(s), Desks, Room,
 │  │                              Furniture, MeetingRoomState, DragLayer, dropTarget, CameraRig, Overlays …
@@ -199,7 +199,7 @@ GRAVIT/
 
 ```text
 브라우저 (Vite :5173)
-  └─ src/App.tsx — ?source=api 이면 API DataSource, 아니면 mock DataSource
+  └─ src/App.tsx — ?source=mock 이면 mock DataSource, 아니면 API DataSource (GRAVIT #341)
        ├─ mock: src/data/mock — localStorage(`office-dashboard:v1`), 서버 없음
        └─ api : src/data/api — fetch /api/* (Vite 가 127.0.0.1:API_PORT ?? 8787 로 프록시)
                  └─ Hono (server/src/routes.ts, 127.0.0.1 에만 바인딩)
@@ -228,7 +228,7 @@ GitHub ──(설치 토큰으로 읽기만 · 폴링 · 웹훅 없음)──▶
 시연 사무실 ── Seed 어댑터(가짜 데이터) ── 같은 저장 · 같은 API · 같은 접근 검사 · "시연 데이터" 표시
 ```
 
-- **화면 쪽 흐름**(GRAVIT): `DataSource`(기본 `mock/v1` — 서버 없이 브라우저 seed + localStorage, `?source=api`면 `api/v1` — Spring v1 API + SSE) → `store.ts`(Zustand) → SceneModel(`src/scene/model/`) → ThemeLayout(`src/theme/station/` — 우주정거장) → R3F 렌더링. 사무실 밖 화면은 진입 화면(`src/ui/entry/`)이고 URL 라우터는 없다.
+- **화면 쪽 흐름**(GRAVIT): `DataSource`(기본 `api/v1` — Spring v1 API + SSE, `?source=mock`이면 `mock/v1` — 서버 없이 브라우저 seed + localStorage. GRAVIT #341) → `store.ts`(Zustand) → SceneModel(`src/scene/model/`) → ThemeLayout(`src/theme/station/` — 우주정거장) → R3F 렌더링. 사무실 밖 화면은 진입 화면(`src/ui/entry/`)이고 URL 라우터는 없다.
 - **GitHub 폴링과 SSE는 다른 일이다.** 폴링은 서버가 GitHub의 변경을 가져오는 방법이고(CON-03, FR-GH-03), SSE는 앱 서버가 브라우저에 "바뀌었다"를 알리는 방법이다. 동기화 결과도 SSE로 알린다.
 - **SSE도 권한 검사를 거친다**(2026-11-01 결정). 구독은 사무실 단위이고, 연결할 때 세션과 그 사무실의 접근 권한을 검사한다. 사용자가 볼 수 없는 사무실의 변경은 보내지 않는다. `[제안]` 세션이 끝나면 연결을 닫고, 이벤트 본문에는 "무엇이 바뀌었나"만 담아 화면이 권한 검사를 거친 REST로 다시 읽게 한다(개인 지표가 이벤트로 새지 않게).
 - GitHub 웹훅은 쓰지 않는다(CON-03, 기획안 「이번 범위에서 제외」).
@@ -633,7 +633,7 @@ TODO: 대응 내용 없음 (삭제 여부 확인)
 2. 화면 계산(공간 역할 · 강조 · 묶음)은 `src/` 의 순수 함수(SceneModel · selectors)에 둔다. 도메인 판정(막힘 · 권한 · 집계)은 서버 응답을 쓴다. 화면에서 직접 계산하지 않는다.
 3. 화면 상태는 `src/store.ts`(데이터 · 선택 · 드래그)와 `src/ui/uiState.ts`(탭 · 패널 같은 UI 전용 값) 중 맞는 곳에 둔다.
 4. HUD는 `src/ui/`, 3D는 `src/scene/`에 만든다. 테마에 묶인 좌표 · 모양은 ThemeLayout · 테마 컴포넌트에 둔다. 3D 쪽은 첫 화면 번들에 들어가지 않게 lazy 경로 안에 둔다(`npm run build`의 번들 검사).
-5. mock(`?source=` 없이)과 api(`?source=api` — Spring 서버) 두 경로에서 확인하고, 필요하면 E2E에 시나리오를 더한다.
+5. mock(`?source=mock`)과 api(`?source=` 없이 — Spring 서버) 두 경로에서 확인하고, 필요하면 E2E에 시나리오를 더한다.
 
 ## 기획 문서와 다르게 구현했다면
 
